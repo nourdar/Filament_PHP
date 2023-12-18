@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string("name");
             $table->string("slug")->unique();
             $table->longText("description")->nullable();
-            $table->string("image");
+            $table->string("image")->nullable();
             $table->boolean("is_visible")->default(false);
             $table->boolean("is_featured")->default(false);
             $table->foreignId("brand_id")
