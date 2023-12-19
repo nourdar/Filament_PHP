@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
@@ -34,9 +35,10 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
+    protected static ?int $navigationSort = 0;
     protected static ?string $navigationIcon = 'heroicon-o-bolt';
 
-    protected static ?string $navigationLabel = 'Produis';
+    protected static ?string $navigationLabel = 'Produits';
     protected static ?string $navigationGroup = 'Ma Boutique';
 
     public static function form(Form $form): Form
@@ -175,7 +177,14 @@ class ProductResource extends Resource
 
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                ActionGroup::make([
+                    Tables\Actions\EditAction::make()
+                        ->label('Modifier'),
+                    Tables\Actions\ViewAction::make()
+                        ->label('Voir'),
+                    Tables\Actions\DeleteAction::make()
+                        ->label('Supprimer'),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
