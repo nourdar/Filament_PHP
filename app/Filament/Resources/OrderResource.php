@@ -10,6 +10,7 @@ use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Wizard;
@@ -29,12 +30,27 @@ class OrderResource extends Resource
     protected static ?string $model = Order::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
-
-    protected static ?int $navigationSort = 3;
-    protected static ?string $navigationGroup = "Ma Boutique";
-
     protected static ?string $navigationLabel = 'Commandes';
 
+    protected static ?int $navigationSort = 3;
+
+    protected static ?string $navigationGroup = "Ma Boutique";
+
+    protected static ?string $activeNavigationIcon = "heroicon-o-check-badge";
+
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status', 'processing')->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getModel()::where('status', 'processing')
+                    ->count() > 5
+                    ? 'warning'
+                    : 'primary';
+    }
 
     public static function form(Form $form): Form
     {
@@ -56,6 +72,12 @@ class OrderResource extends Resource
                                 ->required()
                                 ->searchable(),
 
+                            TextInput::make('shipping_price')
+                                ->label('Coût de livraison')
+                                ->numeric()
+                                ->dehydrated()
+                                ->required(),
+
                             Select::make('type')
                                 ->label('Statut de la Commande')
                                 ->options([
@@ -65,9 +87,9 @@ class OrderResource extends Resource
                                     'declined' => OrderStatus::DECLINED->value,
                                 ])
                                 ->required()
-                                ->searchable()->columnSpan('full'),
+                                ->searchable(),
 
-                            MarkdownEditor::make('description')
+                            MarkdownEditor::make('notes')
                             ->columnSpan('full')
 
                         ])->columns(2),
@@ -81,22 +103,34 @@ class OrderResource extends Resource
                                     Select::make('product_id')
                                         ->label('Produit')
                                         ->options(Product::query()->pluck('name', 'id'))
-                                        ->required(),
+                                        ->required()
+                                        ->reactive()
+                                        ->afterStateUpdated(fn($state, Forms\Set $set) =>
+                                            $set('unit_price', Product::find($state)?->price ?? 0)
+                                        ),
 
                                     TextInput::make('quantity')
                                         ->label('Quantité')
                                         ->default(1)
+                                        ->minValue(1)
                                         ->numeric()
+                                        ->live()
+                                        ->dehydrated()
                                         ->required(),
 
                                     TextInput::make('unit_price')
                                         ->label('Prix Unitaire')
                                         ->numeric()
                                         ->dehydrated()
-                                        ->disabled()
                                         ->required(),
 
-                                        ])->columns(3)
+                                    Placeholder::make('total_price')
+                                        ->label('Prix Total')
+                                        ->content(function ($get){
+                                            return number_format($get('quantity') * $get('unit_price'), 2).' F CFA';
+                                        })
+
+                                ])->columns(4)
 
                         ]),
                 ])->columnSpan('full')
@@ -119,13 +153,6 @@ class OrderResource extends Resource
                 TextColumn::make('status')
                     ->searchable()
                     ->sortable(),
-
-                    TextColumn::make('total_price')
-                    ->searchable()
-                    ->sortable()
-                    ->summarize([
-                        Sum::make()->money(),
-                    ]),
 
                     TextColumn::make('created_at')
                         ->label('Date de Commande')

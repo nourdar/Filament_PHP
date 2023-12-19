@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\ProductType;
+// use app\Models;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Str;
@@ -35,12 +36,49 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?int $navigationSort = 0;
     protected static ?string $navigationIcon = 'heroicon-o-bolt';
 
     protected static ?string $navigationLabel = 'Produits';
+
     protected static ?string $navigationGroup = 'Ma Boutique';
 
+    protected static ?int $navigationSort = 0;
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    protected static int $globalSearchResultLimit = 10;
+
+    protected static ?string $activeNavigationIcon = "heroicon-o-check-badge";
+
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getModel()::count() < 5
+                    ? 'warning'
+                    : 'primary';
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'slug', 'description'];
+    }
+
+    public static function getGlobalSearchResultDetails($record): array
+    {
+        return [
+            'Marque' => $record->brand->name,
+        ];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with(['brand']);
+    }
     public static function form(Form $form): Form
     {
         return $form
@@ -91,7 +129,9 @@ class ProductResource extends Resource
                                         Select::make('type')->options([
                                             'deliverable' => ProductType::DELIVERABLE->value,
                                             'downloadable' => ProductType::DOWNLOADABLE->value,
-                                        ])
+                                        ]),
+
+
                                     ])->columns(2),
                             ]),
 
@@ -127,7 +167,17 @@ class ProductResource extends Resource
                                     Section::make('Associations')
                                         ->schema([
                                            Select::make('brand_id')
-                                                ->relationship('brand', 'name')
+                                                ->placeholder('Selectionner une marque')
+                                                ->label('Marque')
+                                                ->required()
+                                                ->relationship('brand', 'name'),
+
+                                            Select::make('category_id')
+                                                ->placeholder('Selectionner une catégorie')
+                                                ->label('Catégories')
+                                                ->multiple()
+                                                ->required()
+                                                ->relationship('categories', 'name')
                                         ])
                                 ]),
             ]);

@@ -17,7 +17,6 @@ return new class extends Migration
                     ->constrained('customers')
                     ->onDelete('cascade');
             $table->string("order_number")->unique();
-            $table->decimal("total_price");
             $table->enum("status", ['pending', 'processing', 'completed', 'declined'])
             ->default('pending');
             $table->decimal("shipping_price")->nullable();

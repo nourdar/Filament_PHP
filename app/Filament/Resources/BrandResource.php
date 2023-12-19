@@ -31,11 +31,25 @@ class BrandResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?int $navigationSort = 1;
-
     protected static ?string $navigationLabel = 'Marques';
 
+    protected static ?int $navigationSort = 1;
+
     protected static ?string $navigationGroup = "Ma Boutique";
+
+    protected static ?string $activeNavigationIcon = "heroicon-o-check-badge";
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getModel()::count() > 5
+                    ? 'warning'
+                    : 'primary';
+    }
     public static function form(Form $form): Form
     {
         return $form
@@ -146,7 +160,7 @@ class BrandResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\ProductsRelationManager::class
         ];
     }
 

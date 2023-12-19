@@ -5,6 +5,8 @@ namespace App\Providers\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationItem;
+use Filament\Navigation\MenuItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -30,6 +32,24 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Blue,
             ])
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
+            ->sidebarCollapsibleOnDesktop()
+            ->navigationItems([
+                NavigationItem::make('Blog')
+                    ->url('https://devdiagui.ml', shouldOpenInNewTab:true)
+                    ->icon('heroicon-o-document-text')
+                    ->Group('Lien Externe')
+                    ->Sort(2)
+                    // ->visible(fn():bool => auth()->user()->can('view')),
+            ])
+            ->userMenuItems([
+                'settings' => MenuItem::make()
+                    ->label('Paramètre')
+                    ->url('/settings')
+                    ->icon('heroicon-o-cog-6-tooth'),
+                'logout' => MenuItem::make()->label('Déconnexion')
+            ])
+            // ->breadcrumbs(false)
             ->font('Outfit')
             ->favicon('images/logoWg.png')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')

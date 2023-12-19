@@ -24,11 +24,21 @@ class CustomerResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationGroup = 'Ma Boutique';
-
     protected static ?string $navigationLabel = 'Clients';
 
+    protected static ?string $navigationGroup = 'Ma Boutique';
+
+
     protected static ?int $navigationSort = 2;
+
+
+    protected static ?string $activeNavigationIcon = "heroicon-o-check-badge";
+
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {
