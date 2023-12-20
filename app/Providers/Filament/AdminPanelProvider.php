@@ -27,12 +27,13 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->id('dashboard')
-            ->path('dashboard')
+            ->id('')
+            ->path('admin')
             ->login()
             ->colors([
                 'primary' => Color::Blue,
             ])
+            // ->domain('admin.example.com')
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->sidebarCollapsibleOnDesktop()
             ->navigationItems([
@@ -48,13 +49,14 @@ class AdminPanelProvider extends PanelProvider
                     ->label('Paramètre')
                     ->url('/settings')
                     ->icon('heroicon-o-cog-6-tooth'),
-                'logout' => MenuItem::make()->label('Déconnexion')
-            ])
-            ->plugins([
-                SpotlightPlugin::make()
+                'logout' => MenuItem::make()->label('Déconnexion'),
+                'profile' => MenuItem::make()->label('Edit profile')
             ])
             // ->breadcrumbs(false)
             ->font('Outfit')
+            // ->plugins([
+            //     SpotlightPlugin::make()
+            // ])
             ->favicon('images/logoWg.png')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

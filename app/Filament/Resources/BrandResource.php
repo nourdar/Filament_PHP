@@ -71,16 +71,18 @@ class BrandResource extends Resource
                                     }),
                             TextInput::make('slug')
                                     ->required()
+                                    ->label('Slug de la marque')
                                     ->disabled()
                                     ->dehydrated()
                                     ->unique(Brand::class, 'slug', ignoreRecord:true),
 
                             TextInput::make('url')
-                                    ->label("Website URL")
+                                    ->label("URL du site web")
                                     ->required()
                                     ->unique()
                                     ->columnSpan('full'),
                             MarkdownEditor::make('description')
+                                    ->label('Description')
                                     ->columnSpan('full')
 
 
@@ -114,12 +116,13 @@ class BrandResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nom')
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('url')
                     ->searchable()
-                    ->label('Website URL')
+                    ->label('URL du site web')
                     ->sortable(),
 
                 ColorColumn::make('primary_color')

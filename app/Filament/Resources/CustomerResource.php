@@ -48,20 +48,23 @@ class CustomerResource extends Resource
                     ->schema([
                         Section::make([
                             TextInput::make('name')
+                            ->label('Nom')
                             ->required()
                             ->maxLength(255),
                         TextInput::make('email')
+                            ->label('Adresse email')
                             ->email()
                             ->required()
                             ->unique(ignoreRecord:true)
                             ->maxLength(255),
                         TextInput::make('phone')
+                            ->label('Numéro de Téléphone')
                             ->tel()
                             ->required()
                             ->maxLength(255),
                         DatePicker::make('date_of_birth')
+                            ->label('Date de Naissance')
                             ->required(),
-
                         ])
                     ]),
 
@@ -69,12 +72,15 @@ class CustomerResource extends Resource
                     ->schema([
                         Section::make([
                         TextInput::make('address')
+                            ->label('Adresse')
                             ->required()
                             ->maxLength(255),
                         TextInput::make('zip_code')
+                            ->label('Code Postal')
                             ->required()
                             ->maxLength(255),
                         TextInput::make('city')
+                            ->label('Ville')
                             ->required()
                             ->maxLength(255),
                         ])
@@ -90,32 +96,36 @@ class CustomerResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
+                    ->label('Nom')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->label('Adresse email')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('phone')
+                    ->label('Numéro de Téléphone')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('date_of_birth')
+                    ->label('Date de Naissance')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('address')
+                    ->label('Adresse')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('zip_code')
+                    ->label('Code Postal')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('city')
                     ->searchable()
+                    ->label('Ville')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Date de création')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
             ])
             ->filters([
                 //

@@ -35,7 +35,7 @@ class ProductsRelationManager extends RelationManager
             ->schema([
                 Tabs::make('Produits')
                     ->tabs([
-                        Tab::make('Information')
+                        Tab::make('Informations')
                             ->schema([
                                 TextInput::make('name')
                                     ->required()
@@ -60,22 +60,25 @@ class ProductsRelationManager extends RelationManager
                         Tab::make('Prix et inventaire')
                             ->schema([
                                 TextInput::make('sku')
-                                ->label('SKU (Stock Keeping Unit)')
+                                ->label('SKU (Unité de gestion des stocks)')
                                 ->unique()
                                 ->required(),
 
                                 TextInput::make('price')
                                     ->minValue(1)
                                     ->numeric()
+                                    ->label('Prix')
                                     ->rules('regex:/^\d{1,6}(\.\d{0,2})?$/')
                                     ->required(),
                                 TextInput::make('quantity')
                                     ->numeric()
+                                    ->label('Quantité')
                                     ->minValue(0)
                                     ->maxValue(100)
                                     ->required(),
 
                                 Select::make('type')
+                                    ->placeholder('Choisir un type')
                                     ->options([
                                         'deliverable' => ProductType::DELIVERABLE->value,
                                         'downloadable' => ProductType::DOWNLOADABLE->value,
@@ -84,15 +87,16 @@ class ProductsRelationManager extends RelationManager
                         Tab::make('Autres infos')
                             ->schema([
                                 Toggle::make('is_visible')
-                                    ->helperText("If disable, the product will not be visible on the frontend.")
-                                    ->label('Visibility')
+                                    ->label('Visibilité')
+                                    ->helperText("Si cette option est désactivée, le produit ne sera pas visible sur la page d'accueil.")
                                     ->default(true)
                                     ->required(),
                                 Toggle::make('is_featured')
-                                    ->label('Featured')
-                                    ->helperText('Featured products will be shown on the homepage and in featured section.'),
+                                    ->label('En Vedette')
+                                    ->helperText("Une fois qu'un produit est en vedette, il apparait dans la section \"Nouveautés\" sur le site.
+                                                    Il est possible qu'il soit affiché avant les produits classiques."),
                                 DatePicker::make('published_at')
-                                    ->label('Date of Publishing')
+                                    ->label('Date de Publication')
                                     ->default(now()),
 
                                 Select::make('brand_id')
@@ -105,6 +109,7 @@ class ProductsRelationManager extends RelationManager
                                     ->preserveFilenames()
                                     ->image()
                                     ->imageEditor()
+                                    ->label('Image du produit')
                                     ->columnSpan('full')
                             ])->columns(2),
                     ])->columnSpanFull(),
@@ -148,7 +153,8 @@ class ProductsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make('Produits')
+                    ->label('Ajouter un produit')
             ])
             ->actions([
                 ActionGroup::make([

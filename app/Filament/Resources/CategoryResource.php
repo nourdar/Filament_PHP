@@ -58,11 +58,13 @@ class CategoryResource extends Resource
                 Group::make()
                     ->schema([
                         Section::make([
-
                             Select::make('parent_id')
+                                ->label('Nom - Catégorie Parent')
+                                ->placeholder('Selectionner la catégorie parent')
                                 ->relationship('parent', 'name'),
-
                             TextInput::make('name')
+                                ->label('Nom - Catégorie')
+                                ->placeholder('Nom de la catégorie')
                                 ->required()
                                 ->live(onBlur:true)
                                 ->unique()
@@ -76,6 +78,7 @@ class CategoryResource extends Resource
                                 }),
                             TextInput::make('slug')
                                     ->required()
+                                    ->label('Slug')
                                     ->disabled()
                                     ->dehydrated()
                                     ->unique(Category::class, 'slug', ignoreRecord:true),
@@ -93,10 +96,8 @@ class CategoryResource extends Resource
 
                         Section::make([
                             MarkdownEditor::make('description')
-                            ->columnSpanFull(),
-
-
-
+                            ->label('Description')
+                            ->columnSpanFull()
                         ]),
                     ]),
             ])->columns(2);
@@ -107,15 +108,20 @@ class CategoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('parent.name')
+                    ->label('Nom - Catégorie Parent')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nom de Catégorie')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
+                    ->label('Slug')
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_visible')
+                    ->label('Visibilité')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Date de Création')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

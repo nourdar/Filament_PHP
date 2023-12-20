@@ -3,7 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Enums\ProductType;
-// use app\Models;
+use Filament\Forms\Components\Wizard;
+use Filament\Forms\Components\Wizard\Step;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Str;
@@ -31,6 +32,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class ProductResource extends Resource
 {
@@ -83,103 +85,104 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Group::make()
-                    ->schema([
-                        Section::make()
-                            ->schema([
-                                TextInput::make('name')
-                                        ->required()
-                                        ->live(onBlur:true)
-                                        ->unique()
-                                        ->afterStateUpdated(function(string $operation, $state, Forms\Set $set) {
-                                            // dd($operation);
-                                            if($operation !== 'create'){
-                                                return;
-                                            }
+                Wizard::make([
+                    Step::make('Détails Préalable')
+                        ->schema([
+                            TextInput::make('name')
+                                ->label('Nom')
+                                ->required()
+                                ->live(onBlur:true)
+                                ->unique()
+                                ->afterStateUpdated(function(string $operation, $state, Forms\Set $set) {
+                                    // dd($operation);
+                                    if($operation !== 'create'){
+                                        return;
+                                    }
 
-                                            $set('slug', Str::slug($state));
-                                        }),
-                                TextInput::make('slug')
-                                        ->required()
-                                        ->disabled()
-                                        ->dehydrated()
-                                        ->unique(Product::class, 'slug', ignoreRecord:true),
-                                MarkdownEditor::make('description')
+                                    $set('slug', Str::slug($state));
+                                }),
+                            TextInput::make('slug')
+                                ->label('Slug du produit')
+                                ->required()
+                                ->disabled()
+                                ->dehydrated()
+                                ->unique(Product::class, 'slug', ignoreRecord:true),
+                            MarkdownEditor::make('description')
+                                ->label('Description')
                                 ->columnSpan('full')
-                                ])->columns(2),
+                        ])->columns(2),
 
-                                Section::make()
-                                    ->schema([
-                                        TextInput::make('sku')
-                                            ->label('SKU (Stock Keeping Unit)')
-                                            ->unique()
-                                            ->required(),
+                    Step::make('Prix et Quantités')
+                        ->schema([
+                            TextInput::make('sku')
+                                ->label('SKU (Unité de gestion des stocks)')
+                                ->unique()
+                                ->required(),
 
-                                        TextInput::make('price')
-                                            ->minValue(1)
-                                            ->numeric()
-                                            ->rules('regex:/^\d{1,6}(\.\d{0,2})?$/')
-                                            ->required(),
-                                        TextInput::make('quantity')
-                                            ->numeric()
-                                            ->minValue(0)
-                                            ->maxValue(100)
-                                            ->required(),
+                            TextInput::make('price')
+                                ->minValue(1)
+                                ->numeric()
+                                ->label('Prix')
+                                ->rules('regex:/^\d{1,6}(\.\d{0,2})?$/')
+                                ->required(),
+                            TextInput::make('quantity')
+                                ->numeric()
+                                ->label('Quantité')
+                                ->minValue(0)
+                                ->maxValue(100)
+                                ->required(),
 
-                                        Select::make('type')->options([
-                                            'deliverable' => ProductType::DELIVERABLE->value,
-                                            'downloadable' => ProductType::DOWNLOADABLE->value,
-                                        ]),
-
-
-                                    ])->columns(2),
+                            Select::make('type')->options([
+                                'deliverable' => ProductType::DELIVERABLE->value,
+                                'downloadable' => ProductType::DOWNLOADABLE->value,
                             ]),
 
+                        ])->columns(2),
 
+                    Step::make('Status du Produit')
+                        ->schema([
+                            Toggle::make('is_visible')
+                                ->helperText("Si ce champ est désactivé, le produit ne sera pas visible sur la page d'accueil.")
+                                ->label('Visibilité')
+                                ->default(true)
+                                ->required(),
+                            Toggle::make('is_featured')
+                                ->label('En vedette')
+                                ->helperText("Les produits en vedette apparaissent sur la page d'accueil.
+                                                Si vous souhaitez promouvoir un produit, cochez cette case-ci."),
+                            DatePicker::make('published_at')
+                                ->label('Date de Publication')
+                                ->default(now()),
+                        ]),
 
-                            Group::make()
-                                ->schema([
-                                    Section::make('Status')
-                                        ->schema([
-                                            Toggle::make('is_visible')
-                                                ->helperText("If disable, the product will not be visible on the frontend.")
-                                                ->label('Visibility')
-                                                ->default(true)
-                                                ->required(),
-                                            Toggle::make('is_featured')
-                                                ->label('Featured')
-                                                ->helperText('Featured products will be shown on the homepage and in featured section.'),
-                                            DatePicker::make('published_at')
-                                                ->label('Date of Publishing')
-                                                ->default(now()),
-                                        ]),
+                    Step::make('Image')
+                        ->schema([
+                            FileUpload::make('image')
+                                ->directory('form-attachments')
+                                ->preserveFilenames()
+                                ->image()
+                                ->imageEditor(),
 
-                                    Section::make('Image')
-                                        ->schema([
-                                            FileUpload::make('image')
-                                                ->directory('form-attachments')
-                                                ->preserveFilenames()
-                                                ->image()
-                                                ->imageEditor(),
+                        ]),
 
-                                        ])->collapsible(),
+                    Step::make('Marque et Catégories')
+                        ->schema([
+                            Select::make('brand_id')
+                                ->placeholder('Selectionner une marque')
+                                ->label('Marque')
+                                ->required()
+                                ->relationship('brand', 'name'),
 
-                                    Section::make('Associations')
-                                        ->schema([
-                                           Select::make('brand_id')
-                                                ->placeholder('Selectionner une marque')
-                                                ->label('Marque')
-                                                ->required()
-                                                ->relationship('brand', 'name'),
+                            Select::make('category_id')
+                                ->placeholder('Selectionner une catégorie')
+                                ->label('Catégories')
+                                ->multiple()
+                                ->required()
+                                ->relationship('categories', 'name')
+                        ])
 
-                                            Select::make('category_id')
-                                                ->placeholder('Selectionner une catégorie')
-                                                ->label('Catégories')
-                                                ->multiple()
-                                                ->required()
-                                                ->relationship('categories', 'name')
-                                        ])
-                                ]),
+                ])->columnSpan('full')
+
             ]);
     }
 
@@ -195,21 +198,26 @@ class ProductResource extends Resource
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('brand.name')
+                    ->label('Nom de la marque')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 IconColumn::make('is_visible')
+                    ->label('Visibilité')
                     ->boolean()
                     ->toggleable(),
                 TextColumn::make('price')
+                    ->label('Prix')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('quantity')
+                    ->label('Quantité')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('published_at')
+                    ->label('Date de publication')
                     ->date()
                     ->sortable()
                     ->toggleable(),
@@ -217,12 +225,15 @@ class ProductResource extends Resource
             ])
             ->filters([
                 TernaryFilter::make('is_visible')
-                    ->label("Visibility")
+                    ->label("Visibilité")
+                    ->placeholder("Choisir un mode")
                     ->boolean()
-                    ->trueLabel("Only Visible Products")
-                    ->falseLabel("Only Hidden Products")
+                    ->trueLabel("Seulement les produits visibles")
+                    ->falseLabel("Seulement les produits masqués")
                     ->native(false),
                 SelectFilter::make('brand')
+                    ->label("Marque")
+                    ->placeholder("Selectionner une marque")
                     ->relationship('brand', 'name'),
 
             ])
@@ -238,9 +249,11 @@ class ProductResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    ExportBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->paginated([10, 25, 50, 100, 'Toutes']);
     }
 
     public static function getRelations(): array

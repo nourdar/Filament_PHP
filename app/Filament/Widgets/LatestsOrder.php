@@ -24,10 +24,12 @@ class LatestsOrder extends BaseWidget
             ->columns([
                 TextColumn::make('order_number')
                     ->searchable()
+                    ->label('Numéro de commande')
                     ->sortable(),
 
                 TextColumn::make('customer.name')
                     ->searchable()
+                    ->label('Nom du client')
                     ->toggleable()
                     ->sortable(),
 

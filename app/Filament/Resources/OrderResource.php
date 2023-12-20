@@ -69,6 +69,7 @@ class OrderResource extends Resource
 
                             Select::make('customer_id')
                                 ->label('Nom du client')
+                                ->placeholder('Rechercher un client')
                                 ->relationship('customer', 'name')
                                 ->required()
                                 ->searchable(),
@@ -81,6 +82,7 @@ class OrderResource extends Resource
 
                             Select::make('type')
                                 ->label('Statut de la Commande')
+                                ->placeholder('Selectionner le status')
                                 ->options([
                                     'pending' => OrderStatus::PENDING->value,
                                     'processing' => OrderStatus::PROCESSING->value,
@@ -103,6 +105,7 @@ class OrderResource extends Resource
                                 ->schema([
                                     Select::make('product_id')
                                         ->label('Produit')
+                                        ->placeholder('Selectionner un produit')
                                         ->options(Product::query()->pluck('name', 'id'))
                                         ->required()
                                         ->reactive()
@@ -143,15 +146,18 @@ class OrderResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('order_number')
+                    ->label('Numéro de commande')
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('customer.name')
+                    ->label('Nom du client')
                     ->searchable()
                     ->toggleable()
                     ->sortable(),
 
                 TextColumn::make('status')
+                    ->label('Status de la commande')
                     ->searchable()
                     ->sortable(),
 

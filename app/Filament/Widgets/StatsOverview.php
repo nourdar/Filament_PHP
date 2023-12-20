@@ -41,7 +41,7 @@ class StatsOverview extends BaseWidget
             Stat::make('Commande en cours', Order::where('status', OrderStatus::PENDING->value)->count())
                 ->chart([27, 22, 30, 53, 35, 14, 7])
                 ->description('Baisse de commande')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('danger')
                 ->extraAttributes([
                     'class' => 'cursor-pointer',
