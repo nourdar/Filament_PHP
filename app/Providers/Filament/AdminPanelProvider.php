@@ -19,6 +19,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use pxlrbt\FilamentSpotlight\SpotlightPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -48,6 +49,9 @@ class AdminPanelProvider extends PanelProvider
                     ->url('/settings')
                     ->icon('heroicon-o-cog-6-tooth'),
                 'logout' => MenuItem::make()->label('Déconnexion')
+            ])
+            ->plugins([
+                SpotlightPlugin::make()
             ])
             // ->breadcrumbs(false)
             ->font('Outfit')
