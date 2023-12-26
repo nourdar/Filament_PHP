@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Enums\OrderStatus;
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
+use App\Http\Controllers\AlgeriaCities;
 use App\Models\Order;
 use App\Models\Product;
 use Filament\Forms;
@@ -33,7 +34,7 @@ class OrderResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
     protected static ?string $navigationLabel = 'Commandes';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 0;
 
     protected static ?string $navigationGroup = "Ma Boutique";
 
@@ -42,7 +43,7 @@ class OrderResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('status', 'processing')->count();
+        return static::getModel()::where('status', 'placed')->count();
     }
 
     public static function getNavigationBadgeColor(): ?string
@@ -62,7 +63,7 @@ class OrderResource extends Resource
                         ->schema([
                             TextInput::make('order_number')
                                 ->label('Numéro de commande')
-                                ->default("Commande#".random_int(10000, 99999))
+                                ->default(random_int(10000, 99999))
                                 ->disabled()
                                 ->dehydrated()
                                 ->required(),
@@ -80,14 +81,17 @@ class OrderResource extends Resource
                                 ->dehydrated()
                                 ->required(),
 
-                            Select::make('type')
+                            Select::make('status')
                                 ->label('Statut de la Commande')
                                 ->placeholder('Selectionner le status')
                                 ->options([
-                                    'pending' => OrderStatus::PENDING->value,
+                                    'placed' => OrderStatus::PLACED->value,
+                                    'confirmed' => OrderStatus::CONFIRMED->value,
                                     'processing' => OrderStatus::PROCESSING->value,
-                                    'completed' => OrderStatus::COMPLETED->value,
+                                    'shipped' => OrderStatus::SHIPPED->value,
+                                    'paid' => OrderStatus::PAID->value,
                                     'declined' => OrderStatus::DECLINED->value,
+                                    'back' => OrderStatus::BACK->value,
                                 ])
                                 ->required()
                                 ->searchable(),
@@ -131,13 +135,17 @@ class OrderResource extends Resource
                                     Placeholder::make('total_price')
                                         ->label('Prix Total')
                                         ->content(function ($get){
-                                            return number_format($get('quantity') * $get('unit_price'), 2).' F CFA';
+                                            return number_format($get('quantity') * $get('unit_price'), 2).' DZD';
                                         })
 
-                                ])->columns(4)
+                                ])
+
+                                ->columns(4)
 
                         ]),
-                ])->columnSpan('full')
+                ])
+                ->skippable()
+                ->columnSpan('full')
             ]);
     }
 
@@ -145,26 +153,97 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('order_number')
-                    ->label('Numéro de commande')
-                    ->searchable()
-                    ->sortable(),
+                // TextColumn::make('order_number')
+                //     ->label('Numéro de commande')
+                //     ->searchable()
+                //     ->sortable(),
+
+
+                TextColumn::make('status')
+                ->label('Status')
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'placed' => 'gray',
+                    'processing' => 'warning',
+                    'confirmed' => 'success',
+                    'paid' => 'success',
+                    'shipped' => 'success',
+                    'back' => 'danger',
+                    'declined' => 'danger',
+                })
+                ->searchable()
+                ->sortable(),
+
 
                 TextColumn::make('customer.name')
                     ->label('Nom du client')
+
                     ->searchable()
                     ->toggleable()
                     ->sortable(),
 
-                TextColumn::make('status')
-                    ->label('Status de la commande')
+                    TextColumn::make('customer.phone')
                     ->searchable()
-                    ->sortable(),
+                        ->label('Contact'),
 
-                    TextColumn::make('created_at')
-                        ->label('Date de Commande')
-                        ->date(),
-            ])
+
+                        TextColumn::make('customer.address')
+                        ->getStateUsing(function($record){
+
+                            return  (new AlgeriaCities())->get_all_wilayas()[$record->customer->address];
+                        })
+                        ->label('Wilaya')
+                        ->searchable()
+                        ->toggleable()
+                        ->sortable(),
+
+                        TextColumn::make('customer.city')
+                        ->label('Commune')
+                        ->searchable()
+                        ->toggleable()
+                        ->sortable(),
+
+                        TextColumn::make('shipping_type')
+                        ->label('Livraison')
+                        ->searchable()
+                        ->badge()
+                        ->color(fn (string $state): string => match ($state) {
+                            'desk' => 'warning',
+                            'home' => 'success',
+                        })
+                        ->toggleable()
+                        ->sortable(),
+
+                        TextColumn::make('order.items')
+                        ->label('Produit')
+                        ->getStateUsing(function($record){
+                            return $record?->items[0]?->product?->name;
+                        })
+                        ->toggleable()
+                        ->sortable(),
+
+                        TextColumn::make('item.unit_price')
+                        ->label('Prix de produit')
+                        ->getStateUsing(function($record){
+                            return $record?->items[0]?->product?->price;
+                        })
+                        ->toggleable()
+                        ->sortable(),
+
+
+                        TextColumn::make('shipping_price')
+                        ->label('Prix de livraison')
+
+                        ->toggleable()
+                        ->sortable(),
+
+
+
+
+            ])->defaultSort('created_at', 'desc')
+
+
+
             ->filters([
                 //
             ])

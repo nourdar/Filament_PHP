@@ -2,37 +2,40 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Forms;
+use Filament\Tables;
+use App\Models\Product;
+use Filament\Forms\Set;
+use Filament\Forms\Form;
 use App\Enums\ProductType;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Tables\Filters\TernaryFilter;
-use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Support\Str;
-use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Models\Product;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Forms;
-use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
-use Filament\Forms\Set;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Models\ProductMesure;
 
 class ProductResource extends Resource
 {
@@ -44,7 +47,7 @@ class ProductResource extends Resource
 
     protected static ?string $navigationGroup = 'Ma Boutique';
 
-    protected static ?int $navigationSort = 0;
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -92,7 +95,6 @@ class ProductResource extends Resource
                                 ->label('Nom')
                                 ->required()
                                 ->live(onBlur:true)
-                                ->unique()
                                 ->afterStateUpdated(function(string $operation, $state, Forms\Set $set) {
                                     // dd($operation);
                                     if($operation !== 'create'){
@@ -114,10 +116,9 @@ class ProductResource extends Resource
 
                     Step::make('Prix et Quantités')
                         ->schema([
-                            TextInput::make('sku')
-                                ->label('SKU (Unité de gestion des stocks)')
-                                ->unique()
-                                ->required(),
+                            // TextInput::make('sku')
+                            //     ->label('SKU (Unité de gestion des stocks)')
+                            //     ->unique(),
 
                             TextInput::make('price')
                                 ->minValue(1)
@@ -129,13 +130,12 @@ class ProductResource extends Resource
                                 ->numeric()
                                 ->label('Quantité')
                                 ->minValue(0)
-                                ->maxValue(100)
                                 ->required(),
-
-                            Select::make('type')->options([
-                                'deliverable' => ProductType::DELIVERABLE->value,
-                                'downloadable' => ProductType::DOWNLOADABLE->value,
-                            ]),
+                            Hidden::make('type')->default('deliverable'),
+                            // Select::make('type')->options([
+                            //     'deliverable' => ProductType::DELIVERABLE->value,
+                            //     'downloadable' => ProductType::DOWNLOADABLE->value,
+                            // ]),
 
                         ])->columns(2),
 
@@ -146,13 +146,44 @@ class ProductResource extends Resource
                                 ->label('Visibilité')
                                 ->default(true)
                                 ->required(),
-                            Toggle::make('is_featured')
-                                ->label('En vedette')
-                                ->helperText("Les produits en vedette apparaissent sur la page d'accueil.
-                                                Si vous souhaitez promouvoir un produit, cochez cette case-ci."),
-                            DatePicker::make('published_at')
-                                ->label('Date de Publication')
-                                ->default(now()),
+
+                                CheckboxList::make('mesures')
+                                ->options(function($record){
+
+                                })
+                                ->bulkToggleable()
+
+                                ->columns(5),
+
+                                Section::make('')->schema(function(){
+                                    $columns = [];
+
+                                    $mesures = ProductMesure::all();
+
+                                    foreach($mesures as $mesure){
+
+                                        $column = CheckboxList::make($mesure->mesure)
+                                        ->options(collect($mesure->options)->pluck('option', 'option'))
+                                        ->bulkToggleable();
+
+                                        array_push($columns, $column);
+                                    }
+
+
+
+
+                                    return $columns;
+                                })->columns(3),
+
+
+                            // Toggle::make('is_featured')
+                            //     ->label('En vedette')
+                            //     ->helperText("Les produits en vedette apparaissent sur la page d'accueil.
+                            //                     Si vous souhaitez promouvoir un produit, cochez cette case-ci."),
+                            Hidden::make('published_at')->default(now()),
+                            // DatePicker::make('published_at')
+                            //     ->label('Date de Publication')
+                            //     ->default(now()),
                         ]),
 
                     Step::make('Image')
@@ -161,6 +192,14 @@ class ProductResource extends Resource
                                 ->directory('form-attachments')
                                 ->preserveFilenames()
                                 ->image()
+                                ->imageEditor(),
+
+                                FileUpload::make('images')
+                                ->label('Autre images')
+                                ->directory('form-attachments')
+                                ->preserveFilenames()
+                                ->image()
+                                ->multiple()
                                 ->imageEditor(),
 
                         ]),
@@ -181,7 +220,9 @@ class ProductResource extends Resource
                                 ->relationship('categories', 'name')
                         ])
 
-                ])->columnSpan('full')
+                ])
+                ->skippable()
+                ->columnSpan('full')
 
             ]);
     }
@@ -223,6 +264,7 @@ class ProductResource extends Resource
                     ->toggleable(),
                 TextColumn::make('type'),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 TernaryFilter::make('is_visible')
                     ->label("Visibilité")

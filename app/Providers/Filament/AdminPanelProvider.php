@@ -36,19 +36,12 @@ class AdminPanelProvider extends PanelProvider
             // ->domain('admin.example.com')
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->sidebarCollapsibleOnDesktop()
-            ->navigationItems([
-                NavigationItem::make('Blog')
-                    ->url('https://devdiagui.ml', shouldOpenInNewTab:true)
-                    ->icon('heroicon-o-document-text')
-                    ->Group('Lien Externe')
-                    ->Sort(2)
-                    // ->visible(fn():bool => auth()->user()->can('view')),
-            ])
+
             ->userMenuItems([
-                'settings' => MenuItem::make()
-                    ->label('Paramètre')
-                    ->url('/settings')
-                    ->icon('heroicon-o-cog-6-tooth'),
+                // 'settings' => MenuItem::make()
+                //     ->label('Paramètre')
+                //     ->url('/admin/settings')
+                //     ->icon('heroicon-o-cog-6-tooth'),
                 'logout' => MenuItem::make()->label('Déconnexion'),
                 'profile' => MenuItem::make()->label('Edit profile')
             ])
@@ -57,7 +50,7 @@ class AdminPanelProvider extends PanelProvider
             // ->plugins([
             //     SpotlightPlugin::make()
             // ])
-            ->favicon('images/logoWg.png')
+            ->favicon('images/logo-nameque.png')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -66,7 +59,6 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

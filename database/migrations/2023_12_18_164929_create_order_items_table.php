@@ -21,6 +21,7 @@ return new class extends Migration
                     ->onDelete('cascade');
             $table->unsignedBigInteger("quantity");
             $table->decimal("unit_price");
+            $table->longText("options");
             $table->timestamps();
         });
     }

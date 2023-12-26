@@ -13,6 +13,17 @@ class OrderItem extends Model
         'order_id',
         'product_id',
         'quantity',
+        'options',
         'unit_price'
     ];
+
+    protected $casts = [
+        'options' => 'array',
+    ];
+
+
+    public function product()
+    {
+        return $this->hasOne(Product::class, 'id', 'product_id');
+    }
 }

@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Order extends Model
 {
@@ -16,6 +17,7 @@ class Order extends Model
         'customer_id',
         'order_number',
         'status',
+        'shipping_type',
         'shipping_price',
         'notes'
     ];
@@ -29,4 +31,6 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+
 }

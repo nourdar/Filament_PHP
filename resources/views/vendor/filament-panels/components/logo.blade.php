@@ -1,2 +1,13 @@
-{{-- <img src="https://avatars.githubusercontent.com/u/101643951?s=48&v=4" alt="My Github Profile"> --}}
-<img src="{{asset('images/myOfficialLogo.png')}}" alt="My Github Profile" class="h-16">
+<?php
+
+use App\Models\Settings;
+
+$settings = Settings::first();
+
+?>
+
+@if ($settings?->logo)
+    <img src="{{ asset('storage/' . $settings->logo) }}" alt="Logo" class="h-10" height="10">
+@else
+    <img src="{{ asset('images/logo-nameque.png') }}" alt="Logo" class="h-10" height="10">
+@endif

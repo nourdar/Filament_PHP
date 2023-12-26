@@ -22,6 +22,8 @@ class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
 
+    // protected static bool $isDiscovered = false;
+
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $navigationLabel = 'Clients';
@@ -29,7 +31,7 @@ class CustomerResource extends Resource
     protected static ?string $navigationGroup = 'Ma Boutique';
 
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 5;
 
 
     protected static ?string $activeNavigationIcon = "heroicon-o-check-badge";
@@ -53,7 +55,7 @@ class CustomerResource extends Resource
                             ->maxLength(255),
                         TextInput::make('email')
                             ->label('Adresse email')
-                            ->email()
+
                             ->required()
                             ->unique(ignoreRecord:true)
                             ->maxLength(255),
@@ -63,26 +65,23 @@ class CustomerResource extends Resource
                             ->required()
                             ->maxLength(255),
                         DatePicker::make('date_of_birth')
-                            ->label('Date de Naissance')
-                            ->required(),
+                            ->label('Date de Naissance'),
                         ])
                     ]),
 
                 Group::make()
                     ->schema([
                         Section::make([
+                        TextInput::make('city')
+                        ->label('Wilaya')
+                        ->maxLength(255),
+
                         TextInput::make('address')
                             ->label('Adresse')
                             ->required()
                             ->maxLength(255),
-                        TextInput::make('zip_code')
-                            ->label('Code Postal')
-                            ->required()
-                            ->maxLength(255),
-                        TextInput::make('city')
-                            ->label('Ville')
-                            ->required()
-                            ->maxLength(255),
+
+
                         ])
                     ]),
 
@@ -127,6 +126,7 @@ class CustomerResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])

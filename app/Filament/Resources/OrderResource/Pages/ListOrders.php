@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\OrderResource\Pages;
 
-use App\Filament\Resources\OrderResource;
+use Closure;
 use Filament\Actions;
+use Filament\Tables\Table;
+use App\Filament\Resources\OrderResource;
 use Filament\Resources\Pages\ListRecords;
 
 class ListOrders extends ListRecords
@@ -16,4 +18,9 @@ class ListOrders extends ListRecords
             Actions\CreateAction::make()->label('Enregister une commande'),
         ];
     }
+
+    // protected function makeTable(): Table
+    // {
+    //     return parent::makeTable()->recordUrl(null);
+    // }
 }

@@ -2,25 +2,27 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CategoryResource\Pages;
-use App\Filament\Resources\CategoryResource\RelationManagers;
-use App\Models\Category;
-use Illuminate\Support\Str;
 use Filament\Forms;
+use Filament\Tables;
+use App\Models\Category;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Resources\Resource;
 use Filament\Forms\Components\Group;
-use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Table;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\MarkdownEditor;
+use App\Filament\Resources\CategoryResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\CategoryResource\RelationManagers;
 
 class CategoryResource extends Resource
 {
@@ -67,7 +69,7 @@ class CategoryResource extends Resource
                                 ->placeholder('Nom de la catégorie')
                                 ->required()
                                 ->live(onBlur:true)
-                                ->unique()
+
                                 ->afterStateUpdated(function(string $operation, $state, Forms\Set $set) {
                                     // dd($operation);
                                     if($operation !== 'create'){
@@ -95,6 +97,12 @@ class CategoryResource extends Resource
                     ->schema([
 
                         Section::make([
+
+                            FileUpload::make('image')
+                            ->directory('form-attachments')
+                            ->image()
+                            ->imageEditor(),
+
                             MarkdownEditor::make('description')
                             ->label('Description')
                             ->columnSpanFull()
@@ -107,6 +115,8 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('image')
+                ->toggleable(),
                 Tables\Columns\TextColumn::make('parent.name')
                     ->label('Nom - Catégorie Parent')
                     ->numeric()
@@ -130,6 +140,7 @@ class CategoryResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])

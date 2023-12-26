@@ -17,10 +17,13 @@ return new class extends Migration
                     ->constrained('customers')
                     ->onDelete('cascade');
             $table->string("order_number")->unique();
-            $table->enum("status", ['pending', 'processing', 'completed', 'declined'])
+            $table->enum("status", ['placed', 'confirmed', 'processing', 'shipped', 'paid', 'declined', 'back'])
             ->default('pending');
             $table->decimal("shipping_price")->nullable();
-            $table->longText("notes");
+            $table->string("shipping_type")->nullable();
+            $table->string("tracking")->nullable();
+            $table->string("transport_provider")->nullable();
+            $table->longText("notes")->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

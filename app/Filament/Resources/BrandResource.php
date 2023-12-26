@@ -2,28 +2,30 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\BrandResource\Pages;
-use App\Filament\Resources\BrandResource\RelationManagers;
-use App\Models\Brand;
-use Filament\Actions\Action;
-use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\ColorPicker;
-use Illuminate\Support\Str;
 use Filament\Forms;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\ColorColumn;
+use App\Models\Brand;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Actions\Action;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Table;
+use Filament\Tables\Columns\ColorColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\MarkdownEditor;
+use App\Filament\Resources\BrandResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\BrandResource\RelationManagers;
 
 class BrandResource extends Resource
 {
@@ -33,7 +35,7 @@ class BrandResource extends Resource
 
     protected static ?string $navigationLabel = 'Marques';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $navigationGroup = "Ma Boutique";
 
@@ -60,7 +62,7 @@ class BrandResource extends Resource
                             TextInput::make('name')->label("Nom de la marque")
                                     ->required()
                                     ->live(onBlur:true)
-                                    ->unique()
+
                                     ->afterStateUpdated(function(string $operation, $state, Forms\Set $set) {
                                         // dd($operation);
                                         if($operation !== 'create'){
@@ -76,11 +78,11 @@ class BrandResource extends Resource
                                     ->dehydrated()
                                     ->unique(Brand::class, 'slug', ignoreRecord:true),
 
-                            TextInput::make('url')
-                                    ->label("URL du site web")
-                                    ->required()
-                                    ->unique()
-                                    ->columnSpan('full'),
+                            // TextInput::make('url')
+                            //         ->label("URL du site web")
+                            //         ->required()
+                            //         ->unique()
+                            //         ->columnSpan('full'),
                             MarkdownEditor::make('description')
                                     ->label('Description')
                                     ->columnSpan('full')
@@ -90,6 +92,15 @@ class BrandResource extends Resource
                     ]),
                 Group::make()
                     ->schema([
+
+                        Section::make("Image")
+                        ->schema([
+                            FileUpload::make('image')
+                            ->directory('form-attachments')
+                            ->preserveFilenames()
+                            ->image()
+                            ->imageEditor(),
+                        ]),
                         Section::make("Status")
                             ->schema([
                                 Toggle::make('is_visible')
@@ -97,6 +108,8 @@ class BrandResource extends Resource
                                     ->helperText("Si cette option est désactivée, la marque ne sera pas visible pour les utilisateurs.")
                                     ->default(true),
                             ]),
+
+
 
                             Group::make()
                                 ->schema([
@@ -115,15 +128,18 @@ class BrandResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('image')
+                ->toggleable(),
+
                 TextColumn::make('name')
                     ->label('Nom')
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('url')
-                    ->searchable()
-                    ->label('URL du site web')
-                    ->sortable(),
+                // TextColumn::make('url')
+                //     ->searchable()
+                //     ->label('URL du site web')
+                //     ->sortable(),
 
                 ColorColumn::make('primary_color')
                     ->label('Couleur')
@@ -140,6 +156,7 @@ class BrandResource extends Resource
                     ->sortable(),
 
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])
