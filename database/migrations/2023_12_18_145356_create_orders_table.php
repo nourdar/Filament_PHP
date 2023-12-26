@@ -18,7 +18,7 @@ return new class extends Migration
                     ->onDelete('cascade');
             $table->string("order_number")->unique();
             $table->enum("status", ['placed', 'confirmed', 'processing', 'shipped', 'paid', 'declined', 'back'])
-            ->default('pending');
+            ->default('placed');
             $table->decimal("shipping_price")->nullable();
             $table->string("shipping_type")->nullable();
             $table->string("tracking")->nullable();
