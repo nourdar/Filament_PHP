@@ -1,6 +1,6 @@
 <style type="text/css">
     .form-style-9 {
-        max-width: 90%;
+        max-width: 97%;
         background: #FAFAFA;
         padding: 30px;
         margin: 50px auto;
@@ -152,7 +152,7 @@
 
 
         <li>
-            <select type="text" id="wilaya" name="wilaya" class="field-style field-split align-none">
+            <select type="text" id="wilaya" name="wilaya" class="field-style field-full  align-none">
 
 
                 <option disabled selected> الولاية </option>
@@ -163,7 +163,7 @@
                 @endforeach
             </select>
 
-            <select type="text" id="commune" name="commune" class="field-style field-split align-none">
+            <select type="text" id="commune" name="commune" class="field-style field-full  align-none">
                 <option disabled selected> البلدية </option>
             </select>
         </li>
@@ -222,7 +222,7 @@
 
 
         <li>
-            <input type="submit" value="Passer la commande" />
+            <input type="submit" value="تأكيد الطلب" />
         </li>
     </ul>
 </form>

@@ -41,22 +41,10 @@
         margin: 1em !important;
     }
 
-    body {
-        background: #000;
-        color: #000;
-    }
 
-    .swiper {
-        width: 100%;
-        height: 300px;
-        margin-left: auto;
-        margin-right: auto;
-    }
 
-    .swiper-slide {
-        background-size: cover;
-        background-position: center;
-    }
+
+
 
     .productSwiper2 {
         height: 80%;
@@ -78,25 +66,19 @@
     .productSwiper .swiper-slide-thumb-active {
         opacity: 1;
     }
-
-    .swiper-slide img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
 </style>
 
 <div class='container py-8 px-6 mx-auto'>
 
-    <nav id="store" class="w-full z-30 top-0 px-6 py-1 mb-5">
-        <div class="w-full container mx-auto flex flex-wrap items-center justify-center mt-0 px-2 py-3">
+    <nav id="store" class="w-full z-30 top-0 mb-5">
+        <div class="w-full container mx-auto flex flex-wrap items-center justify-center mt-0 ">
 
-            <a class="uppercase tracking-wide no-underline hover:no-underline font-bold text-red-800 text-2xl "
+            <a class="w-full uppercase text-center tracking-wide no-underline hover:no-underline font-bold text-red-800 text-2xl "
                 href="#">
                 {{ $product?->name }}
-                -
+                <br>
                 {{ number_format($product?->price, 0, '.') }}
+                DZD
             </a>
 
 
@@ -104,7 +86,7 @@
     </nav>
 
 
-    <div class="grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-4">
+    <div class="">
 
         <div class="">
             <!-- Swiper -->

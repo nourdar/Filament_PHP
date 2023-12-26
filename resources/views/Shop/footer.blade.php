@@ -1,15 +1,11 @@
 <footer class=" mx-auto text-white bg-gray-900 py-8 border-t border-gray-400">
     <div class="container flex px-3 py-8 ">
         <div class="w-full mx-auto flex flex-wrap">
-            <div class="flex w-full lg:w-1/3 ">
-                <div class="px-3 md:px-0 text-center">
-                    <h3 class="font-bold text-gray-900">{{ $title }}</h3>
-                    <p class="py-4 w-full">
-                        Tout les droit reserve &copy; for GACHTOU Noureddine <br>
-                        Mail : <a href="mailto:gachtoun@gmail.com">gachtoun@gmail.com</a>
-                    </p>
-                </div>
-            </div>
+
+
+
+
+
             <div class="flex flex w-full lg:w-1/3 flex-wrap ">
 
                 <ul class="py-4">
@@ -40,6 +36,11 @@
                     </li>
                 </ul>
             </div>
+
+            <div class="flex flex w-full lg:w-1/3 flex-wrap">
+
+            </div>
+
             <div class="flex w-full lg:w-1/3 lg:justify-end lg:text-right mt-6 md:mt-0">
                 <div class="px-3 md:px-0">
                     <h3 class="text-left font-bold text-gray-900">Réseaux Sociaux</h3>
@@ -99,12 +100,23 @@
 
 
     </div>
+
+    <div class="flex w-full justify-center">
+        <div class="px-3 md:px-0 text-center">
+            <h3 class="font-bold text-gray-900">{{ $title }}</h3>
+            <p class="py-4 w-full">
+                Tout les droit reserve &copy; for GACHTOU Noureddine<br>
+                Mail : <a href="mailto:gachtoun@gmail.com">gachtoun@gmail.com</a>
+            </p>
+        </div>
+    </div>
 </footer>
 
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
-
 <script>
     var swiper = new Swiper(".mySwiper", {
         spaceBetween: 30,
@@ -123,5 +135,10 @@
             prevEl: ".swiper-button-prev",
         },
     });
+
+
+    $(document).ready(function() {
+        $('#loader').hide(500);
+    })
 </script>
 </body>
