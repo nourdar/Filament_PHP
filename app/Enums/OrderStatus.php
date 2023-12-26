@@ -2,7 +2,7 @@
 namespace App\Enums;
 
 enum OrderStatus : string {
-    case PLACED = 'commande passée';
+    case PLACED = 'Commande passée';
     case PROCESSING = 'En cours de traitement';
     case CONFIRMED = 'Confirmé';
     case SHIPPED = 'Livré';

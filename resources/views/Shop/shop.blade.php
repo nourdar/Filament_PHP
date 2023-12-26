@@ -1,58 +1,46 @@
 @include('shop.header')
 
-
-
-<div class="swiper mySwiper">
-    <div class="swiper-wrapper">
-
-        @if ($settings?->slides)
+@if ($settings?->slides)
+    <div class="swiper mySwiper mb-5">
+        <div class="swiper-wrapper">
 
             @foreach ($settings?->slides as $slide)
                 <?php $i = 1;
-                $img = asset('storage/' . $slide['slide']); ?>
+                $img = asset('storage/' . $slide['slide']);
+                $link = $slide['link']; ?>
+                <a class="swiper-slide" href="{{ $link }}">
+                    {{-- <div class="swiper-slide"> --}}
 
-                <div class="swiper-slide"><img src="{{ $img }}" alt="shop swiper element" /></div>
+                    <img src="{{ $img }}" alt="shop swiper element" />
 
+                    {{-- </div> --}}
+                </a>
                 <?php $i++; ?>
             @endforeach
-        @else
-        @endif
 
 
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-pagination"></div>
     </div>
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-pagination"></div>
-</div>
-<!-- Slider main container -->
+    <!-- Slider main container -->
+
+@endif
 
 
+@if ($brands->count() != 0)
+    @include('shop.brand.index')
+@endif
 
-<!--Slide 2-->
-<!-- <input class="carousel-open" type="radio" id="carousel-2" name="carousel" aria-hidden="true" hidden=""> -->
-
-
-<!-- Add additional indicators for each slide-->
-<!-- <ol class="carousel-indicators">
-                <li class="inline-block mr-3">
-                    <label for="carousel-1" class="carousel-bullet cursor-pointer block text-4xl text-gray-400 hover:text-gray-900">•</label>
-                </li>
-                <li class="inline-block mr-3">
-                    <label for="carousel-2" class="carousel-bullet cursor-pointer block text-4xl text-gray-400 hover:text-gray-900">•</label>
-                </li>
-                <li class="inline-block mr-3">
-                    <label for="carousel-3" class="carousel-bullet cursor-pointer block text-4xl text-gray-400 hover:text-gray-900">•</label>
-                </li>
-            </ol> -->
+@if ($categories->count() != 0)
+    @include('shop.category.index')
+@endif
 
 
-
-
-
-
-@include('shop.brand.index')
-@include('shop.category.index')
-@include('shop.product.index')
+@if ($products->count() != 0)
+    @include('shop.product.index')
+@endif
 
 @if ($settings?->description)
     <!-- <section class="bg-white py-8">

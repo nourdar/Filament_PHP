@@ -18,6 +18,7 @@ use Filament\Forms\Components\MarkdownEditor;
 use App\Filament\Resources\SettingsResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SettingsResource\RelationManagers;
+use App\Http\Controllers\AlgeriaCities;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -49,6 +50,11 @@ class SettingsResource extends Resource
 
                 Section::make('')->schema([
                     Textarea::make('address')->label('Address'),
+                    Select::make('wilaya_depart')
+                    ->options(function(){
+                        return( new AlgeriaCities())->get_all_wilayas();
+                    })
+                    ->label('Wilaya'),
 
                     TextInput::make('email')
                     ->email()
@@ -102,6 +108,9 @@ class SettingsResource extends Resource
                         ->directory('form-attachments')
                         ->image()
                         ->imageEditor(),
+
+                        TextInput::make('link')->default('#'),
+
                     ])->addActionLabel('Ajouter un Slide'),
 
 

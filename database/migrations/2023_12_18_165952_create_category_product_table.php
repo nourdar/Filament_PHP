@@ -15,6 +15,7 @@ return new class extends Migration
             $table->foreignId("category_id")
                     ->references('id')
                     ->on('categories')
+                    ->nullable()
                     ->onDelete('cascade');
             $table->foreignId("product_id")
                     ->references('id')

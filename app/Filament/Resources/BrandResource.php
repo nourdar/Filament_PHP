@@ -20,6 +20,7 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\ToggleColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\MarkdownEditor;
@@ -145,10 +146,8 @@ class BrandResource extends Resource
                     ->label('Couleur')
                     ->sortable(),
 
-                IconColumn::make('is_visible')
-                    ->label('Visibilité')
-                    ->boolean()
-                    ->sortable(),
+                    ToggleColumn::make('is_visible')
+                    ->label('Visibilité'),
 
                 TextColumn::make('updated_at')
                     ->label('Date de mise à jour')

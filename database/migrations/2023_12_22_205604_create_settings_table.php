@@ -20,7 +20,6 @@ return new class extends Migration
             $table->text('telephone')->nullable();
             $table->string('wilaya_depart')->nullable();
             $table->longText('transport_api')->nullable();
-            $table->string('wilaya_depart')->nullable();
             $table->longText('head_code')->nullable();
             $table->longText('slides')->nullable();
             $table->string('address')->nullable();

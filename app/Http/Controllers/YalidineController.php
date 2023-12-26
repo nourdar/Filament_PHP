@@ -180,4 +180,63 @@ class YalidineController extends Controller
             throw $th;
         }
     }
+
+
+    public function get_centers_by_wilaya($wilaya_code){
+
+        $wilaya_code = (new AlgeriaCities())->get_wilaya_code($wilaya_code);
+        try {
+            self::initGuzzleHttpClient();
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => self::$url . 'centers/?wilaya_id='.$wilaya_code,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'X-API-ID: ' . self::$api_id,
+                'X-API-TOKEN: ' . self::$api_token
+            ),
+        ));
+
+        $response_json = curl_exec($curl);
+        curl_close($curl);
+
+
+        $response_array = json_decode($response_json,true); // converting the json to a php array
+
+        return $response_array['data'];
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
+
+    }
+
+
+    // public function get_centers_by_wilaya($wilayaCode){
+
+    //     $wilayaCode = (new AlgeriaCities())->get_wilaya_code($wilayaCode);
+
+    //     $centers = $this->get_centers_by_wilaya($wilayaCode);
+
+    //      return $centers['data'];
+
+    // }
+
+
+    public function get_center_id($wilayaCode){
+       $centers =  $this->get_centers_by_wilaya($wilayaCode);
+
+       $centers = collect($centers)->pluck('center_id', 'commune_name');
+
+       return $centers;
+    }
 }

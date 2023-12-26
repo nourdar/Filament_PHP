@@ -18,6 +18,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\ToggleColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\MarkdownEditor;
 use App\Filament\Resources\CategoryResource\Pages;
@@ -127,9 +128,8 @@ class CategoryResource extends Resource
                 Tables\Columns\TextColumn::make('slug')
                     ->label('Slug')
                     ->searchable(),
-                Tables\Columns\IconColumn::make('is_visible')
-                    ->label('Visibilité')
-                    ->boolean(),
+                    ToggleColumn::make('is_visible')
+                    ->label('Visibilité'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Date de Création')
                     ->dateTime()

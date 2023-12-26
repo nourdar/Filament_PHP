@@ -35,9 +35,9 @@ class ShopController extends Controller
 
         $settings = $this->settings;
 
-        $products = Product::paginate(10, ['*'], 'products');
-        $brands = Brand::paginate(10, ['*'], 'brands');
-        $categories = Category::paginate(10, ['*'], 'categories');
+        $products = Product::where('is_visible', true)->paginate(10, ['*'], 'products');
+        $brands = Brand::where('is_visible', true)->paginate(10, ['*'], 'brands');
+        $categories = Category::where('is_visible', true)->paginate(10, ['*'], 'categories');
 
         return view('shop.shop')->with(compact(['title', 'settings', 'products', 'brands', 'categories']));
     }
@@ -45,7 +45,7 @@ class ShopController extends Controller
 
     public function show_brand(Request $request, $id) {
 
-        $brand = Brand::with('products')->findOrFail($id);
+        $brand = Brand::where('is_visible', true)->with('products')->findOrFail($id);
 
         $title = ($this->settings?->name.' - '. $brand?->name) ?? 'test';
 
@@ -53,15 +53,15 @@ class ShopController extends Controller
 
         $products = $brand->products()->paginate(10, ['*'], 'products');
 
-        $brands = Brand::paginate(10, ['*'], 'brands');
-        $categories = Category::paginate(10, ['*'], 'categories');
+        $brands = Brand::where('is_visible', true)->paginate(10, ['*'], 'brands');
+        $categories = Category::where('is_visible', true)->paginate(10, ['*'], 'categories');
 
         return view('shop.brand.show')->with(compact(['title', 'settings', 'products', 'brand', 'categories']));
     }
 
     public function show_category(Request $request, $id) {
 
-        $category = Category::with('products')->findOrFail($id);
+        $category = Category::where('is_visible', true)->with('products')->findOrFail($id);
 
         $title = ($this->settings?->name.' - '. $category?->name) ?? 'test';
 
@@ -70,14 +70,14 @@ class ShopController extends Controller
         $products = $category->products()->paginate(10, ['*'], 'products');
 
 
-        $categories = Category::paginate(10, ['*'], 'categories');
+        $categories = Category::where('is_visible', true)->paginate(10, ['*'], 'categories');
 
         return view('shop.category.show')->with(compact(['title', 'settings', 'products',  'category']));
     }
 
     public function show_product(Request $request, $id) {
 
-        $product = Product::with(['brand', 'categories'])->findOrFail($id);
+        $product = Product::where('is_visible', true)->with(['brand', 'categories'])->findOrFail($id);
 
         $title = ($this->settings?->name.' - '. $product?->name) ?? 'test';
 
@@ -124,13 +124,12 @@ class ShopController extends Controller
 
         DB::transaction(function() use($request, $options) {
 
-
         // Create a new customer
         $customer =  new Customer();
         $customer->name = $request->name;
         $customer->surname = $request->name;
         $customer->phone = $request->phone;
-        $customer->address = $request->wilaya;
+        $customer->address = (new AlgeriaCities())->get_all_wilayas()[$request->wilaya];
         $customer->city = $request->commune;
         $customer->save();
 

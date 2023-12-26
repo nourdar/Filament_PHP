@@ -20,7 +20,7 @@ use App\Models\Delivery;
 Route::get('/', [ShopController::class, 'index']);
 Route::get('/brand/{id}', [ShopController::class, 'show_brand']);
 Route::get('/category/{id}', [ShopController::class, 'show_category']);
-Route::get('/product/{id}', [ShopController::class, 'show_product']);
+Route::get('/product/{id}', [ShopController::class, 'show_product'])->name('product.show');
 Route::get('/wilayas', [AlgeriaCities::class, 'get_all_wilayas']);
 Route::get('/communs/{wilayaCode}', [AlgeriaCities::class, 'get_all_communs']);
 Route::get('/yalidine-delivery-fees/{wilaya}', [DeliveryController::class, 'get_yalididne_delivery_fees']);

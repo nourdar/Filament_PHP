@@ -36,6 +36,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\ProductMesure;
+use Filament\Tables\Columns\ToggleColumn;
 
 class ProductResource extends Resource
 {
@@ -109,35 +110,38 @@ class ProductResource extends Resource
                                 ->disabled()
                                 ->dehydrated()
                                 ->unique(Product::class, 'slug', ignoreRecord:true),
-                            MarkdownEditor::make('description')
-                                ->label('Description')
-                                ->columnSpan('full')
-                        ])->columns(2),
 
-                    Step::make('Prix et Quantités')
-                        ->schema([
-                            // TextInput::make('sku')
-                            //     ->label('SKU (Unité de gestion des stocks)')
-                            //     ->unique(),
-
-                            TextInput::make('price')
+                                TextInput::make('price')
                                 ->minValue(1)
                                 ->numeric()
                                 ->label('Prix')
                                 ->rules('regex:/^\d{1,6}(\.\d{0,2})?$/')
                                 ->required(),
-                            TextInput::make('quantity')
-                                ->numeric()
-                                ->label('Quantité')
-                                ->minValue(0)
-                                ->required(),
+                                Hidden::make('quantity')
+
+
+
+                                ->default(1),
                             Hidden::make('type')->default('deliverable'),
+
+                            MarkdownEditor::make('description')
+                                ->label('Description')
+                                ->columnSpan('full')
+                        ])->columns(2),
+
+                    // Step::make('Prix et Quantités')
+                    //     ->schema([
+                            // TextInput::make('sku')
+                            //     ->label('SKU (Unité de gestion des stocks)')
+                            //     ->unique(),
+
+
                             // Select::make('type')->options([
                             //     'deliverable' => ProductType::DELIVERABLE->value,
                             //     'downloadable' => ProductType::DOWNLOADABLE->value,
                             // ]),
 
-                        ])->columns(2),
+                        // ])->columns(2),
 
                     Step::make('Status du Produit')
                         ->schema([
@@ -192,6 +196,7 @@ class ProductResource extends Resource
                                 ->directory('form-attachments')
                                 ->preserveFilenames()
                                 ->image()
+                                ->required()
                                 ->imageEditor(),
 
                                 FileUpload::make('images')
@@ -209,14 +214,13 @@ class ProductResource extends Resource
                             Select::make('brand_id')
                                 ->placeholder('Selectionner une marque')
                                 ->label('Marque')
-                                ->required()
                                 ->relationship('brand', 'name'),
 
                             Select::make('category_id')
                                 ->placeholder('Selectionner une catégorie')
                                 ->label('Catégories')
                                 ->multiple()
-                                ->required()
+
                                 ->relationship('categories', 'name')
                         ])
 
@@ -243,26 +247,26 @@ class ProductResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                IconColumn::make('is_visible')
+                ToggleColumn::make('is_visible')
                     ->label('Visibilité')
-                    ->boolean()
+
                     ->toggleable(),
                 TextColumn::make('price')
                     ->label('Prix')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('quantity')
-                    ->label('Quantité')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(),
+                // TextColumn::make('quantity')
+                //     ->label('Quantité')
+                //     ->searchable()
+                //     ->sortable()
+                //     ->toggleable(),
                 TextColumn::make('published_at')
                     ->label('Date de publication')
                     ->date()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('type'),
+                // TextColumn::make('type'),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
@@ -283,8 +287,13 @@ class ProductResource extends Resource
                 ActionGroup::make([
                     Tables\Actions\EditAction::make()
                         ->label('Modifier'),
-                    Tables\Actions\ViewAction::make()
-                        ->label('Voir'),
+                    Tables\Actions\Action::make('view')
+                        ->label('Voir dans la boutique')
+                        ->url(fn ($record): string => route('product.show', $record))
+                        ->openUrlInNewTab()
+
+                        ->icon('heroicon-o-link')
+                        ,
                     Tables\Actions\DeleteAction::make()
                         ->label('Supprimer'),
                 ])

@@ -11,9 +11,48 @@ class AlgeriaCities extends Controller
 
         $plucked = $this->all()->pluck('wilaya_name', 'wilaya_code');
         return $plucked->all();
+
+    }
+
+    public function get_wilaya_name($wilaya){
+        $wilayas = $this->get_all_wilayas();
+
+        if(isset($wilayas[$wilaya])){
+            return $wilayas[$wilaya];
+        }
+
+        if(in_array($wilaya, $wilayas)){
+
+            return $wilaya;
+        }
+
+       return '';
+    }
+
+    public function get_wilaya_code($wilaya){
+
+        $wilayas = $this->get_all_wilayas();
+
+
+
+        $wilayaCode = array_search ($wilaya,  $wilayas);
+
+        if($wilayaCode) {
+            return $wilayaCode;
+        }
+
+
+        if(isset($wilayas[$wilaya])){
+            return $wilaya;
+        }
+
+
+       return false;
     }
 
     public function get_all_communs($wilayaCode){
+
+
         $communs = $this->all()->where('wilaya_code', $wilayaCode);
         return $communs->pluck('commune_name');
     }

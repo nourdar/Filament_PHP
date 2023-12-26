@@ -2,21 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CustomerResource\Pages;
-use App\Filament\Resources\CustomerResource\RelationManagers;
-use App\Models\Customer;
-use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms;
-use Filament\Forms\Components\DatePicker;
+use Filament\Tables;
+use App\Models\Customer;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
+use App\Http\Controllers\AlgeriaCities;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\CustomerResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\CustomerResource\RelationManagers;
 
 class CustomerResource extends Resource
 {
@@ -56,30 +57,35 @@ class CustomerResource extends Resource
                         TextInput::make('email')
                             ->label('Adresse email')
 
-                            ->required()
+
                             ->unique(ignoreRecord:true)
                             ->maxLength(255),
                         TextInput::make('phone')
                             ->label('Numéro de Téléphone')
                             ->tel()
-                            ->required()
+
                             ->maxLength(255),
-                        DatePicker::make('date_of_birth')
-                            ->label('Date de Naissance'),
+                        // DatePicker::make('date_of_birth')
+                        //     ->label('Date de Naissance'),
                         ])
                     ]),
 
                 Group::make()
                     ->schema([
                         Section::make([
+                            TextInput::make('address')
+                            ->label('Wilaya')
+                            ->default(function ($record){
+                                return  (new AlgeriaCities())->get_all_wilayas()[$record->address];
+                            })
+                            ->maxLength(255),
+
+
                         TextInput::make('city')
-                        ->label('Wilaya')
+                        ->label('Commune')
                         ->maxLength(255),
 
-                        TextInput::make('address')
-                            ->label('Adresse')
-                            ->required()
-                            ->maxLength(255),
+
 
 
                         ])

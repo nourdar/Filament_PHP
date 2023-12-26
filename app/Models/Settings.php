@@ -14,6 +14,7 @@ class Settings extends Model
         'description',
         'keywords',
         'email',
+        'wilaya_depart',
         'telephone',
         'address',
         'transport',

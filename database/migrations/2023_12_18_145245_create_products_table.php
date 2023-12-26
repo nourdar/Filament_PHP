@@ -23,10 +23,11 @@ return new class extends Migration
             $table->boolean("is_visible")->default(false);
             $table->boolean("is_featured")->default(false);
             $table->foreignId("brand_id")
+                    ->nullable()
                     ->constrained('brands')
                     ->onDelete('cascade');
             $table->string("sku")->unique(); //sku => stock keeping unit // This line defines a sku column of type string, which will hold the unit identifier for the product used in inventory management. This column is unique (no two products can have the same sku).
-            $table->unsignedBigInteger("quantity");
+            $table->unsignedBigInteger("quantity")->nullable();
             $table->decimal("price");
             $table->enum("type", ['deliverable', 'downloadable'])->default("deliverable");
             $table->date("published_at");
