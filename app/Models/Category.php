@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Category extends Model
+class Category extends Model implements Searchable
 {
     use HasFactory;
 
@@ -45,5 +47,17 @@ class Category extends Model
         static::addGlobalScope('order', function (Builder $builder) {
             $builder->orderBy('updated_at', 'desc');
         });
+    }
+
+    public function getSearchResult(): SearchResult
+    {
+        $url = 'category/'. $this->id;
+
+        return new \Spatie\Searchable\SearchResult(
+           $this,
+           $this->name,
+           $url,
+        //    $url
+        );
     }
 }

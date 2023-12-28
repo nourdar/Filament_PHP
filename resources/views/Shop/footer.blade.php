@@ -6,13 +6,13 @@
 
 
 
-            <div class="flex flex w-full lg:w-1/3 flex-wrap ">
+            <div class="flex  w-full lg:w-1/3 flex-wrap ">
 
                 <ul class="py-4">
-                    @if (count($settings->telephone) > 0)
+                    @if ($settings?->telephone)
 
 
-                        @foreach ($settings->telephone as $phone)
+                        @foreach ($settings?->telephone as $phone)
                             <li class="h-8">
 
                                 <a class=" w-full " href="tel:{{ $phone['phone'] }} ">Tel :
@@ -24,20 +24,20 @@
 
 
                     <li class=" h-8">
-                        <a href="mailto:{{ $settings->email }}">
-                            {{ $settings->email }}
+                        <a href="mailto:{{ $settings?->email }}">
+                            {{ $settings?->email }}
                         </a>
                     </li>
 
                     <li class=" h-8">
                         <p>
-                            {{ $settings->address }}
+                            {{ $settings?->address }}
                         </p>
                     </li>
                 </ul>
             </div>
 
-            <div class="flex flex w-full lg:w-1/3 flex-wrap">
+            <div class="flex  w-full lg:w-1/3 flex-wrap">
 
             </div>
 
@@ -103,7 +103,7 @@
 
     <div class="flex w-full justify-center">
         <div class="px-3 md:px-0 text-center">
-            <h3 class="font-bold text-gray-900">{{ $title }}</h3>
+            <h3 class="font-bold text-gray-900">{{ $title ?? $settings->name }}</h3>
             <p class="py-4 w-full">
                 Tout les droit reserve &copy; for GACHTOU Noureddine<br>
                 Mail : <a href="mailto:gachtoun@gmail.com">gachtoun@gmail.com</a>

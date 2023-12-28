@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string("slug")->unique();
             $table->longText("description")->nullable();
             $table->string("url")->nullable();
-            $table->boolean("is_visible")->default(false);
+            $table->boolean("is_visible")->default(true);
             $table->string("primary_color")->nullable();
             $table->timestamps();
         });

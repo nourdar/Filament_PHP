@@ -86,9 +86,9 @@
     </nav>
 
 
-    <div class="">
+    <div class="flex flex-wrap">
 
-        <div class="">
+        <div class="w-full lg:w-1/2  md:w-full">
             <!-- Swiper -->
 
             <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper productSwiper2">
@@ -96,14 +96,30 @@
 
                     @if ($product->image)
                         <div class="swiper-slide">
-                            <img src="{{ asset('storage/' . $product->image) }}" />
+
+                            @if (file_exists('storage/' . $product->image))
+                                <?php $mainImage = asset('storage/' . $product->image); ?>;
+                            @else
+                                <?php $mainImage = $product->image; ?>
+                            @endif
+
+                            <img src="{{ $mainImage }}" />
                         </div>
                     @endif
 
                     @if ($product->images)
+
                         @foreach ($product->images as $image)
                             <div class="swiper-slide">
-                                <img src="{{ asset('storage/' . $image) }}" />
+
+                                @if (file_exists('storage/' . $image))
+                                    <?php $photo = asset('storage/' . $image); ?>;
+
+                                    <img src="{{ $photo }}" />
+                                @else
+                                    <img src="{{ $image }}" />
+                                @endif
+
                             </div>
                         @endforeach
                     @endif
@@ -118,14 +134,23 @@
 
                     @if ($product->image)
                         <div class="swiper-slide">
-                            <img src="{{ asset('storage/' . $product->image) }}" />
+                            <img src="{{ $mainImage }}" />
                         </div>
                     @endif
 
                     @if ($product->images)
                         @foreach ($product->images as $image)
                             <div class="swiper-slide">
-                                <img src="{{ asset('storage/' . $image) }}" />
+
+                                @if (file_exists('storage/' . $image))
+                                    <?php $photo = asset('storage/' . $image); ?>;
+
+                                    <img src="{{ $photo }}" />
+                                @else
+                                    <img src="{{ $image }}" />
+                                @endif
+
+
                             </div>
                         @endforeach
                     @endif
@@ -135,7 +160,7 @@
         </div>
 
 
-        <div class="  place-order-form">
+        <div class="w-full lg:w-1/2  md:w-full place-order-form">
             {{-- Start Place Order Form  --}}
 
             @include('shop.product.form')

@@ -11,6 +11,7 @@ use App\Models\Settings;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use App\Models\ProductMesure;
+use Spatie\Searchable\Search;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\Console\Input\Input;
@@ -31,13 +32,13 @@ class ShopController extends Controller
 
     public function index(){
 
-        $title = ($this->settings?->name) ?? 'test';
+        $title = ($this->settings?->name) ?? 'SARL NAMEQUE - contact@nameque.net';
 
         $settings = $this->settings;
 
-        $products = Product::where('is_visible', true)->paginate(10, ['*'], 'products');
-        $brands = Brand::where('is_visible', true)->paginate(10, ['*'], 'brands');
-        $categories = Category::where('is_visible', true)->paginate(10, ['*'], 'categories');
+        $products = Product::where('is_visible', true)->paginate(12, ['*'], 'products');
+        $brands = Brand::where('is_visible', true)->has('products')->paginate(10, ['*'], 'brands');
+        $categories = Category::where('is_visible', true)->has('products')->paginate(10, ['*'], 'categories');
 
         return view('shop.shop')->with(compact(['title', 'settings', 'products', 'brands', 'categories']));
     }
@@ -158,6 +159,37 @@ class ShopController extends Controller
     Session::flash('alert-class', 'alert-success');
 
     return redirect()->back();
+
+    }
+
+
+    public function search(Request $search){
+
+        // $searchResults = (new Search())
+        //     ->registerModel(Product::class, 'name', 'description')
+        //     ->registerModel(Brand::class, 'name', 'description')
+        //     ->registerModel(Category::class, 'name', 'description')
+        //     ->search($search->search);
+
+
+        $settings = $this->settings;
+
+        $products = Product::where('name', 'like', '%'.$search->search.'%')
+            ->orWhere('description', 'like', '%'.$search->search.'%')
+            ->paginate(10);
+        $brands = Brand::where('name', 'like', '%'.$search->search.'%')
+            ->orWhere('description', 'like', '%'.$search->search.'%')
+            ->paginate(10);
+        $categories = Category::where('name', 'like', '%'.$search->search.'%')
+            ->orWhere('description', 'like', '%'.$search->search.'%')
+            ->paginate(10);
+
+
+
+            $isSearch = true;
+
+
+            return view('shop.shop')->with(compact(['settings', 'products', 'brands', 'categories', 'isSearch']));
 
     }
 }

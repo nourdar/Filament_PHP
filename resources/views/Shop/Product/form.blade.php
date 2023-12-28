@@ -196,9 +196,11 @@
             <div>
                 <div style="line-height: 2; padding : 5px ">التوصيل ( YALIDINE ) :<br>
                     <span id="homeDelivery">
+                        <input type="checkbox" checked id="homeCheck" class="hidden">
                         الى المنزل : <span id="HomeDeliveryFees"> - </span> دج<br>
                     </span>
                     <span id="deskDelivery" class="delivery-selected">
+                        <input type="checkbox" checked id="deskCheck" class="d-block">
                         الى المكتب : <span id="DeskDeliveryFees"> - </span> دج<br>
                     </span>
 
@@ -299,6 +301,8 @@
         if ($('#deskDelivery').hasClass('delivery-selected')) {
 
             $('#deskDelivery').removeClass('delivery-selected');
+            $('#deskCheck').hide();
+            $('#homeCheck').show();
 
             $(this).addClass('delivery-selected')
 
@@ -317,6 +321,10 @@
             $('#homeDelivery').removeClass('delivery-selected')
 
             $(this).addClass('delivery-selected')
+
+            $('#deskCheck').show();
+
+            $('#homeCheck').hide();
 
             deliveryType = 'desk'
 

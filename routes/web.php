@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\AlgeriaCities;
-use App\Http\Controllers\DeliveryController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ShopController;
+use GuzzleHttp\Client;
 use App\Models\Delivery;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AlgeriaCities;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\DeliveryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,3 +27,5 @@ Route::get('/communs/{wilayaCode}', [AlgeriaCities::class, 'get_all_communs']);
 Route::get('/yalidine-delivery-fees/{wilaya}', [DeliveryController::class, 'get_yalididne_delivery_fees']);
 
 Route::post('/place-order', [ShopController::class, 'place_order']);
+
+Route::post('search', [ShopController::class, 'search'])->name('search');

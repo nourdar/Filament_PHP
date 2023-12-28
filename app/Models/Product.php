@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Product extends Model
+class Product extends Model implements Searchable
 {
     use HasFactory;
 
@@ -62,5 +64,15 @@ class Product extends Model
         });
     }
 
+    public function getSearchResult(): SearchResult
+    {
+        $url = 'product/'. $this->id;
+
+        return new \Spatie\Searchable\SearchResult(
+           $this,
+           $this->name,
+           $url,
+        );
+    }
 
 }

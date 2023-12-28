@@ -14,27 +14,37 @@
 
             </div>
         </nav>
-        @if ($brands)
+        @if ($categories)
             @foreach ($categories as $category)
                 <div class="w-full md:w-1/3 xl:w-1/4 p-6 flex flex-col justify-center">
                     <a href="/category/{{ $category->id }}" class="text-center ">
-                        <img class="hover:grow hover:shadow-lg " style="display: inline;"
-                            src="{{ asset('storage/' . $category->image) }}">
+
+                        @if (file_exists('storage/' . $category->image))
+                            <?php $image = asset('storage/' . $category->image); ?>;
+                        @else
+                            <?php $image = $category->image; ?>
+                        @endif
+
+                        <img class="hover:grow hover:shadow-lg " width="200" height="200" style="display: inline;"
+                            src="{{ $image }}">
+
+
                         <div class="pt-3 flex items-center justify-center justify-center">
                             <p class="text-center " style="font-size: 35px; font-weight:bold">{{ $category->name }}</p>
-
                         </div>
-
                     </a>
                 </div>
             @endforeach
 
-            {{ $categories->links() }}
+
         @endif
 
 
     </div>
-
+    <div class="container w-full flex justify-center">
+        <br>
+        {{ $categories->links() }}
+    </div>
 </section>
 
 <!-- End  categories -->

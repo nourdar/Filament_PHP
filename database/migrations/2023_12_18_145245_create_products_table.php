@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->string("slug")->unique();
+            $table->string("slug")->nullable()->unique();
             $table->longText("description")->nullable();
             $table->longText("options")->nullable();
             $table->string("image")->nullable();
             $table->longText("images")->nullable();
             $table->longText("mesures")->nullable();
-            $table->boolean("is_visible")->default(false);
+            $table->boolean("is_visible")->default(true);
             $table->boolean("is_featured")->default(false);
             $table->foreignId("brand_id")
                     ->nullable()
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->unsignedBigInteger("quantity")->nullable();
             $table->decimal("price");
             $table->enum("type", ['deliverable', 'downloadable'])->default("deliverable");
-            $table->date("published_at");
+            $table->date("published_at")->default(now());
             $table->timestamps();
         });
     }

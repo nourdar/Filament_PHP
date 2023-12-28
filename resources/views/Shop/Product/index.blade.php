@@ -21,7 +21,17 @@
             @foreach ($products as $product)
                 <div class="w-full md:w-1/3 xl:w-1/4 p-6 flex flex-col">
                     <a href="/product/{{ $product->id }}">
-                        <img class="hover:grow hover:shadow-lg" src="{{ asset('storage/' . $product->image) }}">
+
+                        @if (file_exists('storage/' . $product->image))
+                            <?php $image = asset('storage/' . $product->image); ?>;
+                        @else
+                            <?php $image = $product->image; ?>
+                        @endif
+
+                        <img class="hover:grow hover:shadow-lg " width="200" height="200" style="display: inline;"
+                            src="{{ $image }}">
+
+
                         <div class="pt-3 flex items-center justify-between">
                             <p class="">{{ $product->name }}</p>
 
@@ -33,8 +43,13 @@
 
 
         @endif
-        {{ $products->links() }}
 
+
+    </div>
+
+    <div class="container w-full flex justify-center">
+        <br>
+        {{ $products->links() }}
     </div>
 
 </section>

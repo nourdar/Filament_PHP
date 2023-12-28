@@ -1,62 +1,80 @@
 @include('shop.header')
 
-@if ($settings?->slides)
-    <div class="swiper mySwiper mb-5">
-        <div class="swiper-wrapper">
+@if (!isset($isSearch))
 
-            @foreach ($settings?->slides as $slide)
-                <?php $i = 1;
-                $img = asset('storage/' . $slide['slide']);
-                $link = $slide['link']; ?>
-                <a class="swiper-slide" href="{{ $link }}">
-                    {{-- <div class="swiper-slide"> --}}
+    @if ($settings?->slides)
+        @if (isset($settings?->slides[0]['slide']))
+            <div class="swiper mySwiper mb-5">
+                <div class="swiper-wrapper">
 
-                    <img src="{{ $img }}" alt="shop swiper element" />
+                    @foreach ($settings?->slides as $slide)
+                        <?php $i = 1;
+                        $img = asset('storage/' . $slide['slide']);
+                        $link = $slide['link']; ?>
+                        <a class="swiper-slide" href="{{ $link }}">
+                            {{-- <div class="swiper-slide"> --}}
 
-                    {{-- </div> --}}
-                </a>
-                <?php $i++; ?>
-            @endforeach
+                            <img src="{{ $img }}" alt="shop swiper element" />
 
+                            {{-- </div> --}}
+                        </a>
+                        <?php $i++; ?>
+                    @endforeach
 
-        </div>
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-pagination"></div>
-    </div>
-    <!-- Slider main container -->
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
+            </div>
+            <!-- Slider main container -->
+        @endif
+    @endif
+@endif
+@if (isset($isSearch) && $isSearch)
+
+    @if ($products->count() != 0)
+        @include('shop.product.index')
+    @endif
+
+    @if ($brands->count() != 0)
+        @include('shop.brand.index')
+    @endif
+
+    @if ($categories->count() != 0)
+        @include('shop.category.index')
+    @endif
+@else
+    @if ($brands->count() != 0)
+        @include('shop.brand.index')
+    @endif
+
+    @if ($categories->count() != 0)
+        @include('shop.category.index')
+    @endif
+    @if ($products->count() != 0)
+        @include('shop.product.index')
+    @endif
+
 
 @endif
 
 
-@if ($brands->count() != 0)
-    @include('shop.brand.index')
-@endif
-
-@if ($categories->count() != 0)
-    @include('shop.category.index')
-@endif
-
-
-@if ($products->count() != 0)
-    @include('shop.product.index')
-@endif
 
 @if ($settings?->description)
     <!-- <section class="bg-white py-8">
 
-        <div class="container py-8 px-6 mx-auto text-center">
+    <div class="container py-8 px-6 mx-auto text-center">
 
-            <a class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-5xl mb-8" href="#">
-   Description de la boutique
-  </a>
+        <a class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-5xl mb-8" href="#">
+Description de la boutique
+</a>
 
-            <p class="mt-8 mb-8">
-            {{ $settings->description }}
-            </p>
-        </div>
+        <p class="mt-8 mb-8">
+        {{ $settings->description }}
+        </p>
+    </div>
 
-    </section> -->
+</section> -->
 @endif
 
 

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string("image")->nullable();
             $table->string("slug")->unique();
             $table->longText("description")->nullable();
-            $table->boolean("is_visible")->default(false);
+            $table->boolean("is_visible")->default(true);
             $table->foreignId("parent_id")
                     ->constrained('categories')
                     ->nullable()

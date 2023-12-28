@@ -261,6 +261,7 @@ class OrderResource extends Resource
                     'Livré' => 'success',
                     'Retour' => 'danger',
                     'Annulé' => 'danger',
+                    default => '',
                 })
                 ->getStateUsing( function ($record){
                     switch ($record->status) {
@@ -313,8 +314,8 @@ class OrderResource extends Resource
 
                             // dd (new AlgeriaCities())->get_wilaya_name('setif');
 
-                            $wilaya = (new AlgeriaCities())->get_wilaya_name($record->customer->address);
-                            return  $wilaya.' - '. $record->customer->city;
+                            $wilaya = (new AlgeriaCities())->get_wilaya_name($record?->customer?->address);
+                            return  $wilaya.' - '. $record?->customer?->city;
                         })
                         ->label('Wilaya')
                         ->searchable()
@@ -331,15 +332,16 @@ class OrderResource extends Resource
                         ->label('Livraison')
                         ->searchable()
                         ->badge()
-                        ->color(fn ($record): string => match ($record->shipping_type) {
+                        ->color(fn ($record): string => match ($record?->shipping_type) {
                             'desk' => 'warning',
                             'home' => 'success',
+                            default => '',
                         })
                         ->getStateUsing( function ($record){
 
-                            $item = $record->shipping_type == 'home' ? 'home' : 'desk';
+                            $item = $record?->shipping_type == 'home' ? 'home' : 'desk';
 
-                            switch ($record->shipping_type) {
+                            switch ($record?->shipping_type) {
                                 case 'home':
                                      $item = "Domicile";
                                     break;
@@ -347,8 +349,8 @@ class OrderResource extends Resource
                                     $item =  "Stop Desk";
                                     break;
                             }
-                            if(!empty($record->tracking)){
-                                $item .= ' | '.$record->tracking;
+                            if(!empty($record?->tracking)){
+                                $item .= ' | '.$record?->tracking;
                             }
                             return $item;
                          })
