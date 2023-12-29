@@ -1,3 +1,6 @@
+@if (isset($showAll) && $showAll)
+    @include('shop.header')
+@endif
 <!--  Marques -->
 <section class="bg-white py-8">
 
@@ -6,7 +9,7 @@
         <nav id="store" class="w-full z-30 top-0 px-6 py-1 mb-5">
             <div class="w-full container mx-auto flex flex-wrap items-center justify-center mt-0 px-2 py-3">
 
-                <a class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 lg:text-4xl sm:text-large"
+                <a class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 lg:text-4xl sm:text-large font-diph"
                     href="#">
                     Marques
                 </a>
@@ -28,8 +31,8 @@
 
                         <img class="hover:grow hover:shadow-lg " width="200" height="200" style="display: inline;"
                             src="{{ $image }}">
-                        <div class="pt-3 flex items-center justify-center justify-center">
-                            <p class="text-center " style="font-size: 35px; font-weight:bold">{{ $brand->name }}
+                        <div class="pt-3 flex items-center justify-center justify-center font-cairo">
+                            <p class="text-center " style="font-size: 25px; font-weight:bold">{{ $brand->name }}
                             </p>
 
                         </div>
@@ -43,10 +46,24 @@
 
 
     </div>
-    <div class="container w-full flex justify-center">
-        <br>
-        {{ $brands->links() }}
-    </div>
+
+    @if (isset($showAll) && $showAll)
+        <div class="container w-full flex justify-center">
+            <br>
+            {{ $brands->links() }}
+        </div>
+    @else
+        <a href="all-brands" class="flex justify-center">
+
+            <button
+                class=" font-cairo bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                اظهار الكل
+            </button>
+        </a>
+    @endif
 </section>
 
 <!-- End  Marques -->
+@if (isset($showAll) && $showAll)
+    @include('shop.footer')
+@endif

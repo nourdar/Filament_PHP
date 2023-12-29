@@ -117,6 +117,14 @@ class ProductResource extends Resource
                                 ->label('Prix')
                                 ->rules('regex:/^\d{1,6}(\.\d{0,2})?$/')
                                 ->required(),
+
+                                TextInput::make('old_price')
+                                ->minValue(1)
+                                ->numeric()
+                                ->label('Ancien Prix')
+                                ->rules('regex:/^\d{1,6}(\.\d{0,2})?$/'),
+
+
                                 Hidden::make('quantity')
 
 
@@ -253,6 +261,11 @@ class ProductResource extends Resource
                     ->toggleable(),
                 TextColumn::make('price')
                     ->label('Prix')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                    TextColumn::make('old_price')
+                    ->label('Ancien Prix')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),

@@ -37,8 +37,8 @@ class ShopController extends Controller
         $settings = $this->settings;
 
         $products = Product::where('is_visible', true)->paginate(12, ['*'], 'products');
-        $brands = Brand::where('is_visible', true)->has('products')->paginate(10, ['*'], 'brands');
-        $categories = Category::where('is_visible', true)->has('products')->paginate(10, ['*'], 'categories');
+        $brands = Brand::where('is_visible', true)->has('products')->paginate(4, ['*'], 'brands');
+        $categories = Category::where('is_visible', true)->has('products')->paginate(4, ['*'], 'categories');
 
         return view('shop.shop')->with(compact(['title', 'settings', 'products', 'brands', 'categories']));
     }
@@ -191,5 +191,27 @@ class ShopController extends Controller
 
             return view('shop.shop')->with(compact(['settings', 'products', 'brands', 'categories', 'isSearch']));
 
+    }
+
+
+    public function get_all_products(){
+        $showAll = true;
+        $settings = $this->settings;
+        $products = Product::where('is_visible', true)->OrderBy('updated_at', 'desc')->paginate(10);
+        return view('shop.product.index')->with(compact(['settings', 'products', 'showAll']));
+    }
+
+    public function get_all_brands(){
+        $showAll = true;
+        $settings = $this->settings;
+        $brands = Brand::where('is_visible', true)->has('products')->OrderBy('updated_at', 'desc')->paginate(10);
+        return view('shop.brand.index')->with(compact(['settings', 'brands', 'showAll']));
+    }
+
+    public function get_all_categories(){
+        $showAll = true;
+        $settings = $this->settings;
+        $categories = Category::where('is_visible', true)->has('products')->OrderBy('updated_at', 'desc')->paginate(10);
+        return view('shop.category.index')->with(compact(['settings', 'categories', 'showAll']));
     }
 }

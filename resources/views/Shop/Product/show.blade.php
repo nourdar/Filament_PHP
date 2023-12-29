@@ -73,12 +73,19 @@
     <nav id="store" class="w-full z-30 top-0 mb-5">
         <div class="w-full container mx-auto flex flex-wrap items-center justify-center mt-0 ">
 
-            <a class="w-full uppercase text-center tracking-wide no-underline hover:no-underline font-bold text-red-800 text-2xl "
+            <a class="w-full uppercase text-center tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-2xl "
                 href="#">
                 {{ $product?->name }}
                 <br>
                 {{ number_format($product?->price, 0, '.') }}
                 DZD
+
+                @if (isset($product?->old_price))
+                    <span class="text-red-900 line-through">
+                        {{ number_format($product?->old_price, 0, '.') }}
+                        DZD
+                    </span>
+                @endif
             </a>
 
 
@@ -176,7 +183,7 @@
     <br>
     <hr>
 
-    <div class="mt-5 markdown">
+    <div class="mt-5 markdown font-cairo">
 
 
         @if ($product?->description)

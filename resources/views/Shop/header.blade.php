@@ -14,7 +14,11 @@
 
     <link href="https://fonts.googleapis.com/css?family=Work+Sans:200,400&display=swap" rel="stylesheet">
 
+    <link href="https://fonts.googleapis.com/css2?family=Diphylleia&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500&display=swap" rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
 
     <script>
@@ -39,7 +43,7 @@
 
         body {
             background: #eee;
-            font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+            font-family: 'Cairo', sans-serif;
             font-size: 14px;
             color: #000;
             margin: 0;
@@ -72,6 +76,16 @@
         .work-sans {
             font-family: 'Work Sans', sans-serif;
         }
+
+        .font-diph {
+            font-family: 'Diphylleia', serif;
+        }
+
+        .font-cairo {
+            font-family: 'Cairo', sans-serif;
+        }
+
+
 
         #menu-toggle:checked+#menu {
             display: block;
@@ -157,13 +171,13 @@
 
 
 
-    <nav class="bg-white border-gray-200 dark:bg-gray-900">
+    <nav class="bg-white border-gray-200 dark:bg-gray-900 font-diph">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-center mx-auto p-4">
             <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
                 <a class="ml-5 flex items-center text-white" href="/">
                     <img src="{{ asset('storage/' . $settings?->logo) }}" alt="Logo" class="mr-5"
                         style="max-width: 200px; max-height:80px">
-                    <span class="hidden md:block">
+                    <span class="hidden md:block text-2xl text-bold">
                         {{ $settings?->name }}
                     </span>
                 </a>
@@ -267,7 +281,7 @@
     <div class="m-auto container p-10">
 
 
-        <form method="post" action="search">
+        <form method="post" action="search" class="font-cairo">
             @csrf
             <label for="default-search"
                 class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
@@ -280,7 +294,7 @@
                     </svg>
                 </div>
                 <input type="search" id="default-search" name="search"
-                    class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    class="block w-full  p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="ابحث عن منتج" required>
                 <button type="submit"
                     class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ابحث</button>

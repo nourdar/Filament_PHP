@@ -1,4 +1,4 @@
-<footer class=" mx-auto text-white bg-gray-900 py-8 border-t border-gray-400">
+<footer class=" mx-auto text-white bg-gray-900 py-8 border-t border-gray-400 font-cairo">
     <div class="container flex px-3 py-8 ">
         <div class="w-full mx-auto flex flex-wrap">
 

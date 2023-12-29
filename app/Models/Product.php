@@ -28,6 +28,7 @@ class Product extends Model implements Searchable
         'image',
         'images',
         'price',
+        'old_price',
         'quantity',
         'type',
         'published_at'

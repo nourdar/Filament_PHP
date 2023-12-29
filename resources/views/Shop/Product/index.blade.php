@@ -1,3 +1,6 @@
+@if (isset($showAll) && $showAll)
+    @include('shop.header')
+@endif
 <!--  dernier produits section -->
 <section class="bg-white py-8">
 
@@ -7,7 +10,7 @@
         <nav id="store" class="w-full z-30 top-0 px-6 py-1 mb-5">
             <div class="w-full container mx-auto flex flex-wrap items-center justify-center mt-0 px-2 py-3">
 
-                <a class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-5xl "
+                <a class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-4xl font-diph"
                     href="#">
                     Produits
                 </a>
@@ -23,7 +26,7 @@
                     <a href="/product/{{ $product->id }}">
 
                         @if (file_exists('storage/' . $product->image))
-                            <?php $image = asset('storage/' . $product->image); ?>;
+                            <?php $image = asset('storage/' . $product->image); ?>
                         @else
                             <?php $image = $product->image; ?>
                         @endif
@@ -32,11 +35,19 @@
                             src="{{ $image }}">
 
 
-                        <div class="pt-3 flex items-center justify-between">
+                        <div class="pt-3 flex items-center justify-between font-cairo">
                             <p class="">{{ $product->name }}</p>
 
                         </div>
+                        @if (isset($product?->old_price))
+                            <span class="text-red-900 line-through">
+                                {{ number_format($product?->old_price, 0, '.') }}
+                                DZD
+                            </span>
+                        @endif
                         <p class="pt-1 text-gray-900">{{ $product->price }} DZD</p>
+
+
                     </a>
                 </div>
             @endforeach
@@ -47,11 +58,24 @@
 
     </div>
 
-    <div class="container w-full flex justify-center">
-        <br>
-        {{ $products->links() }}
-    </div>
+    @if (isset($showAll) && $showAll)
+        <div class="container w-full flex justify-center">
+            <br>
+            {{ $products->links() }}
+        </div>
+    @else
+        <a href="all-products" class="flex justify-center">
 
+            <button
+                class=" font-cairo bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                اظهار الكل
+            </button>
+        </a>
+    @endif
 </section>
 
 <!-- End  dernier produits section -->
+
+@if (isset($showAll) && $showAll)
+    @include('shop.footer')
+@endif

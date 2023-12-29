@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string("sku")->nullable()->unique(); //sku => stock keeping unit // This line defines a sku column of type string, which will hold the unit identifier for the product used in inventory management. This column is unique (no two products can have the same sku).
             $table->unsignedBigInteger("quantity")->nullable();
             $table->decimal("price");
+            $table->decimal("old_price")->nullable();
             $table->enum("type", ['deliverable', 'downloadable'])->default("deliverable");
             $table->date("published_at")->default(now());
             $table->timestamps();

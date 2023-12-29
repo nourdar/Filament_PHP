@@ -130,7 +130,7 @@
     @endif
 @endif
 
-<form class="form-style-9" method="POST" action="/place-order" dir="rtl">
+<form class="form-style-9 font-cairo" method="POST" action="/place-order" dir="rtl">
 
     @csrf
 
@@ -194,7 +194,7 @@
 
         <li>
             <div>
-                <div style="line-height: 2; padding : 5px ">التوصيل ( YALIDINE ) :<br>
+                <div style="line-height: 3; padding : 5px ">التوصيل ( YALIDINE ) :<br>
                     <span id="homeDelivery">
                         <input type="checkbox" checked id="homeCheck" class="hidden">
                         الى المنزل : <span id="HomeDeliveryFees"> - </span> دج<br>
@@ -224,7 +224,7 @@
 
 
         <li>
-            <input type="submit" value="تأكيد الطلب" />
+            <input type="submit" class="font-cairo" value="تأكيد الطلب" />
         </li>
     </ul>
 </form>
