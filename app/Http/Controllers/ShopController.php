@@ -8,11 +8,13 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Settings;
+use App\Mail\OrderPlaced;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use App\Models\ProductMesure;
 use Spatie\Searchable\Search;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\Console\Input\Input;
 
@@ -152,7 +154,14 @@ class ShopController extends Controller
         $orderItem->unit_price = $request->unit_price;
         $orderItem->options = $options;
         $orderItem->save();
+
+        // Send email Notification
+
+        Mail::to('gachtoun@gmail.com')
+        ->send(new OrderPlaced($order));
+
     });
+
 
 
     Session::flash('message', 'تم تسجيل الطلب بنجاح');
