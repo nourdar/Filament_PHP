@@ -202,15 +202,12 @@ class ProductResource extends Resource
                         ->schema([
                             FileUpload::make('image')
                                 ->directory('form-attachments')
-                                ->preserveFilenames()
                                 ->image()
-                                ->required()
                                 ->imageEditor(),
 
                                 FileUpload::make('images')
                                 ->label('Autre images')
                                 ->directory('form-attachments')
-                                ->preserveFilenames()
                                 ->image()
                                 ->multiple()
                                 ->imageEditor(),
@@ -245,6 +242,7 @@ class ProductResource extends Resource
             ->columns([
                 ImageColumn::make('image')
                     ->toggleable(),
+
                 TextColumn::make('name')
                     ->label('Nom')
                     ->searchable()

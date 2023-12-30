@@ -4,6 +4,7 @@ use GuzzleHttp\Client;
 use App\Models\Delivery;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AlgeriaCities;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\DeliveryController;
 
@@ -32,3 +33,18 @@ Route::get('/yalidine-delivery-fees/{wilaya}', [DeliveryController::class, 'get_
 Route::post('/place-order', [ShopController::class, 'place_order']);
 
 Route::post('search', [ShopController::class, 'search'])->name('search');
+
+
+Route::get('/optimize', function(){
+
+    Artisan::call('optimize:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+
+    dd(Artisan::output());
+});
+
+
+Route::get('/link-storage', function(){
+    Artisan::call('storage:link');
+});

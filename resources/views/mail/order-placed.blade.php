@@ -42,4 +42,16 @@
     <b>Address : </b> {{ $order->customer->address }} - {{ $order->customer->city }}
     <br>
     <b>contact : </b><a href="tel:{{ $order->customer->phone }}"> {{ $order->customer->phone }}</a>
+    <b>Livraison : </b>
+
+    @if ($order->shipping_type == 'desk')
+        Stop Desk
+    @else
+        Domicile
+    @endif
+
+    <b>Cout de Livraison : </b>
+
+    {{ $order->shipping_price }}
+
 </div>

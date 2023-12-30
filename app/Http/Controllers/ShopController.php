@@ -38,9 +38,9 @@ class ShopController extends Controller
 
         $settings = $this->settings;
 
-        $products = Product::where('is_visible', true)->paginate(12, ['*'], 'products');
-        $brands = Brand::where('is_visible', true)->has('products')->paginate(4, ['*'], 'brands');
-        $categories = Category::where('is_visible', true)->has('products')->paginate(4, ['*'], 'categories');
+        $products = Product::where('is_visible', true)->orderBy('updated_at', 'desc')->paginate(12, ['*'], 'products');
+        $brands = Brand::where('is_visible', true)->has('products')->paginate(3, ['*'], 'brands');
+        $categories = Category::where('is_visible', true)->has('products')->paginate(3, ['*'], 'categories');
 
         return view('shop.shop')->with(compact(['title', 'settings', 'products', 'brands', 'categories']));
     }
@@ -156,9 +156,12 @@ class ShopController extends Controller
         $orderItem->save();
 
         // Send email Notification
+            if($this->settings->email){
+                // Mail::to('gachtoun@gmail.com')
+                Mail::to($this->settings->email)
+                ->send(new OrderPlaced($order));
+            }
 
-        Mail::to('gachtoun@gmail.com')
-        ->send(new OrderPlaced($order));
 
     });
 

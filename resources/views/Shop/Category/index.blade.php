@@ -18,28 +18,33 @@
             </div>
         </nav>
         @if ($categories)
-            @foreach ($categories as $category)
-                <div class="w-full md:w-1/3 xl:w-1/4 p-6 flex flex-col justify-center">
-                    <a href="/category/{{ $category->id }}" class="text-center ">
-
-                        @if (file_exists('storage/' . $category->image))
-                            <?php $image = asset('storage/' . $category->image); ?>;
-                        @else
-                            <?php $image = $category->image; ?>
-                        @endif
-
-                        <img class="hover:grow hover:shadow-lg " width="200" height="200" style="display: inline;"
-                            src="{{ $image }}">
+            <div class="flex flex-row space-x-2 space-y-2 w-full p-6   justify-center   flex-wrap">
 
 
-                        <div class="pt-3 flex items-center justify-center justify-center font-cairo">
-                            <p class="text-center " style="font-size: 25px; font-weight:bold">{{ $category->name }}</p>
-                        </div>
-                    </a>
-                </div>
-            @endforeach
+                @foreach ($categories as $category)
+                    <div
+                        class="w-full md:w-1/3 xl:w-1/4 p-6 text-center border border-gray-200 rounded-lg shadow hover:bg-gray-100  dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <a href="/category/{{ $category->id }}" class="text-center ">
+
+                            @if (file_exists('storage/' . $category->image))
+                                <?php $image = asset('storage/' . $category->image); ?>;
+                            @else
+                                <?php $image = $category->image; ?>
+                            @endif
+
+                            <img class="hover:grow hover:shadow-lg " width="200" height="200"
+                                style="display: inline; max-height:200px; height:200px" src="{{ $image }}">
 
 
+                            <div class="pt-3 flex items-center justify-center justify-center font-cairo">
+                                <p class="text-center " style="font-size: 25px; font-weight:bold">{{ $category->name }}
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                @endforeach
+
+            </div>
         @endif
 
 

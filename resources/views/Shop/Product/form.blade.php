@@ -1,6 +1,6 @@
 <style type="text/css">
     .form-style-9 {
-        max-width: 97%;
+        max-width: 100%;
         background: #FAFAFA;
         padding: 30px;
         margin: 50px auto;
@@ -21,71 +21,12 @@
         min-height: 35px;
     }
 
-    .form-style-9 ul li .field-style {
-        box-sizing: border-box;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        padding: 8px;
-        outline: none;
-        border: 1px solid #B0CFE0;
-        -webkit-transition: all 0.30s ease-in-out;
-        -moz-transition: all 0.30s ease-in-out;
-        -ms-transition: all 0.30s ease-in-out;
-        -o-transition: all 0.30s ease-in-out;
 
-    }
 
-    .form-style-9 ul li .field-style:focus {
-        box-shadow: 0 0 5px #B0CFE0;
-        border: 1px solid #B0CFE0;
-    }
-
-    .form-style-9 ul li .field-split {
-        width: 49%;
-    }
-
-    .form-style-9 ul li .field-full {
-        width: 100%;
-    }
-
-    .form-style-9 ul li input.align-left {
-        float: left;
-    }
-
-    .form-style-9 ul li input.align-right {
-        float: right;
-    }
-
-    .form-style-9 ul li textarea {
-        width: 100%;
-        height: 100px;
-    }
-
-    .form-style-9 ul li input[type="button"],
-    .form-style-9 ul li input[type="submit"] {
-        -moz-box-shadow: inset 0px 1px 0px 0px #3985B1;
-        -webkit-box-shadow: inset 0px 1px 0px 0px #3985B1;
-        box-shadow: inset 0px 1px 0px 0px #3985B1;
-        background-color: #216288;
-        border: 1px solid #17445E;
-        display: inline-block;
-        cursor: pointer;
-        color: #FFFFFF;
-        padding: 8px 18px;
-        text-decoration: none;
-        font: 16px Arial, Helvetica, sans-serif;
-        margin: 0px auto;
-    }
-
-    .form-style-9 ul li input[type="button"]:hover,
-    .form-style-9 ul li input[type="submit"]:hover {
-        background: linear-gradient(to bottom, #2D77A2 5%, #337DA8 100%);
-        background-color: #28739E;
-    }
 
     .delivery-selected {
-        border: green 3px solid;
-        padding: 2px 10px 2px 10px;
+        border: #425970 3px solid;
+        padding: 0px 5px 0px 5px;
 
 
 
@@ -103,6 +44,13 @@
 
     form ul li select {
         padding-right: 40px !important;
+    }
+
+    .animate__shakeX {
+        animation-duration: 2s;
+        animation-delay: 7s;
+
+
     }
 </style>
 @if (Session::has('message'))
@@ -136,12 +84,16 @@
 
     <ul>
         <li>
-            <input type="text" name="name" class="field-style w-full  align-left" placeholder="الاسم كامل"
+            <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text" name="name" class="field-style w-full  align-left" placeholder="الاسم كامل"
                 value="{{ old('name') }}" />
 
         </li>
         <li>
-            <input type="tel" name="phone" class="field-style w-full align-left" placeholder="رقم الهاتف"
+            <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="tel" name="phone" class="field-style w-full align-left" placeholder="رقم الهاتف"
                 value="{{ old('phone') }}" />
         </li>
         {{-- <li>
@@ -152,84 +104,140 @@
 
 
         <li>
-            <select type="text" id="wilaya" name="wilaya" class="field-style field-full  align-none">
 
 
-                <option disabled selected> الولاية </option>
-                @foreach ($wilayas as $wilayaCode => $wilayaName)
-                    {{-- <option value="{{ $wilayaCode }}" {{ old('wilaya') == $wilayaCode ? 'selected' : '' }}>
-                        {{ $wilayaName }}</option> --}}
-                    <option value="{{ $wilayaCode }}"> {{ $wilayaName }} </option>
-                @endforeach
-            </select>
 
-            <select type="text" id="commune" name="commune" class="field-style field-full  align-none">
-                <option disabled selected> البلدية </option>
-            </select>
+            <div class="flex  gap-x-3  w-full ">
+                <select name="wilaya" id="wilaya"
+                    class="flex md:w-1/3 sm:w-full  appearance-none  bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+
+                    <option disabled selected> الولاية </option>
+                    @foreach ($wilayas as $wilayaCode => $wilayaName)
+                        <option value="{{ $wilayaCode }}"> {{ $wilayaName }} </option>
+                    @endforeach
+                </select>
+                <select name="commune" id="commune"
+                    class="flex md:w-1/3 sm:w-full   appearance-none  bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+
+                    <option disabled selected> البلدية </option>
+                </select>
+
+                @if ($product->mesures)
+                    @foreach ($product->mesures as $mesure => $options)
+                        <select type="text" name="{{ $mesure }}"
+                            class="flex md:w-1/3 sm:w-full   appearance-none  bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+
+
+                            <option disabled selected> {{ $mesure }} </option>
+                            @foreach ($options as $option)
+                                <option value="{{ $option }}"> {{ $option }} </option>
+                            @endforeach
+                        </select>
+                    @endforeach
+                @endif
+
+            </div>
+
+
+
+
         </li>
 
 
-        <li class="mt-2">
-            @if ($product->mesures)
-                @foreach ($product->mesures as $mesure => $options)
-                    <select type="text" name="{{ $mesure }}" class="field-style field-full align-none">
-                        <option disabled selected> {{ $mesure }} </option>
-                        @foreach ($options as $option)
-                            <option value="{{ $option }}"> {{ $option }} </option>
-                        @endforeach
-                    </select>
-                @endforeach
-            @endif
 
-        </li>
 
-        <li class="text-left">
-            <label for="quantity" class="w-full text-xl text-left ml-5 "> الكمية :</label>
-            <input type="number" name="quantity" id="quantity" class="field-style field-split align-left"
-                placeholder="الكمية" value="{{ old('quantity', 1) }}" />
 
-        </li>
 
 
 
         <li>
             <div>
-                <div style="line-height: 3; padding : 5px ">التوصيل ( YALIDINE ) :<br>
-                    <span id="homeDelivery">
-                        <input type="checkbox" checked id="homeCheck" class="hidden">
-                        الى المنزل : <span id="HomeDeliveryFees"> - </span> دج<br>
+                <div class="flex w-full lg:gap-x-2 lg:flex-nowrap flex-wrap">
+
+
+
+
+                    <span class="lg:w-1/3 w-full">
+                        التوصيل ( YALIDINE ) :
                     </span>
-                    <span id="deskDelivery" class="delivery-selected">
+                    <span id="homeDelivery" class="w-1/2 lg:w-1/3">
+                        <input type="checkbox" checked id="homeCheck" class="hidden">
+                        الى المنزل : <span id="HomeDeliveryFees"> - </span> دج
+                    </span>
+                    <span id="deskDelivery" class="delivery-selected w-1/2 lg:w-1/3">
                         <input type="checkbox" checked id="deskCheck" class="d-block">
                         الى المكتب : <span id="DeskDeliveryFees"> - </span> دج<br>
                     </span>
 
-                    <input type="hidden" name="delivery_type" id="deliveryType" value="">
-                    <input type="hidden" name="delivery_fees" id="deliveryFees" value="">
-
-                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <input type="hidden" name="unit_price" value="{{ $product->price }}">
 
 
                 </div>
-                <h2 class="text-xl"><strong> المجموع : </strong> <span id="totalPrice">{{ $product?->price }}</span> دج
-                </h2>
+                <input type="hidden" name="delivery_type" id="deliveryType" value="">
+                <input type="hidden" name="delivery_fees" id="deliveryFees" value="">
+
+                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                <input type="hidden" name="unit_price" value="{{ $product->price }}">
+
             </div>
         </li>
         <li>
 
-            <textarea class="field-style " name="note" cols="30" rows="10" placeholder="ملاحظة"></textarea>
+            <textarea
+                class="flex w-full   appearance-none  bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                name="note" cols="30" rows="3" placeholder="ملاحظة"></textarea>
 
         </li>
 
 
         <li>
-            <input type="submit" class="font-cairo" value="تأكيد الطلب" />
+            <div class="dark:bg-slate-900 p-4 flex justify-between">
+                <!-- Input Number -->
+                <div class="md:w-1/5 lg:w-1/4 sm:w-full py-2 px-2 h-25 items-center justify-center bg-white border border-gray-200 rounded-lg dark:bg-slate-900 dark:border-gray-700"
+                    data-hs-input-number>
+                    <div class=" flex justify-center items-center gap-x-3">
+
+                        <div class="flex items-center gap-x-1.5">
+                            <button type="button" id="quantityDecrement"
+                                class="w-6 h-6 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                                data-hs-input-number-decrement>
+                                <svg class="flex-shrink-0 w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 12h14" />
+                                </svg>
+                            </button>
+                            <input
+                                class="p-0 w-6 bg-transparent border-0 text-gray-800 text-center focus:ring-0 dark:text-white"
+                                type="text" name="quantity" id="quantity" value="{{ old('quantity', 1) }}"
+                                data-hs-input-number-input>
+                            <button type="button" id="quantityIncrement"
+                                class="w-6 h-6 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                                data-hs-input-number-increment>
+                                <svg class="flex-shrink-0 w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg"
+                                    width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 12h14" />
+                                    <path d="M12 5v14" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Input Number -->
+                <button type="submit"
+                    class="animate__animated animate__shakeX animate__infinite  font-cairo w-1/2  text-xl  p-0  bg-transparent border-0 text-gray-800 text-center focus:ring-0 dark:text-white">
+                    تأكيد الطلب <span id="totalPrice">{{ $product?->price }}</span> دج
+                </button>
+            </div>
         </li>
     </ul>
 </form>
 
 
+<script src="
+https://cdn.jsdelivr.net/npm/@preline/select@2.0.2/index.min.js
+"></script>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -240,6 +248,10 @@
     var deliveryType = 'desk'
 
     var quantity = $('#quantity').val();
+    var quantityIncrement = $('#quantityIncrement');
+    var quantityDecrement = $('#quantityDecrement');
+
+
 
     $(document).on('change', '#wilaya', function() {
 
@@ -332,6 +344,20 @@
         }
     })
 
+    quantityIncrement.on('click', function() {
+        quantity++
+        $('#quantity').val(quantity);
+        calculateTotalPrice()
+    })
+
+    quantityDecrement.on('click', function() {
+        if (quantity > 1) {
+            quantity--
+            $('#quantity').val(quantity);
+
+            calculateTotalPrice()
+        }
+    })
 
     $('#quantity').on('change', function() {
         quantity = $(this).val();

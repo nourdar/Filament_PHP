@@ -1,6 +1,8 @@
 @if (isset($showAll) && $showAll)
     @include('shop.header')
 @endif
+
+
 <!--  dernier produits section -->
 <section class="bg-white py-8">
 
@@ -21,37 +23,41 @@
 
 
         @if ($products)
-            @foreach ($products as $product)
-                <div class="w-full md:w-1/3 xl:w-1/4 p-6 flex flex-col">
-                    <a href="/product/{{ $product->id }}">
-
-                        @if (file_exists('storage/' . $product->image))
-                            <?php $image = asset('storage/' . $product->image); ?>
-                        @else
-                            <?php $image = $product->image; ?>
-                        @endif
-
-                        <img class="hover:grow hover:shadow-lg " width="200" height="200" style="display: inline;"
-                            src="{{ $image }}">
+            <div class="flex flex-row space-x-2 space-y-2 w-full  p-6  justify-center   flex-wrap">
 
 
-                        <div class="pt-3 flex items-center justify-between font-cairo">
-                            <p class="">{{ $product->name }}</p>
+                @foreach ($products as $product)
+                    <div
+                        class="w-full md:w-1/3 xl:w-1/4 p-6 text-center border border-gray-200 rounded-lg shadow hover:bg-gray-100  dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <a href="/product/{{ $product->id }}" class="text-center">
 
-                        </div>
-                        @if (isset($product?->old_price))
-                            <span class="text-red-900 line-through">
-                                {{ number_format($product?->old_price, 0, '.') }}
-                                DZD
-                            </span>
-                        @endif
-                        <p class="pt-1 text-gray-900">{{ $product->price }} DZD</p>
+                            @if (file_exists('storage/' . $product->image))
+                                <?php $image = asset('storage/' . $product->image); ?>
+                            @else
+                                <?php $image = $product->image; ?>
+                            @endif
+
+                            <img class="hover:grow hover:shadow-lg " width="200" height="200"
+                                style="display: inline; max-height:200px; height:200px" src="{{ $image }}">
 
 
-                    </a>
-                </div>
-            @endforeach
+                            <div class="pt-3 flex items-center justify-between font-cairo text-center">
+                                <p class="">{{ $product->name }}</p>
 
+                            </div>
+                            @if (isset($product?->old_price))
+                                <span class="text-red-700 hover:text-white line-through ">
+                                    {{ number_format($product?->old_price, 0, '.') }}
+                                    DZD
+                                </span>
+                            @endif
+                            <p class="pt-1 text-gray-900 ">{{ number_format($product?->price, 0, '.') }} DZD</p>
+
+
+                        </a>
+                    </div>
+                @endforeach
+            </div>
 
         @endif
 

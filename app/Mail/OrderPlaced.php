@@ -27,10 +27,10 @@ class OrderPlaced extends Mailable
     {
         $this->settings = Settings::first();
 
-        $product = $order?->items[0]?->product?->name;
+        $product = $order?->items[0]->product?->name;
 
-        if($order?->items[0]?->options){
-            foreach($order?->items[0]?->options as $key => $value){
+        if($order?->items[0]->options){
+            foreach($order?->items[0]->options as $key => $value){
 
                 if(is_string($value) && is_string($key)){
 
@@ -41,8 +41,10 @@ class OrderPlaced extends Mailable
         }
 
 
+        // $this->totalPrice = 0;
         $this->totalPrice = number_format(($order?->items[0]['quantity'] * $order?->items[0]['unit_price'] ) + $order?->shipping_price , 0).' DZD';
 
+        // $this->quantity =1;
         $this->quantity = $order?->items[0]['quantity'];
 
         $this->productName = $product;

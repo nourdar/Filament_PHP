@@ -18,7 +18,7 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
 
     <script>
@@ -139,7 +139,7 @@
         @media screen and (max-width: 500px) {
             .swiper {
                 width: 100%;
-                height: 100%;
+                height: 24%;
             }
 
             .swiper-slide img {
@@ -300,7 +300,4 @@
                     class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ابحث</button>
             </div>
         </form>
-    </div>
-    <div class="lg:mb-2 h-8 w-full">
-
     </div>
