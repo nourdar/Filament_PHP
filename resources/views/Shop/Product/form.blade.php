@@ -47,10 +47,12 @@
     }
 
     .animate__shakeX {
-        animation-duration: 2s;
+        animation-duration: 4s;
+
+    }
+
+    .animated {
         animation-delay: 7s;
-
-
     }
 </style>
 @if (Session::has('message'))
@@ -107,7 +109,7 @@
 
 
 
-            <div class="flex  gap-x-3  w-full ">
+            <div class="flex  gap-x-3  w-full flex-wrap ">
                 <select name="wilaya" id="wilaya"
                     class="flex md:w-1/3 sm:w-full  appearance-none  bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
 
@@ -226,7 +228,7 @@
                 </div>
                 <!-- End Input Number -->
                 <button type="submit"
-                    class="animate__animated animate__shakeX animate__infinite  font-cairo w-1/2  text-xl  p-0  bg-transparent border-0 text-gray-800 text-center focus:ring-0 dark:text-white">
+                    class="animated animate__animated animate__shakeX animate__infinite  font-cairo w-1/2  text-xl  p-0  bg-transparent border-0 text-gray-800 text-center focus:ring-0 dark:text-white">
                     تأكيد الطلب <span id="totalPrice">{{ $product?->price }}</span> دج
                 </button>
             </div>
@@ -235,9 +237,6 @@
 </form>
 
 
-<script src="
-https://cdn.jsdelivr.net/npm/@preline/select@2.0.2/index.min.js
-"></script>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>

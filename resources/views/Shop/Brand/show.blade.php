@@ -8,7 +8,7 @@
                 href="#">
 
                 @if (file_exists('storage/' . $brand->image))
-                    <?php $image = asset('storage/' . $brand->image); ?>;
+                    <?php $image = asset('storage/' . $brand->image); ?>
                 @else
                     <?php $image = $brand->image; ?>
                 @endif

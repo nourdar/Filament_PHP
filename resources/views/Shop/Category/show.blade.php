@@ -9,7 +9,7 @@
 
 
                 @if (file_exists('storage/' . $category->image))
-                    <?php $image = asset('storage/' . $category->image); ?>;
+                    <?php $image = asset('storage/' . $category->image); ?>
                 @else
                     <?php $image = $category->image; ?>
                 @endif

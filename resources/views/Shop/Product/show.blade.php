@@ -275,7 +275,7 @@
                         <div class="swiper-slide">
 
                             @if (file_exists('storage/' . $product->image))
-                                <?php $mainImage = asset('storage/' . $product->image); ?>;
+                                <?php $mainImage = asset('storage/' . $product->image); ?>
                             @else
                                 <?php $mainImage = $product->image; ?>
                             @endif
@@ -290,7 +290,7 @@
                             <div class="swiper-slide">
 
                                 @if (file_exists('storage/' . $image))
-                                    <?php $photo = asset('storage/' . $image); ?>;
+                                    <?php $photo = asset('storage/' . $image); ?>
 
                                     <img src="{{ $photo }}" />
                                 @else
@@ -320,7 +320,7 @@
                             <div class="swiper-slide">
 
                                 @if (file_exists('storage/' . $image))
-                                    <?php $photo = asset('storage/' . $image); ?>;
+                                    <?php $photo = asset('storage/' . $image); ?>
 
                                     <img src="{{ $photo }}" />
                                 @else
