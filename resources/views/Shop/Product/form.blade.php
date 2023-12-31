@@ -6,7 +6,9 @@
         margin: 50px auto;
         box-shadow: 1px 1px 25px rgba(0, 0, 0, 0.35);
         border-radius: 10px;
-        border: 6px solid #305A72;
+        border: 6px solid rgb(15 23 42 / var(--tw-bg-opacity));
+
+
     }
 
     .form-style-9 ul {
@@ -109,9 +111,9 @@
 
 
 
-            <div class="flex  gap-x-3  w-full flex-wrap ">
+            <div class="flex  lg:gap-x-3  w-full flex-wrap ">
                 <select name="wilaya" id="wilaya"
-                    class="flex md:w-1/3 sm:w-full  appearance-none  bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+                    class="flex md:w-1/3 sm:w-1/2 mt-2 appearance-none  bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
 
                     <option disabled selected> الولاية </option>
                     @foreach ($wilayas as $wilayaCode => $wilayaName)
@@ -119,26 +121,35 @@
                     @endforeach
                 </select>
                 <select name="commune" id="commune"
-                    class="flex md:w-1/3 sm:w-full   appearance-none  bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+                    class="flex md:w-1/3 sm:w-1/2 mt-2  appearance-none  bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
 
                     <option disabled selected> البلدية </option>
                 </select>
 
-                @if ($product->mesures)
-                    @foreach ($product->mesures as $mesure => $options)
-                        <select type="text" name="{{ $mesure }}"
-                            class="flex md:w-1/3 sm:w-full   appearance-none  bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
-
-
-                            <option disabled selected> {{ $mesure }} </option>
-                            @foreach ($options as $option)
-                                <option value="{{ $option }}"> {{ $option }} </option>
-                            @endforeach
-                        </select>
-                    @endforeach
-                @endif
 
             </div>
+
+
+
+            @if ($product->mesures)
+
+
+                <div class="flex  gap-x-3  w-full flex-wrap mt-3 mb-2">
+                    @foreach ($product->mesures[0] as $mesure => $options)
+                        @if (count($options) > 0)
+                            <select type="text" name="{{ $mesure }}"
+                                class="flex md:w-1/3 sm:w-full   appearance-none  bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+
+
+                                <option disabled selected> {{ $mesure }} </option>
+                                @foreach ($options as $option)
+                                    <option value="{{ $option }}"> {{ $option }} </option>
+                                @endforeach
+                            </select>
+                        @endif
+                    @endforeach
+                </div>
+            @endif
 
 
 
@@ -192,9 +203,9 @@
 
 
         <li>
-            <div class="dark:bg-slate-900 p-4 flex justify-between">
+            <div class="dark:bg-slate-900 p-4 flex gap-x-4">
                 <!-- Input Number -->
-                <div class="md:w-1/5 lg:w-1/4 sm:w-full py-2 px-2 h-25 items-center justify-center bg-white border border-gray-200 rounded-lg dark:bg-slate-900 dark:border-gray-700"
+                <div class="flex md:w-1/5 lg:w-1/4 sm:w-full py-2 px-2  sm:h-10 lg:h-25 items-center justify-center bg-white border border-gray-200 rounded-lg dark:bg-slate-900 dark:border-gray-700"
                     data-hs-input-number>
                     <div class=" flex justify-center items-center gap-x-3">
 
@@ -228,7 +239,7 @@
                 </div>
                 <!-- End Input Number -->
                 <button type="submit"
-                    class="animated animate__animated animate__shakeX animate__infinite  font-cairo w-1/2  text-xl  p-0  bg-transparent border-0 text-gray-800 text-center focus:ring-0 dark:text-white">
+                    class="animated animate__animated animate__shakeX animate__infinite outline  font-cairo w-1/2  text-xl  p-2  bg-slate-900 border-0 rounded text-center focus:ring-0 text-white">
                     تأكيد الطلب <span id="totalPrice">{{ $product?->price }}</span> دج
                 </button>
             </div>

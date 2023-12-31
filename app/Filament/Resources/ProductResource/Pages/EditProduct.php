@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\ProductResource\Pages;
 
-use App\Filament\Resources\ProductResource;
 use Filament\Actions;
+use App\Models\ProductMesure;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\ProductResource;
 
 class EditProduct extends EditRecord
 {
@@ -16,4 +17,35 @@ class EditProduct extends EditRecord
             Actions\DeleteAction::make()->label('Supprimer ce produit'),
         ];
     }
+
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+
+
+    // $mesures = ProductMesure::all();
+
+    // $options = [];
+
+    // foreach($mesures as $mesure){
+
+    //     if(array_key_exists($mesure->mesure, $data) && !empty($data[$mesure->mesure])){
+
+    //         $options[$mesure->mesure] = $data[$mesure->mesure];
+
+    //         unset($data[$mesure->mesure]);
+
+    //     }
+
+
+    // }
+
+    // $data['mesures'] = $options;
+
+
+
+
+    return $data;
 }
+}
+

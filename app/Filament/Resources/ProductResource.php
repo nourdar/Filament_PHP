@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use App\Enums\ProductType;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use App\Models\ProductMesure;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
@@ -17,6 +18,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Repeater;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -24,6 +27,7 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Wizard\Step;
@@ -35,8 +39,6 @@ use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Models\ProductMesure;
-use Filament\Tables\Columns\ToggleColumn;
 
 class ProductResource extends Resource
 {
@@ -159,33 +161,68 @@ class ProductResource extends Resource
                                 ->default(true)
                                 ->required(),
 
-                                CheckboxList::make('mesures')
-                                ->options(function($record){
 
-                                })
-                                ->bulkToggleable()
 
-                                ->columns(5),
-
-                                Section::make('')->schema(function(){
+                                Repeater::make('mesures')->schema(function($state){
+                                    // dd($state);
                                     $columns = [];
 
                                     $mesures = ProductMesure::all();
 
                                     foreach($mesures as $mesure){
 
-                                        $column = CheckboxList::make($mesure->mesure)
+                                        $column =  Select::make($mesure->mesure)
                                         ->options(collect($mesure->options)->pluck('option', 'option'))
-                                        ->bulkToggleable();
+                                                        ->multiple();
 
                                         array_push($columns, $column);
                                     }
 
-
-
-
                                     return $columns;
-                                })->columns(3),
+
+                                })
+                                ->defaultItems(1)
+                                ->deletable(false)
+                                ->addable(true)
+                                ->reorderable(false)
+                                ->maxItems(1),
+
+
+
+
+
+                                // Section::make('')->schema(function($state){
+
+                                //     $columns = [];
+
+                                //     $mesures = ProductMesure::all();
+
+                                //     foreach($mesures as $mesure){
+
+                                //         dd($state);
+
+                                //             foreach(collect($mesure->options)->pluck('option', 'option') as $key => $value)
+                                //             {
+                                //                 $column =  Checkbox::make($key)->default(function() use($state, $mesure){
+                                //                     if(isset($state['mesures'][$mesure->mesure])){
+                                //                       return true;
+                                //                     }
+                                //                 });
+                                //                 array_push($columns, $column);
+                                //             }
+
+
+
+
+
+
+                                //     }
+
+                                //     // dd($columns);
+
+
+                                //     return $columns;
+                                // })->columns(3),
 
 
                             // Toggle::make('is_featured')

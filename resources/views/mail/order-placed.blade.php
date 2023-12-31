@@ -21,15 +21,25 @@
 </style>
 
 <div class="alert " role="alert">
-    <b>commande passé </b> Vous avez une nouvelle commande 😊
+    <b>Vous avez une nouvelle commande 😊</b>
 </div>
-
+@if ($order->notes)
+    <div>
+        <h3>Observation client</h3>
+        <p>
+            {{ $order->notes }}
+        </p>
+    </div>
+@endif
 <div class="customer " role="alert">
     <h3>Produit :
     </h3>
     <b>Nom : </b> {{ $productName }}
     <br>
     <b>Qte : </b> {{ $quantity }}
+    <br>
+    <b>Cout de Livraison : </b>
+    {{ $order->shipping_price }}
     <br>
     <b>Prix Total: </b> {{ $totalPrice }}
 </div>
@@ -42,6 +52,8 @@
     <b>Address : </b> {{ $order->customer->address }} - {{ $order->customer->city }}
     <br>
     <b>contact : </b><a href="tel:{{ $order->customer->phone }}"> {{ $order->customer->phone }}</a>
+    <br>
+
     <b>Livraison : </b>
 
     @if ($order->shipping_type == 'desk')
@@ -50,8 +62,6 @@
         Domicile
     @endif
 
-    <b>Cout de Livraison : </b>
 
-    {{ $order->shipping_price }}
 
 </div>

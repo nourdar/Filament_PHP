@@ -171,7 +171,7 @@
 
 
 
-    <nav class="bg-white border-gray-200 dark:bg-gray-900 font-diph">
+    <nav class=" border-gray-200 bg-slate-900 font-diph w-full ">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-center mx-auto p-4">
             <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
                 <a class="ml-5 flex items-center text-white" href="/">
@@ -281,7 +281,7 @@
     <div class="m-auto container p-10">
 
 
-        <form method="post" action="search" class="font-cairo">
+        <form method="post" action="{{ route('search') }}" class="font-cairo">
             @csrf
             <label for="default-search"
                 class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>

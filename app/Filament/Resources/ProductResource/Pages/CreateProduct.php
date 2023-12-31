@@ -16,27 +16,27 @@ class CreateProduct extends CreateRecord
     {
 
 
-        $mesures = ProductMesure::all();
+        // $mesures = ProductMesure::all();
 
-        $options = [];
+        // $options = [];
 
-        foreach($mesures as $mesure){
+        // foreach($mesures as $mesure){
 
-            if(array_key_exists($mesure->mesure, $data) && !empty($data[$mesure->mesure])){
+        //     if(array_key_exists($mesure->mesure, $data) && !empty($data[$mesure->mesure])){
 
-                $options[$mesure->mesure] = $data[$mesure->mesure];
+        //         $options[$mesure->mesure] = $data[$mesure->mesure];
 
-                unset($data[$mesure->mesure]);
+        //         unset($data[$mesure->mesure]);
 
-            }
-
-
-        }
-
-        $data['mesures'] = $options;
+        //     }
 
 
-        return $data;
+        // }
+
+        // $data['mesures'] = $options;
+
+
+        // return $data;
     }
 
 
