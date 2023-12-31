@@ -11,7 +11,7 @@
                         <?php $i = 1;
                         $img = asset('storage/' . $slide['slide']);
                         $link = $slide['link']; ?>
-                        <a class="swiper-slide" href="{{ $link }}">
+                        <a aria-label="swiper link" class="swiper-slide" href="{{ $link }}">
                             {{-- <div class="swiper-slide"> --}}
 
                             <img src="{{ $img }}" alt="shop swiper element" />

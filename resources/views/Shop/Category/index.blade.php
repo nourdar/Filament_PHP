@@ -9,7 +9,8 @@
         <nav id="store" class="w-full z-30 top-0 px-6 py-1 mb-5">
             <div class="w-full container mx-auto flex flex-wrap items-center justify-center mt-0 px-2 py-3">
 
-                <a class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-4xl font-diph "
+                <a aria-label="categories"
+                    class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-4xl font-diph "
                     href="#">
                     Categories
                 </a>
@@ -24,7 +25,7 @@
                 @foreach ($categories as $category)
                     <div
                         class="w-full md:w-1/3 xl:w-1/4 p-6 text-center border border-gray-200 rounded-lg shadow hover:bg-gray-100  dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white">
-                        <a href="/category/{{ $category->id }}" class="text-center ">
+                        <a aria-label="Link to category" href="/category/{{ $category->id }}" class="text-center ">
 
                             @if (file_exists('storage/' . $category->image))
                                 <?php $image = asset('storage/' . $category->image); ?>
@@ -33,7 +34,8 @@
                             @endif
 
                             <img class="hover:grow hover:shadow-lg " width="200" height="200"
-                                style="display: inline; max-height:200px; height:200px" src="{{ $image }}">
+                                alt="{{ $category->name }}" style="display: inline; max-height:200px; height:200px"
+                                src="{{ $image }}">
 
 
                             <div class="pt-3 flex items-center justify-center justify-center font-cairo">
@@ -55,9 +57,9 @@
             {{ $categories->links() }}
         </div>
     @else
-        <a href="all-categories" class="flex justify-center">
+        <a aria-label="show more categories" href="all-categories" class="flex justify-center">
 
-            <button
+            <button aria-label="show all categories button"
                 class=" font-cairo bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
                 اظهار الكل
             </button>

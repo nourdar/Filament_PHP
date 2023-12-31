@@ -33,6 +33,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Http\Controllers\DeliveryController;
+use App\Models\Customer;
 use App\Models\Delivery;
 
 class OrderResource extends Resource
@@ -83,6 +84,9 @@ class OrderResource extends Resource
                                 ->placeholder('Rechercher un client')
                                 ->relationship('customer', 'name')
                                 ->required()
+
+                                ->getSearchResultsUsing(fn (string $search): array => Customer::where('name', 'like', "%{$search}%")->orWhere('phone', 'like', "%{$search}%")->limit(50)->pluck('name', 'id')->toArray())
+
                                 ->searchable(),
 
 
@@ -93,25 +97,35 @@ class OrderResource extends Resource
                                 ->label('Produit')
                                 ->content(function ($record){
 
+                                    if(!isset($record?->items[0])){
+                                        return '';
+                                    }
+
                                     return $record->items[0]->product->name ;
                                 }),
 
                                 Placeholder::make('product_price')
                                 ->label('Prix Produit')
                                 ->content(function ($record){
+                                    if(!isset($record?->items[0])){
+                                        return '';
+                                    }
                                     return number_format(( $record->items[0]['unit_price'] ), 0).' DZD';
                                 }),
 
                                 Placeholder::make('product_qte')
                                 ->label('Qantite')
                                 ->content(function ($record){
+                                    if(!isset($record?->items[0])){
+                                        return '';
+                                    }
                                     return $record->items[0]['quantity'];
                                 }),
 
                                 Placeholder::make('shipping_price')
                                 ->label('Coût de livraison')
                                 ->content(function ($record){
-                                    return number_format( $record->shipping_price , 0).' DZD';
+                                    return number_format( $record?->shipping_price , 0).' DZD';
                                 }),
 
 
@@ -119,19 +133,22 @@ class OrderResource extends Resource
                             Placeholder::make('total_price')
                                         ->label('Prix Total')
                                         ->content(function ($record){
+                                            if(!isset($record?->items[0])){
+                                                return '';
+                                            }
                                             return number_format(($record->items[0]['quantity'] * $record->items[0]['unit_price'] ) + $record->shipping_price , 0).' DZD';
                                         }),
 
                                         Placeholder::make('shipping_type')
                                         ->label('Type de livraison')
                                         ->content(function ($record){
-                                            return  $record->shipping_type ;
+                                            return  $record?->shipping_type ;
                                         }),
 
                                         Placeholder::make('wilaya')
                                         ->label('Wilaya')
                                         ->content(function ($record){
-                                            return (new AlgeriaCities())->get_wilaya_name($record->customer->address);
+                                            return (new AlgeriaCities())->get_wilaya_name($record?->customer?->address);
                                             // return  (new AlgeriaCities())->get_all_wilayas()[$record->customer->address];
 
 
@@ -140,13 +157,13 @@ class OrderResource extends Resource
                                         Placeholder::make('commune')
                                         ->label('Commune')
                                         ->content(function ($record){
-                                            return  $record->customer->city ;
+                                            return  $record?->customer?->city ;
                                         }),
 
                                         Placeholder::make('tracking')
                                         ->label('Tracking')
                                         ->content(function ($record){
-                                            return  $record->tracking ;
+                                            return  $record?->tracking ;
                                         }),
 
 
@@ -360,7 +377,9 @@ class OrderResource extends Resource
                         TextColumn::make('order.items')
                         ->label('Produit')
                         ->getStateUsing(function($record){
-
+                            if(!isset($record?->items[0])){
+                                return '';
+                            }
                             $product = $record?->items[0]?->product?->name;
 
                             if($record?->items[0]?->options){

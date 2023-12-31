@@ -239,13 +239,13 @@ class ProductResource extends Resource
                         ->schema([
                             FileUpload::make('image')
                                 ->directory('form-attachments')
-                                ->image()
+
                                 ->imageEditor(),
 
                                 FileUpload::make('images')
                                 ->label('Autre images')
                                 ->directory('form-attachments')
-                                ->image()
+
                                 ->multiple()
                                 ->imageEditor(),
 

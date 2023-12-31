@@ -36,7 +36,7 @@ class AdminPanelProvider extends PanelProvider
             // ->domain('admin.example.com')
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->sidebarCollapsibleOnDesktop()
-
+            ->profile()
             ->userMenuItems([
                 // 'settings' => MenuItem::make()
                 //     ->label('Paramètre')

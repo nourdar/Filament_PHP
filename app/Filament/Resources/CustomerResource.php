@@ -76,7 +76,12 @@ class CustomerResource extends Resource
                             TextInput::make('address')
                             ->label('Wilaya')
                             ->default(function ($record){
-                                return  (new AlgeriaCities())->get_all_wilayas()[$record->address];
+                                if(!empty($record)){
+
+                                    return  (new AlgeriaCities())->get_all_wilayas()[$record?->address];
+                                }
+
+                                return $record;
                             })
                             ->maxLength(255),
 
@@ -103,10 +108,12 @@ class CustomerResource extends Resource
                     ->searchable()
                     ->label('Nom')
                     ->sortable(),
+
                 Tables\Columns\TextColumn::make('email')
                     ->label('Adresse email')
                     ->searchable()
                     ->sortable(),
+
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Numéro de Téléphone')
                     ->searchable()

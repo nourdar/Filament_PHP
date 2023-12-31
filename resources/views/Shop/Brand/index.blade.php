@@ -9,7 +9,8 @@
         <nav id="store" class="w-full z-30 top-0 px-6 py-1 mb-5">
             <div class="w-full container mx-auto flex flex-wrap items-center justify-center mt-0 px-2 py-3">
 
-                <a class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-4xl  font-diph"
+                <a aria-label="show more brands"
+                    class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-4xl  font-diph"
                     href="#">
                     Marques
                 </a>
@@ -25,7 +26,7 @@
                 @foreach ($brands as $brand)
                     <div
                         class="w-full md:w-1/3 xl:w-1/4 p-6 text-center border border-gray-200 rounded-lg shadow hover:bg-gray-100  dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white">
-                        <a href="/brand/{{ $brand->id }}" class="text-center">
+                        <a aria-label="link to brand" href="/brand/{{ $brand->id }}" class="text-center">
 
 
                             @if (file_exists('storage/' . $brand->image))
@@ -34,8 +35,9 @@
                                 <?php $image = $brand->image; ?>
                             @endif
 
-                            <img class="hover:grow hover:shadow-lg  " width="200" height="200"
-                                style="display: inline; max-height:200px; height:200px" src="{{ $image }}">
+                            <img class="hover:grow hover:shadow-lg  " alt="{{ $brand->name }}" width="200"
+                                height="200" style="display: inline; max-height:200px; height:200px"
+                                src="{{ $image }}">
                             <div class="pt-3 flex items-center justify-center justify-center font-cairo">
                                 <p class="text-center " style="font-size: 25px; font-weight:bold">{{ $brand->name }}
                                 </p>
@@ -58,9 +60,9 @@
             {{ $brands->links() }}
         </div>
     @else
-        <a href="all-brands" class="flex justify-center">
+        <a aria-label="show more brands" href="all-brands" class="flex justify-center">
 
-            <button
+            <button aria-label="show all brands button"
                 class=" font-cairo bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
                 اظهار الكل
             </button>

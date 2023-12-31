@@ -200,6 +200,7 @@
                     </div>
                     <div class="flex items-center gap-x-1.5">
                         <button type="button"
+                        aria-label="decrement quantity button"
                             class="w-6 h-6 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                             data-hs-input-number-decrement>
                             <svg class="flex-shrink-0 w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
@@ -213,6 +214,7 @@
                             type="text" name="quantity" id="quantity" value="{{ old('quantity', 1) }}"
                             data-hs-input-number-input>
                         <button type="button"
+                        aria-label="increment quantity button"
                             class="w-6 h-6 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                             data-hs-input-number-increment>
                             <svg class="flex-shrink-0 w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
@@ -278,9 +280,9 @@
 
 
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+<script  src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<script type="text/javascript">
+<script  type="text/javascript">
     var productPrice = {{ $product->price }}
     var homeDelivery = 0
     var deskDelivery = 0

@@ -36,7 +36,7 @@ class CreateProduct extends CreateRecord
         // $data['mesures'] = $options;
 
 
-        // return $data;
+        return $data;
     }
 
 

@@ -19,7 +19,7 @@
 
             @foreach ($modelSearchResults as $searchResult)
                 <ul>
-                    <a href="{{ $searchResult->url }}">{{ $searchResult->title }}</a>
+                    <a aria-label="search result item" href="{{ $searchResult->url }}">{{ $searchResult->title }}</a>
                 </ul>
             @endforeach
         @endforeach

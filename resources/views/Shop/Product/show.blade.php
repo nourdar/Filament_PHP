@@ -243,7 +243,8 @@
     <nav id="store" class="w-full z-30 top-0 mb-5">
         <div class="w-full container mx-auto flex flex-wrap items-center justify-center mt-0 ">
 
-            <a class="w-full uppercase text-center tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-2xl "
+            <a aria-label="link to product"
+                class="w-full uppercase text-center tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-2xl "
                 href="#">
                 {{ $product?->name }}
                 <br>
@@ -280,7 +281,7 @@
                                 <?php $mainImage = $product->image; ?>
                             @endif
 
-                            <img src="{{ $mainImage }}" />
+                            <img src="{{ $mainImage }}" alt="{{ $product->name }}" />
                         </div>
                     @endif
 
@@ -292,9 +293,9 @@
                                 @if (file_exists('storage/' . $image))
                                     <?php $photo = asset('storage/' . $image); ?>
 
-                                    <img src="{{ $photo }}" />
+                                    <img src="{{ $photo }}" alt="{{ $product->name }}" />
                                 @else
-                                    <img src="{{ $image }}" />
+                                    <img src="{{ $image }}" alt="{{ $product->name }}" />
                                 @endif
 
                             </div>
@@ -311,7 +312,7 @@
 
                     @if ($product->image)
                         <div class="swiper-slide">
-                            <img src="{{ $mainImage }}" />
+                            <img src="{{ $mainImage }}" alt="{{ $product->name }}" />
                         </div>
                     @endif
 
@@ -324,7 +325,7 @@
 
                                     <img src="{{ $photo }}" />
                                 @else
-                                    <img src="{{ $image }}" />
+                                    <img src="{{ $image }}" alt="{{ $product->name }}" />
                                 @endif
 
 

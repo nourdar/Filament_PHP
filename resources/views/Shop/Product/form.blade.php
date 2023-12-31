@@ -131,10 +131,11 @@
 
 
 
-            @if ($product->mesures)
+            @if (isset($product->mesures[0]))
 
 
                 <div class="flex  gap-x-3  w-full flex-wrap mt-3 mb-2">
+
                     @foreach ($product->mesures[0] as $mesure => $options)
                         @if (count($options) > 0)
                             <select type="text" name="{{ $mesure }}"
@@ -148,6 +149,7 @@
                             </select>
                         @endif
                     @endforeach
+
                 </div>
             @endif
 
@@ -171,7 +173,7 @@
 
 
                     <span class="lg:w-1/3 w-full">
-                        التوصيل ( YALIDINE ) :
+                        التوصيل :
                     </span>
                     <span id="homeDelivery" class="w-1/2 lg:w-1/3">
                         <input type="checkbox" checked id="homeCheck" class="hidden">
@@ -210,7 +212,7 @@
                     <div class=" flex justify-center items-center gap-x-3">
 
                         <div class="flex items-center gap-x-1.5">
-                            <button type="button" id="quantityDecrement"
+                            <button type="button" id="quantityDecrement" aria-label="decrement quantity button"
                                 class="w-6 h-6 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                                 data-hs-input-number-decrement>
                                 <svg class="flex-shrink-0 w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
@@ -223,7 +225,7 @@
                                 class="p-0 w-6 bg-transparent border-0 text-gray-800 text-center focus:ring-0 dark:text-white"
                                 type="text" name="quantity" id="quantity" value="{{ old('quantity', 1) }}"
                                 data-hs-input-number-input>
-                            <button type="button" id="quantityIncrement"
+                            <button type="button" id="quantityIncrement" aria-label="increment quantity button"
                                 class="w-6 h-6 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                                 data-hs-input-number-increment>
                                 <svg class="flex-shrink-0 w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg"

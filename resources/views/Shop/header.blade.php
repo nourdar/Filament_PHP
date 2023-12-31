@@ -9,6 +9,7 @@
     <title>{{ $title ?? $settings?->name }}</title>
     <meta name="description" content="{{ $settings?->description }}">
     <meta name="keywords" content="{{ $settings?->keywords }}">
+    <link rel="icon" type="image/png" href="{{ asset('storage/' . $settings?->logo) }}" />
 
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" />
 
@@ -173,11 +174,11 @@
 
     <nav class=" border-gray-200 bg-slate-900 font-diph w-full ">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-center mx-auto p-4">
-            <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-                <a class="ml-5 flex items-center text-white" href="/">
+            <a aria-label="Link to home page" href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+                <a aria-label="Link to home page" class="ml-5 flex items-center text-white" href="/">
                     <img src="{{ asset('storage/' . $settings?->logo) }}" alt="Logo" class="mr-5"
                         style="max-width: 200px; max-height:80px">
-                    <span class="hidden md:block text-2xl text-bold">
+                    <span class="hidden md:block text-4xl text-bold" style="font-weight: 600">
                         {{ $settings?->name }}
                     </span>
                 </a>
@@ -208,7 +209,7 @@
         <div class="flex justify-center items-center h-5 fixed bottom-12 right-5" style="z-index: 99999">
             <div x-data="{ open: false }">
                 <!-- Open modal button -->
-                <button x-on:click="open = true" class="px-4 py-2  text-white ">
+                <button aria-label="make a call button" x-on:click="open = true" class="px-4 py-2  text-white ">
 
 
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="50px"
@@ -256,7 +257,8 @@
                         <!-- Modal Body -->
                         <div class="p-4">
                             @foreach ($settings?->telephone as $phone)
-                                <a href="tel:{{ $phone['phone'] }}" class="ml-5 justify-right">
+                                <a aria-label="Make a phone call" href="tel:{{ $phone['phone'] }}"
+                                    class="ml-5 justify-right">
 
                                     {{ $phone['phone'] }}
                                 </a>
@@ -264,8 +266,9 @@
                         </div>
                         <!-- Modal Footer -->
                         <div class="border-t px-4 py-2 flex justify-end">
-                            <button x-on:click="open = false"
-                                class="px-3 py-1 bg-indigo-500 text-white  rounded-md w-full sm:w-auto"> اغلاق </button>
+                            <button x-on:click="open = false" aria-label="close the dialog button"
+                                class="px-3 py-1 bg-indigo-500 text-white  rounded-md w-full sm:w-auto"> اغلاق
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -273,7 +276,7 @@
         </div>
 
         <!-- Include Alpine.js -->
-        <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js"></script>
     @endif
 
 
@@ -296,7 +299,7 @@
                 <input type="search" id="default-search" name="search"
                     class="block w-full  p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="ابحث عن منتج" required>
-                <button type="submit"
+                <button aria-label="search for product now" type="submit"
                     class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ابحث</button>
             </div>
         </form>
