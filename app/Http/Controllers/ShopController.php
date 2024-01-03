@@ -42,7 +42,7 @@ class ShopController extends Controller
         $brands = Brand::where('is_visible', true)->has('products')->paginate(3, ['*'], 'brands');
         $categories = Category::where('is_visible', true)->has('products')->paginate(3, ['*'], 'categories');
 
-        return view('shop.shop')->with(compact(['title', 'settings', 'products', 'brands', 'categories']));
+        return view('lshop.lshop')->with(compact(['title', 'settings', 'products', 'brands', 'categories']));
     }
 
 

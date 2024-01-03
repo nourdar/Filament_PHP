@@ -91,6 +91,7 @@ class SettingsResource extends Resource
                     Repeater::make('transport')->schema([
                         Select::make('provider')->label('Transporteur') ->options([
                           'Yalidine' => 'Yalidine' ,
+                          'zrexpress' => 'ZR Express' ,
 
                         ]),
                         TextInput::make('api_key')->label('Transport API Key'),

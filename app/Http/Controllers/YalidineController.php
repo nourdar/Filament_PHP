@@ -181,6 +181,34 @@ class YalidineController extends Controller
         }
     }
 
+    public static function getAllDeliveryFees()
+    {
+
+        try {
+            self::initGuzzleHttpClient();
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => self::$url . 'deliveryfees',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'X-API-ID: ' . self::$api_id,
+                    'X-API-TOKEN: ' . self::$api_token
+                ),
+            ));
+            $response_json = curl_exec($curl);
+            curl_close($curl);
+            $response_array = json_decode($response_json, true);
+            return $response_array;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 
     public function get_centers_by_wilaya($wilaya_code){
 
@@ -238,5 +266,102 @@ class YalidineController extends Controller
        $centers = collect($centers)->pluck('center_id', 'commune_name');
 
        return $centers;
+    }
+
+
+    public static function get_all_wilayas()
+    {
+
+        try {
+            self::initGuzzleHttpClient();
+
+            $curl = curl_init();
+
+            $url = self::$url  . 'wilayas';
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'X-API-ID: ' . self::$api_id,
+                    'X-API-TOKEN: ' . self::$api_token
+                ),
+            ));
+            $response_json = curl_exec($curl);
+            curl_close($curl);
+            $response_array = json_decode($response_json, true);
+            return $response_array;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function get_all_communes()
+    {
+
+        try {
+            self::initGuzzleHttpClient();
+
+            $curl = curl_init();
+
+            $url = self::$url  . 'communes';
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'X-API-ID: ' . self::$api_id,
+                    'X-API-TOKEN: ' . self::$api_token
+                ),
+            ));
+            $response_json = curl_exec($curl);
+            curl_close($curl);
+            $response_array = json_decode($response_json, true);
+            return $response_array;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function get_all_centers()
+    {
+
+        try {
+            self::initGuzzleHttpClient();
+
+            $curl = curl_init();
+
+            $url = self::$url  . 'centers';
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'X-API-ID: ' . self::$api_id,
+                    'X-API-TOKEN: ' . self::$api_token
+                ),
+            ));
+            $response_json = curl_exec($curl);
+            curl_close($curl);
+            $response_array = json_decode($response_json, true);
+            return $response_array;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

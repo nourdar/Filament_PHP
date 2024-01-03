@@ -7,6 +7,7 @@ use App\Http\Controllers\AlgeriaCities;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\ZrExpressController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,8 @@ Route::get('/all-products', [ShopController::class, 'get_all_products'])->name('
 Route::get('/wilayas', [AlgeriaCities::class, 'get_all_wilayas']);
 Route::get('/communs/{wilayaCode}', [AlgeriaCities::class, 'get_all_communs']);
 Route::get('/yalidine-delivery-fees/{wilaya}', [DeliveryController::class, 'get_yalididne_delivery_fees']);
+Route::get('/yalidine/webhook', [DeliveryController::class, 'yalidine_webhook']);
+Route::get('/delivery-seeder', [DeliveryController::class, 'seeder']);
 
 Route::post('/place-order', [ShopController::class, 'place_order']);
 
@@ -43,6 +46,26 @@ Route::get('/optimize', function(){
 
     dd(Artisan::output());
 });
+
+
+Route::get('/install', function(){
+
+    Artisan::call('optimize:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+
+    Artisan::call('storage:link');
+    Artisan::call('migrate');
+
+    dd(Artisan::output());
+});
+
+
+Route::get('/zrexpress/create-coli',[ZrExpressController::class, 'index'] )->name('zrexpress.create');
+
+Route::get('/get-zrexpress-tarifs',[ZrExpressController::class, 'get_tarifs'] )->name('zrexpress.tarifs');
+
+
 
 
 Route::get('/link-storage', function(){
