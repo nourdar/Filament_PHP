@@ -17,9 +17,9 @@ class YalidineController extends Controller
     public function __construct()
     {
         $settings = Settings::first();
-        if($settings?->transport) {
-            foreach($settings?->transport as $transport) {
-                if(strtolower($transport['provider']) == 'yalidine') {
+        if ($settings?->transport) {
+            foreach ($settings?->transport as $transport) {
+                if (strtolower($transport['provider']) == 'yalidine') {
                     self::$api_id = $transport['api_key'];
                     self::$api_token = $transport['api_token'];
                 }
@@ -159,7 +159,7 @@ class YalidineController extends Controller
             self::initGuzzleHttpClient();
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => self::$url . 'deliveryfees/?wilaya_id='.$wilaya,
+                CURLOPT_URL => self::$url . 'deliveryfees/?wilaya_id=' . $wilaya,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -210,42 +210,40 @@ class YalidineController extends Controller
         }
     }
 
-    public function get_centers_by_wilaya($wilaya_code){
+    public function get_centers_by_wilaya($wilaya_code)
+    {
 
         $wilaya_code = (new AlgeriaCities())->get_wilaya_code($wilaya_code);
         try {
             self::initGuzzleHttpClient();
 
-        $curl = curl_init();
+            $curl = curl_init();
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => self::$url . 'centers/?wilaya_id='.$wilaya_code,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-                'X-API-ID: ' . self::$api_id,
-                'X-API-TOKEN: ' . self::$api_token
-            ),
-        ));
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => self::$url . 'centers/?wilaya_id=' . $wilaya_code,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'X-API-ID: ' . self::$api_id,
+                    'X-API-TOKEN: ' . self::$api_token
+                ),
+            ));
 
-        $response_json = curl_exec($curl);
-        curl_close($curl);
+            $response_json = curl_exec($curl);
+            curl_close($curl);
 
 
-        $response_array = json_decode($response_json,true); // converting the json to a php array
+            $response_array = json_decode($response_json, true); // converting the json to a php array
 
-        return $response_array['data'];
-
+            return $response_array['data'] ?? false;
         } catch (\Throwable $th) {
             throw $th;
         }
-
-
     }
 
 
@@ -260,12 +258,13 @@ class YalidineController extends Controller
     // }
 
 
-    public function get_center_id($wilayaCode){
-       $centers =  $this->get_centers_by_wilaya($wilayaCode);
+    public function get_center_id($wilayaCode)
+    {
+        $centers =  $this->get_centers_by_wilaya($wilayaCode);
 
-       $centers = collect($centers)->pluck('center_id', 'commune_name');
+        $centers = collect($centers)->pluck('center_id', 'commune_name');
 
-       return $centers;
+        return $centers;
     }
 
 

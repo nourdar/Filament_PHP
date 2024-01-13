@@ -5,6 +5,7 @@ namespace App\Filament\Resources\OrderResource\Pages;
 use Closure;
 use Filament\Actions;
 use Filament\Tables\Table;
+use Filament\Pages\Actions\Action;
 use App\Filament\Resources\OrderResource;
 use Filament\Resources\Pages\ListRecords;
 
@@ -16,6 +17,8 @@ class ListOrders extends ListRecords
     {
         return [
             Actions\CreateAction::make()->label('Enregister une commande'),
+
+
 
         ];
     }

@@ -39,6 +39,8 @@ use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Http\Controllers\HelperController;
+use Filament\Forms\Components\RichEditor;
 
 class ProductResource extends Resource
 {
@@ -67,8 +69,8 @@ class ProductResource extends Resource
     public static function getNavigationBadgeColor(): ?string
     {
         return static::getModel()::count() < 5
-                    ? 'warning'
-                    : 'primary';
+            ? 'warning'
+            : 'primary';
     }
 
     public static function getGloballySearchableAttributes(): array
@@ -95,63 +97,62 @@ class ProductResource extends Resource
                     Step::make('Détails Préalable')
                         ->schema([
                             TextInput::make('name')
-                                ->label('Nom')
+                                ->label('Designation')
                                 ->required()
-                                ->live(onBlur:true)
-                                ->afterStateUpdated(function(string $operation, $state, Forms\Set $set) {
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
                                     // dd($operation);
-                                    if($operation !== 'create'){
+                                    if ($operation !== 'create') {
                                         return;
                                     }
 
                                     $set('slug', Str::slug($state));
                                 }),
-                            TextInput::make('slug')
+                            Hidden::make('slug')
                                 ->label('Slug du produit')
                                 ->required()
                                 ->disabled()
                                 ->dehydrated()
-                                ->unique(Product::class, 'slug', ignoreRecord:true),
+                                ->unique(Product::class, 'slug', ignoreRecord: true),
 
-                                TextInput::make('price')
+                            TextInput::make('price')
                                 ->minValue(1)
                                 ->numeric()
                                 ->label('Prix')
                                 ->rules('regex:/^\d{1,6}(\.\d{0,2})?$/')
                                 ->required(),
 
-                                TextInput::make('old_price')
+                            TextInput::make('old_price')
                                 ->minValue(1)
                                 ->numeric()
                                 ->label('Ancien Prix')
                                 ->rules('regex:/^\d{1,6}(\.\d{0,2})?$/'),
 
 
-                                Hidden::make('quantity')
-
-
-
+                            Hidden::make('quantity')
+                                ->label('Quantite')
                                 ->default(1),
+
                             Hidden::make('type')->default('deliverable'),
 
-                            MarkdownEditor::make('description')
+                            RichEditor::make('description')
                                 ->label('Description')
                                 ->columnSpan('full')
-                        ])->columns(2),
+                        ])->columns(3),
 
                     // Step::make('Prix et Quantités')
                     //     ->schema([
-                            // TextInput::make('sku')
-                            //     ->label('SKU (Unité de gestion des stocks)')
-                            //     ->unique(),
+                    // TextInput::make('sku')
+                    //     ->label('SKU (Unité de gestion des stocks)')
+                    //     ->unique(),
 
 
-                            // Select::make('type')->options([
-                            //     'deliverable' => ProductType::DELIVERABLE->value,
-                            //     'downloadable' => ProductType::DOWNLOADABLE->value,
-                            // ]),
+                    // Select::make('type')->options([
+                    //     'deliverable' => ProductType::DELIVERABLE->value,
+                    //     'downloadable' => ProductType::DOWNLOADABLE->value,
+                    // ]),
 
-                        // ])->columns(2),
+                    // ])->columns(2),
 
                     Step::make('Status du Produit')
                         ->schema([
@@ -163,24 +164,9 @@ class ProductResource extends Resource
 
 
 
-                                Repeater::make('mesures')->schema(function($state){
-                                    // dd($state);
-                                    $columns = [];
-
-                                    $mesures = ProductMesure::all();
-
-                                    foreach($mesures as $mesure){
-
-                                        $column =  Select::make($mesure->mesure)
-                                        ->options(collect($mesure->options)->pluck('option', 'option'))
-                                                        ->multiple();
-
-                                        array_push($columns, $column);
-                                    }
-
-                                    return $columns;
-
-                                })
+                            Repeater::make('mesures')->schema(function () {
+                                return HelperController::get_product_mesures_options();
+                            })
                                 ->defaultItems(1)
                                 ->deletable(false)
                                 ->addable(true)
@@ -191,38 +177,38 @@ class ProductResource extends Resource
 
 
 
-                                // Section::make('')->schema(function($state){
+                            // Section::make('')->schema(function($state){
 
-                                //     $columns = [];
+                            //     $columns = [];
 
-                                //     $mesures = ProductMesure::all();
+                            //     $mesures = ProductMesure::all();
 
-                                //     foreach($mesures as $mesure){
+                            //     foreach($mesures as $mesure){
 
-                                //         dd($state);
+                            //         dd($state);
 
-                                //             foreach(collect($mesure->options)->pluck('option', 'option') as $key => $value)
-                                //             {
-                                //                 $column =  Checkbox::make($key)->default(function() use($state, $mesure){
-                                //                     if(isset($state['mesures'][$mesure->mesure])){
-                                //                       return true;
-                                //                     }
-                                //                 });
-                                //                 array_push($columns, $column);
-                                //             }
-
-
+                            //             foreach(collect($mesure->options)->pluck('option', 'option') as $key => $value)
+                            //             {
+                            //                 $column =  Checkbox::make($key)->default(function() use($state, $mesure){
+                            //                     if(isset($state['mesures'][$mesure->mesure])){
+                            //                       return true;
+                            //                     }
+                            //                 });
+                            //                 array_push($columns, $column);
+                            //             }
 
 
 
 
-                                //     }
-
-                                //     // dd($columns);
 
 
-                                //     return $columns;
-                                // })->columns(3),
+                            //     }
+
+                            //     // dd($columns);
+
+
+                            //     return $columns;
+                            // })->columns(3),
 
 
                             // Toggle::make('is_featured')
@@ -242,12 +228,16 @@ class ProductResource extends Resource
 
                                 ->imageEditor(),
 
-                                FileUpload::make('images')
+                            FileUpload::make('images')
                                 ->label('Autre images')
                                 ->directory('form-attachments')
 
                                 ->multiple()
                                 ->imageEditor(),
+
+                            Repeater::make('videos')->schema([
+                                TextInput::make('link')->label('Lien YouTube'),
+                            ]),
 
                         ]),
 
@@ -267,8 +257,8 @@ class ProductResource extends Resource
                         ])
 
                 ])
-                ->skippable()
-                ->columnSpan('full')
+                    ->skippable()
+                    ->columnSpan('full')
 
             ]);
     }
@@ -299,7 +289,7 @@ class ProductResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                    TextColumn::make('old_price')
+                TextColumn::make('old_price')
                     ->label('Ancien Prix')
                     ->searchable()
                     ->sortable()
@@ -340,8 +330,7 @@ class ProductResource extends Resource
                         ->url(fn ($record): string => route('product.show', $record))
                         ->openUrlInNewTab()
 
-                        ->icon('heroicon-o-link')
-                        ,
+                        ->icon('heroicon-o-link'),
                     Tables\Actions\DeleteAction::make()
                         ->label('Supprimer'),
                 ])

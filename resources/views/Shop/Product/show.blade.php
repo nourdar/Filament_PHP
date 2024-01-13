@@ -1,21 +1,6 @@
 @include('shop.header')
 
 <style>
-    html,
-    body {
-        position: relative;
-        height: 100%;
-    }
-
-    body {
-        background: #eee;
-        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-        font-size: 14px;
-        color: #000;
-        margin: 0;
-        padding: 0;
-    }
-
     .swiper {
         width: 100%;
         height: 100%;
@@ -34,7 +19,8 @@
         display: block;
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
+        margin: 4px
     }
 
     .markdown p {
@@ -72,11 +58,21 @@
         .swiper {
             width: 100%;
             height: 50%;
+
         }
 
-        .swiper-slide img {
 
-            object-fit: contain;
+        .swiper-slide  {
+            width: 100%;
+
+        }
+        .swiper-slide img {
+            width: 100%;
+            object-fit: cover;
+
+        }
+        .swiper-button-next,.swiper-button-prev{
+
         }
     }
 </style>
@@ -103,10 +99,10 @@
 
 
 
-        <div class="flex justify-center items-center h-5 fixed bottom-12 right-5" style="z-index: 99999">
+        <div class="fixed flex items-center justify-center h-5 bottom-12 right-5" style="z-index: 99999">
             <div x-data="{ open: true }">
                 <!-- Open modal button -->
-                {{-- <button x-on:click="open = true" class="px-4 py-2  text-white ">
+                {{-- <button x-on:click="open = true" class="px-4 py-2 text-white ">
 
 
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="50px"
@@ -135,20 +131,20 @@
 
                 </button> --}}
                 <!-- Modal Overlay -->
-                <div x-show="open" class="fixed inset-0 px-2 z-10 overflow-hidden flex items-center justify-center ">
+                <div x-show="open" class="fixed inset-0 z-10 flex items-center justify-center px-2 overflow-hidden ">
                     <div x-show="open" x-transition:enter="transition-opacity ease-out duration-300"
                         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                         x-transition:leave="transition-opacity ease-in duration-300"
                         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                        class="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+                        class="absolute inset-0 transition-opacity bg-gray-500 bg-opacity-75"></div>
                     <!-- Modal Content -->
                     <div x-show="open" x-transition:enter="transition-transform ease-out duration-300"
                         x-transition:enter-start="transform scale-75" x-transition:enter-end="transform scale-100"
                         x-transition:leave="transition-transform ease-in duration-300"
                         x-transition:leave-start="transform scale-100" x-transition:leave-end="transform scale-75"
-                        class="bg-white rounded-md shadow-xl overflow-hidden max-w-md w-full sm:w-96 md:w-1/2 lg:w-2/3 xl:w-1/3 z-50">
+                        class="z-50 w-full max-w-md overflow-hidden bg-white rounded-md shadow-xl sm:w-96 md:w-1/2 lg:w-2/3 xl:w-1/3">
                         <!-- Modal Header -->
-                        <div class="bg-green-500 text-white px-4 py-2 flex justify-center">
+                        <div class="flex justify-center px-4 py-2 text-white bg-green-500">
                             <h2 class="text-lg font-semibold text-center"></h2>
                         </div>
                         <!-- Modal Body -->
@@ -156,16 +152,16 @@
                             {{ Session::get('message') }}
                         </div>
                         <!-- Modal Footer -->
-                        <div class="border-t px-4 py-2 flex justify-end">
+                        <div class="flex justify-end px-4 py-2 border-t">
                             <button x-on:click="open = false"
-                                class="px-3 py-1 bg-indigo-500 text-white  rounded-md w-full sm:w-auto"> اغلاق </button>
+                                class="w-full px-3 py-1 text-white bg-indigo-500 rounded-md sm:w-auto"> اغلاق </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     @else
-        {{-- <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-center"
+        {{-- <div class="p-4 mb-4 text-sm text-center text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
             role="alert">
             <span class="font-medium">{{ Session::get('message') }} </span>
         </div> --}}
@@ -174,10 +170,10 @@
 
 
 
-        <div class="flex justify-center items-center h-5 fixed bottom-12 right-5" style="z-index: 99999">
+        <div class="fixed flex items-center justify-center h-5 bottom-12 right-5" style="z-index: 99999">
             <div x-data="{ open: true }">
                 <!-- Open modal button -->
-                {{-- <button x-on:click="open = true" class="px-4 py-2  text-white ">
+                {{-- <button x-on:click="open = true" class="px-4 py-2 text-white ">
 
 
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="50px"
@@ -206,20 +202,20 @@
 
                 </button> --}}
                 <!-- Modal Overlay -->
-                <div x-show="open" class="fixed inset-0 px-2 z-10 overflow-hidden flex items-center justify-center ">
+                <div x-show="open" class="fixed inset-0 z-10 flex items-center justify-center px-2 overflow-hidden ">
                     <div x-show="open" x-transition:enter="transition-opacity ease-out duration-300"
                         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                         x-transition:leave="transition-opacity ease-in duration-300"
                         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                        class="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+                        class="absolute inset-0 transition-opacity bg-gray-500 bg-opacity-75"></div>
                     <!-- Modal Content -->
                     <div x-show="open" x-transition:enter="transition-transform ease-out duration-300"
                         x-transition:enter-start="transform scale-75" x-transition:enter-end="transform scale-100"
                         x-transition:leave="transition-transform ease-in duration-300"
                         x-transition:leave-start="transform scale-100" x-transition:leave-end="transform scale-75"
-                        class="bg-white rounded-md shadow-xl overflow-hidden max-w-md w-full sm:w-96 md:w-1/2 lg:w-2/3 xl:w-1/3 z-50">
+                        class="z-50 w-full max-w-md overflow-hidden bg-white rounded-md shadow-xl sm:w-96 md:w-1/2 lg:w-2/3 xl:w-1/3">
                         <!-- Modal Header -->
-                        <div class="bg-red-500 text-white px-4 py-2 flex justify-center">
+                        <div class="flex justify-center px-4 py-2 text-white bg-red-500">
                             <h2 class="text-lg font-semibold text-center"></h2>
                         </div>
                         <!-- Modal Body -->
@@ -227,9 +223,9 @@
                             {{ Session::get('message') }}
                         </div>
                         <!-- Modal Footer -->
-                        <div class="border-t px-4 py-2 flex justify-end">
+                        <div class="flex justify-end px-4 py-2 border-t">
                             <button x-on:click="open = false"
-                                class="px-3 py-1 bg-indigo-500 text-white  rounded-md w-full sm:w-auto"> اغلاق </button>
+                                class="w-full px-3 py-1 text-white bg-indigo-500 rounded-md sm:w-auto"> اغلاق </button>
                         </div>
                     </div>
                 </div>
@@ -238,25 +234,32 @@
     @endif
 @endif
 
-<div class='container py-8 px-6 mx-auto'>
 
-    <nav id="store" class="w-full z-30 top-0 mb-5">
-        <div class="w-full container mx-auto flex flex-wrap items-center justify-center mt-0 ">
+
+@include('shop.components.show-product')
+
+<div class='container px-6 py-8 mx-auto'>
+
+    <nav id="store" class="top-0 z-30 w-full mb-5">
+        <div class="container flex flex-wrap items-center justify-center w-full mx-auto mt-0 ">
 
             <a aria-label="link to product"
-                class="w-full uppercase text-center tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-2xl "
+                class="w-full text-2xl font-bold tracking-wide text-center text-gray-800 no-underline uppercase hover:no-underline "
                 href="#">
                 {{ $product?->name }}
+                <br>
+                @if (isset($product?->old_price))
+                <span class="m-2 text-red-900 line-through">
+                    {{ number_format($product?->old_price, 0, '.') }}
+                    DZD
+                </span>
+            @endif
+
                 <br>
                 {{ number_format($product?->price, 0, '.') }}
                 DZD
 
-                @if (isset($product?->old_price))
-                    <span class="text-red-900 line-through">
-                        {{ number_format($product?->old_price, 0, '.') }}
-                        DZD
-                    </span>
-                @endif
+
             </a>
 
 
@@ -264,9 +267,9 @@
     </nav>
 
 
-    <div class="flex flex-wrap lg:gap-x-5  lg:flex-nowrap">
+    <div class="flex flex-wrap lg:gap-x-5 lg:flex-nowrap">
 
-        <div class="w-full lg:w-1/2  md:w-full" style="max-height: 500px">
+        <div class="w-full lg:w-1/2 md:w-full" style="max-height: 500px">
             <!-- Swiper -->
 
             <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper productSwiper2">
@@ -280,8 +283,10 @@
                             @else
                                 <?php $mainImage = $product->image; ?>
                             @endif
+                            <a href="{{ $mainImage }}">
 
-                            <img src="{{ $mainImage }}" alt="{{ $product->name }}" />
+                                <img src="{{ $mainImage }}" alt="{{ $product->name }}" class="w-full" />
+                            </a>
                         </div>
                     @endif
 
@@ -292,10 +297,15 @@
 
                                 @if (file_exists('storage/' . $image))
                                     <?php $photo = asset('storage/' . $image); ?>
+                                    <a href="{{ $photo }}">
 
-                                    <img src="{{ $photo }}" alt="{{ $product->name }}" />
+                                        <img src="{{ $photo }}" alt="{{ $product->name }}" class="w-full" />
+                                    </a>
                                 @else
-                                    <img src="{{ $image }}" alt="{{ $product->name }}" />
+                                <a href="{{ $image }}">
+
+                                    <img src="{{ $image }}" alt="{{ $product->name }}" class="w-full" />
+                                </a>
                                 @endif
 
                             </div>
@@ -304,8 +314,8 @@
 
 
                 </div>
-                <div class="swiper-button-next bg-slate-900 p-8 rounded"></div>
-                <div class="swiper-button-prev bg-slate-900 p-8 rounded"></div>
+                <div class="p-8 rounded swiper-button-next bg-slate-900 "></div>
+                <div class="p-8 rounded swiper-button-prev bg-slate-900"></div>
             </div>
             <div thumbsSlider="" class="swiper productSwiper">
                 <div class="swiper-wrapper">
@@ -338,11 +348,11 @@
         </div>
 
 
-        <div class="w-full lg:w-1/2  md:w-full place-order-form">
+        <div class="w-full lg:w-1/2 md:w-full place-order-form">
             {{-- Start Place Order Form  --}}
 
-            @include('shop.product.form')
-
+            {{-- @include('shop.product.form') --}}
+            @livewire('ProductForm', ['productId' => $product->id])
             {{-- End Place Order form --}}
         </div>
 
@@ -356,35 +366,118 @@
 
     <div class="mt-5 markdown font-cairo">
 
+        @if ($product?->videos)
+            @foreach ($product?->videos as $video)
+                <div class="container">
+                    <?php
 
-        @if ($product?->description)
-            {!! Str::markdown($product?->description) !!}
+                    $url_components = parse_url($video['link']);
+
+                    parse_str($url_components['query'], $params);
+
+                    $link = $params['v'] ?? '';
+
+                    ?>
+                    {{-- <iframe height="315" src="https://youtube.com/embed/{{ $link }}" class="m-auto"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen></iframe> --}}
+
+                    {{-- <iframe class="w-full aspect-video " src="{{ $video['link'] }}"></iframe> --}}
+                    {{--
+                    <iframe src="" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe> --}}
+                </div>
+            @endforeach
         @endif
+
+
     </div>
 
 </div>
 
 </div>
+@if ($product?->description)
+    <div class="p-5 direction-rtl product-description" dir="rtl">
+
+        {!! Str::markdown($product?->description) !!}
+    </div>
+@endif
+
+
+<div class="container">
+    <a href="#form" onclick="scrollToSection(event)" class="fixed bottom-0 z-10 w-full p-8 m-auto lg:w-48 animated animate__animated animate__shakeX animate__infinite">
+
+        <button type="submit"
+        class="w-full p-2 text-xl text-center text-white border-0 rounded animated animate__animated animate__bounce animate__infinite outline font-cairo bg-slate-900 focus:ring-0">
+        تأكيد الطلب <span class="totalPrice">{{ $product?->price }}</span> دج
+    </button>
+    </a>
+</div>
+
 
 @include('shop.footer')
 
 <script>
-    var swiper = new Swiper(".productSwiper", {
-        loop: true,
-        spaceBetween: 10,
-        slidesPerView: 4,
-        freeMode: true,
-        watchSlidesProgress: true,
-    });
-    var swiper2 = new Swiper(".productSwiper2", {
-        loop: true,
-        spaceBetween: 10,
-        navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-        },
-        thumbs: {
-            swiper: swiper,
-        },
-    });
+    window.onload = function() {
+
+        var swiper = new Swiper(".productSwiper", {
+            loop: true,
+            spaceBetween: 10,
+            slidesPerView: 3,
+            freeMode: true,
+            watchSlidesProgress: true,
+        });
+
+
+        var swiper2 = new Swiper(".productSwiper2", {
+            loop: true,
+            spaceBetween: 10,
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            thumbs: {
+                swiper: swiper,
+            },
+        });
+
+
+
+        function scrollToSection(event) {
+  if (supportsSmoothScrolling()) {
+    return;
+  }
+  event.preventDefault();
+  const scrollToElem = document.getElementById("form");
+  SmoothVerticalScrolling(scrollToElem, 300, "top");
+}
+
+function supportsSmoothScrolling() {
+  const body = document.body;
+  const scrollSave = body.style.scrollBehavior;
+  body.style.scrollBehavior = 'smooth';
+  const hasSmooth = getComputedStyle(body).scrollBehavior === 'smooth';
+  body.style.scrollBehavior = scrollSave;
+  return hasSmooth;
+};
+
+function SmoothVerticalScrolling(element, time, position) {
+  var eTop = element.getBoundingClientRect().top;
+  var eAmt = eTop / 100;
+  var curTime = 0;
+  while (curTime <= time) {
+    window.setTimeout(SVS_B, curTime, eAmt, position);
+    curTime += time / 100;
+  }
+}
+
+function SVS_B(eAmt, position) {
+  if (position == "center" || position == "")
+  window.scrollBy(0, eAmt / 2);
+  if (position == "top")
+  window.scrollBy(0, eAmt);
+}
+    }
 </script>

@@ -2,7 +2,7 @@
     @include('shop.header')
 @endif
 <!--  Categories -->
-<section class="bg-white py-8">
+<section class="">
 
     <div class="container mx-auto flex items-center flex-wrap pt-4 pb-12">
 
@@ -59,8 +59,8 @@
     @else
         <a aria-label="show more categories" href="all-categories" class="flex justify-center">
 
-            <button aria-label="show all categories button"
-                class=" font-cairo bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+            <button aria-label="show all brands button"
+                class=" font-cairo bg-transparent bg-btn-primary hover:bg-btn-primary-hover btn-primary-text-color font-semibold hover:btn-primary-text-color-hover py-2 px-4 border hover:border-transparent rounded">
                 اظهار الكل
             </button>
         </a>

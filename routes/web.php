@@ -30,6 +30,7 @@ Route::get('/all-products', [ShopController::class, 'get_all_products'])->name('
 Route::get('/wilayas', [AlgeriaCities::class, 'get_all_wilayas']);
 Route::get('/communs/{wilayaCode}', [AlgeriaCities::class, 'get_all_communs']);
 Route::get('/yalidine-delivery-fees/{wilaya}', [DeliveryController::class, 'get_yalididne_delivery_fees']);
+Route::get('/calculate-delivery-fees/{wilaya}', [DeliveryController::class, 'calculate_delivery_fees']);
 Route::get('/yalidine/webhook', [DeliveryController::class, 'yalidine_webhook']);
 Route::get('/delivery-seeder', [DeliveryController::class, 'seeder']);
 
@@ -38,7 +39,7 @@ Route::post('/place-order', [ShopController::class, 'place_order']);
 Route::post('search', [ShopController::class, 'search'])->name('search');
 
 
-Route::get('/optimize', function(){
+Route::get('/optimize', function () {
 
     Artisan::call('optimize:clear');
     Artisan::call('cache:clear');
@@ -48,7 +49,7 @@ Route::get('/optimize', function(){
 });
 
 
-Route::get('/install', function(){
+Route::get('/install', function () {
 
     Artisan::call('optimize:clear');
     Artisan::call('cache:clear');
@@ -61,13 +62,13 @@ Route::get('/install', function(){
 });
 
 
-Route::get('/zrexpress/create-coli',[ZrExpressController::class, 'index'] )->name('zrexpress.create');
+Route::get('/zrexpress/create-coli', [ZrExpressController::class, 'index'])->name('zrexpress.create');
 
-Route::get('/get-zrexpress-tarifs',[ZrExpressController::class, 'get_tarifs'] )->name('zrexpress.tarifs');
-
-
+Route::get('/get-zrexpress-tarifs', [ZrExpressController::class, 'get_tarifs'])->name('zrexpress.tarifs');
 
 
-Route::get('/link-storage', function(){
+
+
+Route::get('/link-storage', function () {
     Artisan::call('storage:link');
 });

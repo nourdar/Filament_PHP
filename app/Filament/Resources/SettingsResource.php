@@ -19,6 +19,8 @@ use App\Filament\Resources\SettingsResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SettingsResource\RelationManagers;
 use App\Http\Controllers\AlgeriaCities;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -42,9 +44,9 @@ class SettingsResource extends Resource
                 Section::make('')->schema([
                     TextInput::make('name')->label('Nom de la boutique'),
                     FileUpload::make('logo')
-                    ->directory('form-attachments')
-                    ->image()
-                    ->imageEditor(),
+                        ->directory('form-attachments')
+                        ->image()
+                        ->imageEditor(),
 
                 ])->columns(2),
 
@@ -57,14 +59,14 @@ class SettingsResource extends Resource
                 Section::make('')->schema([
                     Textarea::make('address')->label('Address'),
                     Select::make('wilaya_depart')
-                    ->options(function(){
-                        return( new AlgeriaCities())->get_all_wilayas();
-                    })
-                    ->label('Wilaya'),
+                        ->options(function () {
+                            return (new AlgeriaCities())->get_all_wilayas();
+                        })
+                        ->label('Wilaya'),
 
                     TextInput::make('email')
-                    ->email()
-                    ->label('E-mail'),
+                        ->email()
+                        ->label('E-mail'),
 
                     Repeater::make('telephone')->schema([
                         TextInput::make('phone')->label('Numero de telephone'),
@@ -89,18 +91,23 @@ class SettingsResource extends Resource
                 Section::make('')->schema([
 
                     Repeater::make('transport')->schema([
-                        Select::make('provider')->label('Transporteur') ->options([
-                          'Yalidine' => 'Yalidine' ,
-                          'zrexpress' => 'ZR Express' ,
+                        Select::make('provider')->label('Transporteur')->options([
+                            'Yalidine' => 'Yalidine',
+                            'zrexpress' => 'ZR Express',
 
-                        ]),
+                        ])->searchable(),
                         TextInput::make('api_key')->label('Transport API Key'),
                         TextInput::make('api_token')->label('Transport API Token'),
+                        Checkbox::make('is_active')->label('Actif')->default(true),
+                        Checkbox::make('is_principal')
+                            ->label('Principal Transporteur ?')
+                            ->hint('Les calcules des prix de livraison base sur le pricipale transporteur')
+                            ->default(true),
 
 
                     ])
-                    ->addable(false)
-                    ->defaultItems(1),
+                        ->addable(true)
+                        ->defaultItems(1),
 
 
 
@@ -112,13 +119,41 @@ class SettingsResource extends Resource
                 Section::make('')->schema([
                     Repeater::make('slides')->schema([
                         FileUpload::make('slide')
-                        ->directory('form-attachments')
-                        ->image()
-                        ->imageEditor(),
+                            ->directory('form-attachments')
+                            ->image()
+                            ->imageEditor(),
 
                         TextInput::make('link')->default('#'),
 
                     ])->addActionLabel('Ajouter un Slide'),
+
+
+
+                ]),
+
+                Section::make('Style')->schema([
+                    Repeater::make('style')->schema([
+
+                        Section::make('Header & Footer')->schema([
+                            ColorPicker::make('navbar_bgcolor')->label('Navbar Background Color'),
+                            ColorPicker::make('footer_bgcolor')->label('Footer Background Color'),
+                        ])->columns(2),
+                        Section::make('Buttons')->schema([
+                            ColorPicker::make('bg-btn-primary')->label('Couleur principale des buttons'),
+                            ColorPicker::make('bg-btn-primary-hover')->label('Couleur principale des buttons on hover'),
+                            ColorPicker::make('btn-primary-text-color')->label('Couleur de text des buttons'),
+                            ColorPicker::make('btn-primary-text-color-hover')->label('Couleur de text des buttons on hover '),
+                        ])->columns(4),
+
+
+                    ])
+                        ->columns(5)
+                        ->defaultItems(1)
+                        ->deletable(false)
+                        ->addable(true)
+                        ->reorderable(false)
+
+                        ->maxItems(1),
 
 
 
@@ -168,15 +203,14 @@ class SettingsResource extends Resource
             'create' => Pages\CreateSettings::route('/create'),
             'edit' => Pages\EditSettings::route('/{record}/edit'),
         ];
-
     }
 
     public static function canCreate(): bool
     {
-        if(Settings::all()->count() < 1) {
+        if (Settings::all()->count() < 1) {
             return true;
         }
 
-       return false;
+        return false;
     }
 }

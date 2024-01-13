@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Filament\Notifications\Notification;
 use App\Http\Requests\StoreDeliveryRequest;
 use App\Http\Requests\UpdateDeliveryRequest;
+use Illuminate\Support\HtmlString;
 
 class DeliveryController extends Controller
 {
@@ -42,8 +43,8 @@ class DeliveryController extends Controller
         //     ]);
         // }
 
-        foreach($deliveryFees['data'] as $delivery){
-            if(is_array($delivery)){
+        foreach ($deliveryFees['data'] as $delivery) {
+            if (is_array($delivery)) {
 
                 Delivery::where('company_name', 'yalidine')->where('is_wilaya', true)->where('wilaya_id', $delivery['wilaya_id'])->update([
                     'home' => $delivery['home_fee'],
@@ -54,7 +55,7 @@ class DeliveryController extends Controller
         }
 
 
-        foreach($yalidineCommunes as $commune){
+        foreach ($yalidineCommunes as $commune) {
 
             Delivery::create([
                 'company_name' => 'yalidine',
@@ -69,7 +70,7 @@ class DeliveryController extends Controller
             ]);
         }
 
-        foreach($yalidineCentres as $centre){
+        foreach ($yalidineCentres as $centre) {
             // dd($centre);
             Delivery::create([
                 'company_name' => 'yalidine',
@@ -85,142 +86,336 @@ class DeliveryController extends Controller
             ]);
         }
 
-        foreach($zrPricing as $zr){
+        foreach ($zrPricing as $zr) {
             // dd($zr);
             Delivery::create([
-                        'company_name' => 'zrexpress',
-                        'wilaya_id' => $zr['IDWilaya'],
-                        'wilaya_name' => $zr['Wilaya'],
-                        'home' => $zr['Domicile'],
-                        'desk' => $zr['Stopdesk'],
-                        'retour' => $zr['Annuler'],
-                        'is_wilaya' => true,
-                    ]);
+                'company_name' => 'zrexpress',
+                'wilaya_id' => $zr['IDWilaya'],
+                'wilaya_name' => $zr['Wilaya'],
+                'home' => $zr['Domicile'],
+                'desk' => $zr['Stopdesk'],
+                'retour' => $zr['Annuler'],
+                'is_wilaya' => true,
+            ]);
         }
 
         dd('done');
-
     }
 
     public function get_yalididne_delivery_fees($wilaya)
     {
         $yalidine = new YalidineController();
 
-       return $yalidine->getDeliveryFees($wilaya);
-
+        return $yalidine->getDeliveryFees($wilaya);
     }
 
+    public function calculate_delivery_fees($wilaya)
+    {
+        $settings =  Settings::first();
 
-public function add_order_to_yalidine($record){
+        if (isset($settings->transport)) {
+            foreach ($settings->transport as $transporteur) {
+                if (isset($transporteur['is_principal']) && $transporteur['is_principal']) {
+                    $fees = Delivery::where('company_name', $transporteur['provider'])
+                        ->where('wilaya_id', intval($wilaya))
+                        ->get();
+                    if (isset($fees[0])) {
 
-    $settings =  Settings::first();
+                        $provider = $transporteur['provider'] == 'zrexpress' ? 'ZR-EXPRESS' : $transporteur['provider'];
+                        $result = [
+                            'home_fee' => intval($fees[0]['home']),
+                            'desk_fee' => intval($fees[0]['desk']),
+                            'provider' => strtoupper($provider)
+                        ];
 
-    $yalidine = new YalidineController();
 
-    $product = $record?->items[0]?->product?->name;
-
-    if($record?->items[0]?->options){
-        foreach($record?->items[0]?->options as $key => $value){
-
-            if(is_string($value) && is_string($key)){
-
-                $product .=' '.$key.' : '.$value;
+                        return response()->json($result);
+                    }
+                }
             }
         }
-
     }
 
 
+    public function add_order_to_yalidine($record)
+    {
 
-    // set the delivery type
-
-    $is_stopdesk = ($record->shipping_type == 'desk') ? 1 : 0;
-
-    // Set wilaya depart
-    if(!$settings->wilaya_depart){
-
-       return Notification::make()
-        ->title('الرجاء الذهاب الى الاعدادات وتحديد ولاية الانطلاق')
-        ->danger()
-        ->send();
+        if (!$this->validation($record)['status']) {
+            return Notification::make()
+                ->title('لم يتم تسجيل الطلبية')
+                ->body($this->validation($record)['message'])
+                ->danger()
+                ->send();
+        }
 
 
-    } else {
-        $wilaya_depart = (new AlgeriaCities())->get_wilaya_name($settings->wilaya_depart);
-        $wilaya_arrive = (new AlgeriaCities())->get_wilaya_name($record->customer->address);
+
+        $settings =  Settings::first();
+
+        $yalidine = new YalidineController();
+
+        $product = HelperController::get_product_name_from_form_record($record);
+
+        $product = strip_tags($product);
+
+
+        // set the delivery type
+
+        $is_stopdesk = ($record->shipping_type == 'desk') ? true : false;
+
+        // Set wilaya depart
+        if (!$settings->wilaya_depart) {
+
+            return Notification::make()
+                ->title('الرجاء الذهاب الى الاعدادات وتحديد ولاية الانطلاق')
+                ->danger()
+                ->send();
+        } else {
+            $wilaya_depart = (new AlgeriaCities())->get_wilaya_name($settings->wilaya_depart);
+            $wilaya_arrive = (new AlgeriaCities())->get_wilaya_name($record->customer->address);
+        }
+
+
+
+        $delivery = Delivery::where('company_name', 'yalidine')->where('wilaya_name',  $wilaya_arrive)->get();
+
+
+
+        if (empty($record->shipping_price)) {
+            $deliveryPrice = $delivery[0][$record->shipping_type];
+        } else {
+            $deliveryPrice = $record->shipping_price;
+        }
+
+        if ($record->is_free_shipping) {
+            $deliveryPrice = 0;
+        }
+
+        $totalPrice = ($record->items[0]['unit_price'] * $record->items[0]['quantity']) + $deliveryPrice;
+
+        $centerId = $yalidine->get_center_id($wilaya_arrive);
+
+        $centerId = array_change_key_case($centerId->toArray());
+
+        $to_commune_name = $record->customer->city;
+
+        if (isset($centerId[strtolower($record->customer->city)])) {
+            $centerId = $centerId[strtolower($record->customer->city)];
+        } elseif (isset($centerId[strtolower($wilaya_arrive)])) {
+            $centerId = $centerId[strtolower($wilaya_arrive)];
+            $to_commune_name = $wilaya_arrive;
+        } else {
+
+            $centerId = 0;
+        }
+
+
+        $parcels = [[
+            "order_id" => $record->id,
+            "from_wilaya_name" =>  $wilaya_depart,
+            "firstname" => $record->customer->name,
+            "familyname" => '',
+            "contact_phone" => $this->phone_cell($record->customer->phone),
+            "address" => $record->customer->city,
+            "to_commune_name" => $to_commune_name,
+            "to_wilaya_name" => $wilaya_arrive,
+            "product_list" => $product,
+            "price" => $totalPrice,
+            "do_insurance" => false,
+            "declared_value" => 0,
+            // "height" => 10,
+            // "width" => 20,
+            // "length" => 30,
+            // "weight" => 6,
+            "freeshipping" => 1,
+            "is_stopdesk" => $is_stopdesk,
+            "stopdesk_id" => $centerId,
+            "has_exchange" => false,
+        ]];
+
+
+
+        $addParcel = $yalidine->createParcels($parcels);
+
+        if (!isset($addParcel['error'])) {
+
+
+
+            $order = Order::find($record->id);
+            $order->tracking =  $addParcel[$record->id]['tracking'];
+            $order->transport_provider = 'yalidine';
+            $order->shipping_price = $deliveryPrice;
+            $order->save();
+
+            $body = ($record->shipping_type == 'desk') ? 'الرجاء التاكد من صحة مكتب ياليدين من موقعهم' : '';
+            return Notification::make()
+                ->title('تمت الاضافة بنجاح')
+                ->body($body)
+                ->success()
+                ->send();
+        } else {
+            return Notification::make()
+                ->title('لم تتم الاضافة')
+                ->body($addParcel['error']['message'])
+                ->danger()
+                ->send();
+        }
     }
 
-    $centerId = $yalidine->get_center_id($wilaya_arrive);
 
-    $centerId = array_change_key_case($centerId->toArray());
+    public function add_order_to_zrexpress($record)
+    {
 
-    $to_commune_name = $record->customer->city;
+        if (!$this->validation($record)['status']) {
+            return Notification::make()
+                ->title('لم يتم تسجيل الطلبية')
+                ->body($this->validation($record)['message'])
+                ->danger()
+                ->send();
+        }
 
-    if(isset($centerId[strtolower($record->customer->city)])) {
-        $centerId = $centerId[strtolower($record->customer->city)];
-    } elseif(isset($centerId[strtolower($wilaya_arrive)])) {
-        $centerId = $centerId[strtolower($wilaya_arrive)];
-        $to_commune_name = $wilaya_arrive;
+        $settings =  Settings::first();
 
-    } else {
+        $zrExpress = new ZrExpressController();
 
-        $centerId = 0;
+        $product = HelperController::get_product_name_from_form_record($record);
+
+        $product = strip_tags($product);
+
+
+
+        // set the delivery type
+
+        $is_stopdesk = ($record->shipping_type == 'desk') ? true : false;
+
+        // Set wilaya depart
+        if (!$settings->wilaya_depart) {
+
+            return Notification::make()
+                ->title('الرجاء الذهاب الى الاعدادات وتحديد ولاية الانطلاق')
+                ->danger()
+                ->send();
+        } else {
+            $wilaya_depart = (new AlgeriaCities())->get_wilaya_name($settings->wilaya_depart);
+            $wilaya_arrive = (new AlgeriaCities())->get_wilaya_name($record->customer->address);
+        }
+
+
+        $delivery = Delivery::where('company_name', 'zrexpress')->where('wilaya_name',  $wilaya_arrive)->get();
+
+
+        if (empty($record->shipping_price)) {
+            $deliveryPrice = $delivery[0][$record->shipping_type];
+        } else {
+            $deliveryPrice = $record->shipping_price;
+        }
+
+        if ($record->is_free_shipping) {
+            $deliveryPrice = 0;
+        }
+
+
+        $totalPrice = ($record->items[0]['unit_price'] * $record->items[0]['quantity']) + $deliveryPrice;
+
+
+        // $centerId = $yalidine->get_center_id($wilaya_arrive);
+
+        // $centerId = array_change_key_case($centerId->toArray());
+
+        $to_commune_name = $record->customer->city;
+
+        // if (isset($centerId[strtolower($record->customer->city)])) {
+        //     $centerId = $centerId[strtolower($record->customer->city)];
+        // } elseif (isset($centerId[strtolower($wilaya_arrive)])) {
+        //     $centerId = $centerId[strtolower($wilaya_arrive)];
+        //     $to_commune_name = $wilaya_arrive;
+        // } else {
+
+        //     $centerId = 0;
+        // }
+
+
+        $tracking = 'ZR-' . rand(22, 999999);
+        $colis = [
+            "Colis" =>
+            [
+                [
+                    "Tracking" => $tracking,
+                    "TypeLivraison" => $is_stopdesk, // Domicile : 0 & Stopdesk : 1
+                    "TypeColis" => "0", // Echange : 1
+                    "Confrimee" => true, // 1 pour les colis Confirmer directement en pret a expedier
+                    "Client" => $record->customer->name,
+                    "MobileA" => $this->phone_cell($record->customer->phone),
+                    // "MobileB" => "0880808080",
+                    "Adresse" => $record->customer->city,
+                    "IDWilaya" => $wilaya_arrive,
+                    "Commune" => $to_commune_name,
+                    "Total" => $totalPrice,
+                    "Note" => $record->notes,
+                    "TProduit" =>  $product,
+                    "id_Externe" => $record->id,  // Votre ID ou Tracking
+                    "Source" => "test source"
+                ]
+            ]
+        ];
+
+
+
+
+        $addColi = $zrExpress->post('add_colis', $colis);
+
+
+        if (isset($addColi['COUNT']) && $addColi['COUNT'] > 0) {
+
+
+
+            $order = Order::find($record->id);
+            $order->tracking = $tracking;
+            $order->shipping_price = $deliveryPrice;
+
+            $order->transport_provider = 'zrexpress';
+            $order->save();
+
+            $body = ($record->shipping_type == 'desk') ? 'الرجاء التاكد من صحة مكتب  من موقعهم' : '';
+            return Notification::make()
+                ->title('تمت الاضافة بنجاح')
+                ->body($body)
+                ->success()
+                ->send();
+        } else {
+            return Notification::make()
+                ->title('لم تتم الاضافة')
+                ->body('Erreur 1239')
+                ->danger()
+                ->send();
+        }
     }
 
 
-    $parcels =[ [
-        "order_id" => $record->id,
-        "from_wilaya_name"=>  $wilaya_depart,
-        "firstname"=> $record->customer->name,
-        "familyname"=>'',
-        "contact_phone"=> $record->customer->phone,
-        "address"=>$record->customer->city,
-        "to_commune_name"=> $to_commune_name,
-        "to_wilaya_name"=> $wilaya_arrive,
-        "product_list"=> $product,
-        "price"=> $record->items[0]['unit_price'],
-        "do_insurance" => false,
-        "declared_value" => 0,
-        "height" => 10,
-        "width" => 20,
-        "length" => 30,
-        "weight" => 6,
-        "freeshipping" => 0,
-        "is_stopdesk" => $is_stopdesk,
-        "stopdesk_id" => $centerId,
-        "has_exchange"=> false,
-    ]];
+    public function validation($record)
+    {
+        $result = [
+            'status' => false,
+            'message' => ''
+        ];
+        if (!isset($record->items[0])) {
+            $result['message'] =  'الرجاء اضافة منتج للطلبية';
+            return $result;
+        }
 
 
+        $result['status']  = true;
 
-    $addParcel = $yalidine->createParcels($parcels);
+        return $result;
+    }
+    public function phone_cell($phone)
+    {
+        $phone =  str_replace('+213', '0', $phone);
+        return $phone;
+    }
 
-    if(!isset($addParcel['error'])){
-
-
-
-        $order = Order::find($record->id);
-        $order->tracking =  $addParcel[$record->id]['tracking'];
-        $order->save();
-
-        $body = ($record->shipping_type == 'desk') ? 'الرجاء التاكد من صحة مكتب ياليدين من موقعهم' : '';
-        return Notification::make()
-        ->title('تمت الاضافة بنجاح')
-        ->body($body)
-        ->success()
-        ->send();
-
-   } else {
-    return Notification::make()
-    ->title('لم تتم الاضافة')
-    ->body($addParcel['error']['message'])
-    ->danger()
-    ->send();
-   }
-}
-
-
-    public function yalidine_webhook(Request $request){
+    public function yalidine_webhook(Request $request)
+    {
         $subscribe = $request->subscribe;
         $crc_token = $request->crc_token;
 
@@ -230,5 +425,23 @@ public function add_order_to_yalidine($record){
         ];
 
         return response()->json($data, 200);
+    }
+
+    public static function check_active($transport_provider)
+    {
+
+        $settings = Settings::first();
+
+        if (isset($settings['transport'])) {
+            foreach ($settings['transport'] as $transport) {
+
+                if (isset($transport['provider'])) {
+                    if (strtolower($transport['provider']) == strtolower($transport_provider) && $transport['is_active']) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

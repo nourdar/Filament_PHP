@@ -4,29 +4,7 @@
 
     @if ($settings?->slides)
         @if (isset($settings?->slides[0]['slide']))
-            <div class="swiper mySwiper mb-5">
-                <div class="swiper-wrapper">
-
-                    @foreach ($settings?->slides as $slide)
-                        <?php $i = 1;
-                        $img = asset('storage/' . $slide['slide']);
-                        $link = $slide['link']; ?>
-                        <a aria-label="swiper link" class="swiper-slide" href="{{ $link }}">
-                            {{-- <div class="swiper-slide"> --}}
-
-                            <img src="{{ $img }}" alt="shop swiper element" />
-
-                            {{-- </div> --}}
-                        </a>
-                        <?php $i++; ?>
-                    @endforeach
-
-                </div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-pagination"></div>
-            </div>
-            <!-- Slider main container -->
+            @include('shop.components.swiper')
         @endif
     @endif
 @endif
@@ -61,11 +39,11 @@
 
 
 @if ($settings?->description)
-    <!-- <section class="bg-white py-8">
+    <!-- <section class="">
 
-    <div class="container py-8 px-6 mx-auto text-center">
+    <div class="container px-6 py-8 mx-auto text-center">
 
-        <a class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-5xl mb-8" href="#">
+        <a class="mb-8 text-5xl font-bold tracking-wide text-gray-800 no-underline uppercase hover:no-underline" href="#">
 Description de la boutique
 </a>
 

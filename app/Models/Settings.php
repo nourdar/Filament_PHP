@@ -18,6 +18,7 @@ class Settings extends Model
         'telephone',
         'address',
         'transport',
+        'style',
         'logo',
         'slides',
         'head_code',
@@ -31,6 +32,7 @@ class Settings extends Model
         'telephone' => 'array',
         'slides' => 'array',
         'transport' => 'array',
+        'style' => 'array',
     ];
 
 }

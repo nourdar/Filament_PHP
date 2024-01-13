@@ -10,10 +10,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Product extends Model implements Searchable
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $fillable = [
         'name',
@@ -31,13 +33,17 @@ class Product extends Model implements Searchable
         'old_price',
         'quantity',
         'type',
-        'published_at'
+        'videos',
+        'published_at',
+        'translations'
     ];
 
     protected $casts = [
         'images' => 'array',
         'options' => 'array',
         'mesures' => 'array',
+        'videos' => 'array',
+        'translations' => 'array',
     ];
 
     public function brand(): BelongsTo
@@ -67,13 +73,42 @@ class Product extends Model implements Searchable
 
     public function getSearchResult(): SearchResult
     {
-        $url = 'product/'. $this->id;
+        $url = 'product/' . $this->id;
 
         return new \Spatie\Searchable\SearchResult(
-           $this,
-           $this->name,
-           $url,
+            $this,
+            $this->name,
+            $url,
         );
     }
 
+
+    public function stock()
+    {
+        return $this->belongsTo('App\Models\Stock');
+    }
+
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'name',
+                'slug',
+                'description',
+                'options',
+                'mesures',
+                'is_visible',
+                'is_featured',
+                'brand_id',
+                'sku',
+                'image',
+                'images',
+                'price',
+                'old_price',
+                'quantity',
+                'type',
+                'videos',
+            ]);
+    }
 }

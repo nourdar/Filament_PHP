@@ -15,6 +15,10 @@ class EditProduct extends EditRecord
     {
         return [
             Actions\DeleteAction::make()->label('Supprimer ce produit'),
+            Actions\Action::make('view')
+                ->label('Voir dans la boutique')
+                ->url(fn (): string => route('product.show', $this->record->id))
+                ->openUrlInNewTab()
         ];
     }
 
@@ -23,29 +27,7 @@ class EditProduct extends EditRecord
     {
 
 
-    // $mesures = ProductMesure::all();
 
-    // $options = [];
-
-    // foreach($mesures as $mesure){
-
-    //     if(array_key_exists($mesure->mesure, $data) && !empty($data[$mesure->mesure])){
-
-    //         $options[$mesure->mesure] = $data[$mesure->mesure];
-
-    //         unset($data[$mesure->mesure]);
-
-    //     }
-
-
-    // }
-
-    // $data['mesures'] = $options;
-
-
-
-
-    return $data;
+        return $data;
+    }
 }
-}
-
