@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use Closure;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Order;
@@ -19,6 +20,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Section;
 use App\Http\Controllers\AlgeriaCities;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Repeater;
 use Filament\Tables\Columns\TextColumn;
@@ -27,6 +29,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\Builder;
+use App\Http\Controllers\HelperController;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Wizard\Step;
 use App\Http\Controllers\DeliveryController;
@@ -37,8 +40,6 @@ use App\Filament\Resources\OrderResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\OrderResource\RelationManagers;
-use App\Http\Controllers\HelperController;
-use Filament\Forms\Components\Checkbox;
 
 class OrderResource extends Resource
 {
@@ -79,7 +80,7 @@ class OrderResource extends Resource
                         ->schema([
                             TextInput::make('order_number')
                                 ->label('Numéro de commande')
-                                ->default(random_int(10000, 99999))
+                                ->default(random_int(10000, 99999999))
                                 ->disabled()
                                 ->dehydrated()
                                 ->required(),
@@ -87,6 +88,7 @@ class OrderResource extends Resource
                             Select::make('status')
                                 ->label('Statut de la Commande')
                                 ->placeholder('Selectionner le status')
+                                ->default('placed')
                                 ->options([
                                     'placed' => OrderStatus::PLACED->value,
                                     'confirmed' => OrderStatus::CONFIRMED->value,
@@ -106,7 +108,53 @@ class OrderResource extends Resource
                                 ->required()
 
                                 ->getSearchResultsUsing(fn (string $search): array => Customer::where('name', 'like', "%{$search}%")->orWhere('phone', 'like', "%{$search}%")->limit(50)->pluck('name', 'id')->toArray())
+                                ->createOptionForm([
+                                    Section::make([
+                                        TextInput::make('name')
+                                            ->label('Nom')
+                                            ->required()
+                                            ->maxLength(255),
+                                        TextInput::make('email')
+                                            ->label('Adresse email')
 
+
+                                            ->unique(ignoreRecord: true)
+                                            ->maxLength(255),
+
+                                        TextInput::make('phone')
+                                            ->label('Numéro de Téléphone')
+                                            ->tel()
+                                            ->maxLength(255),
+
+                                        TextInput::make('phone2')
+                                            ->label('Numéro de Téléphone 02')
+                                            ->tel()
+                                            ->maxLength(255),
+
+
+                                    ]),
+                                    Section::make([
+
+                                        Select::make('address')
+                                            ->label('Wilaya')
+                                            ->searchable()
+                                            ->reactive()
+                                            ->options(function () {
+                                                return (new AlgeriaCities())->get_all_wilayas();
+                                            }),
+
+                                        Select::make('city')
+                                            ->label('Commune')
+                                            ->searchable()
+                                            ->hidden(fn ($get) => $get('address') === null)
+                                            ->options(function ($get) {
+                                                return (new AlgeriaCities())->get_all_communes($get('address'));
+                                            }),
+
+
+                                    ])
+
+                                ])
                                 ->searchable(),
 
 
@@ -185,6 +233,7 @@ class OrderResource extends Resource
 
                             // ])->columns(4),
 
+
                             Select::make('transport_provider')
                                 ->label('Transporteur')
 
@@ -219,9 +268,11 @@ class OrderResource extends Resource
 
 
 
+
+
                             Select::make('shipping_type')
                                 ->label('Type de livraison')
-
+                                ->default('desk')
                                 ->options([
                                     'desk' => 'Stop Desk',
                                     'home' => 'Domicile',
@@ -477,6 +528,17 @@ class OrderResource extends Resource
                             $delivery = new DeliveryController();
                             $delivery->add_order_to_yalidine($record);
                         }),
+
+                    Tables\Actions\Action::make('add_to_noest')
+                        ->label('Ajouter a Nord et west')
+                        ->color('secondary')
+                        ->visible(DeliveryController::check_active('nord_et_west'))
+                        ->icon('heroicon-o-truck')
+                        ->action(function ($record) {
+                            $delivery = new DeliveryController();
+                            $delivery->add_order_to_noest($record);
+                        }),
+
 
                     Tables\Actions\Action::make('add_to_zrexpress')
                         ->label('Ajouter a ZR-Express')

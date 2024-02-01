@@ -26,6 +26,7 @@ class Settings extends Model
         'twitter_page',
         'instagram_page',
         'pinterest_page',
+        'social_media',
     ];
 
     protected $casts = [
@@ -33,6 +34,6 @@ class Settings extends Model
         'slides' => 'array',
         'transport' => 'array',
         'style' => 'array',
+        'social_media' => 'array',
     ];
-
 }

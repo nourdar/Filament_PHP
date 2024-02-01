@@ -61,7 +61,11 @@
 
         }
 
-
+        .productSwiper .swiper-slide {
+        width: 25%;
+        height: 50%;
+        opacity: 0.4;
+    }
         .swiper-slide  {
             width: 100%;
 
@@ -99,7 +103,7 @@
 
 
 
-        <div class="fixed flex items-center justify-center h-5 bottom-12 right-5" style="z-index: 99999">
+        <div class="fixed flex items-center justify-center h-5 bottom-12 right-5" style="z-index: 1">
             <div x-data="{ open: true }">
                 <!-- Open modal button -->
                 {{-- <button x-on:click="open = true" class="px-4 py-2 text-white ">
@@ -170,7 +174,7 @@
 
 
 
-        <div class="fixed flex items-center justify-center h-5 bottom-12 right-5" style="z-index: 99999">
+        <div class="fixed flex items-center justify-center h-5 bottom-12 right-5" style="z-index: 1">
             <div x-data="{ open: true }">
                 <!-- Open modal button -->
                 {{-- <button x-on:click="open = true" class="px-4 py-2 text-white ">
@@ -244,20 +248,24 @@
         <div class="container flex flex-wrap items-center justify-center w-full mx-auto mt-0 ">
 
             <a aria-label="link to product"
-                class="w-full text-2xl font-bold tracking-wide text-center text-gray-800 no-underline uppercase hover:no-underline "
+                class="w-full text-2xl font-bold tracking-wide text-center text-gray-800 no-underline uppercase hover:no-underline font-diph "
                 href="#">
                 {{ $product?->name }}
-                <br>
+
                 @if (isset($product?->old_price))
-                <span class="m-2 text-red-900 line-through">
+                <br>
+                <span class="m-2 text-xl text-red-900 line-through">
                     {{ number_format($product?->old_price, 0, '.') }}
                     DZD
                 </span>
             @endif
 
                 <br>
-                {{ number_format($product?->price, 0, '.') }}
-                DZD
+                <span class="text-4xl">
+
+                    {{ number_format($product?->price, 0, '.') }}
+                    DZD
+                </span>
 
 
             </a>
@@ -276,39 +284,39 @@
                 <div class="swiper-wrapper">
 
                     @if ($product->image)
-                        <div class="swiper-slide">
+
 
                             @if (file_exists('storage/' . $product->image))
                                 <?php $mainImage = asset('storage/' . $product->image); ?>
                             @else
                                 <?php $mainImage = $product->image; ?>
                             @endif
-                            <a href="{{ $mainImage }}">
+                            <a href="{{ $mainImage }}" class="swiper-slide">
 
                                 <img src="{{ $mainImage }}" alt="{{ $product->name }}" class="w-full" />
                             </a>
-                        </div>
+
                     @endif
 
                     @if ($product->images)
 
                         @foreach ($product->images as $image)
-                            <div class="swiper-slide">
+
 
                                 @if (file_exists('storage/' . $image))
                                     <?php $photo = asset('storage/' . $image); ?>
-                                    <a href="{{ $photo }}">
+                                    <a href="{{ $photo }}" class="swiper-slide">
 
                                         <img src="{{ $photo }}" alt="{{ $product->name }}" class="w-full" />
                                     </a>
                                 @else
-                                <a href="{{ $image }}">
+                                <a href="{{ $image }}" class="swiper-slide">
 
                                     <img src="{{ $image }}" alt="{{ $product->name }}" class="w-full" />
                                 </a>
                                 @endif
 
-                            </div>
+
                         @endforeach
                     @endif
 
@@ -365,10 +373,11 @@
     <hr>
 
     <div class="mt-5 markdown font-cairo">
-
         @if ($product?->videos)
-            @foreach ($product?->videos as $video)
-                <div class="container">
+        @foreach ($product?->videos as $video)
+        @if(isset($video['link']) && !empty($video['link']))
+        <div class="container">
+
                     <?php
 
                     $url_components = parse_url($video['link']);
@@ -378,17 +387,9 @@
                     $link = $params['v'] ?? '';
 
                     ?>
-                    {{-- <iframe height="315" src="https://youtube.com/embed/{{ $link }}" class="m-auto"
-                        title="YouTube video player" frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen></iframe> --}}
 
-                    {{-- <iframe class="w-full aspect-video " src="{{ $video['link'] }}"></iframe> --}}
-                    {{--
-                    <iframe src="" frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen></iframe> --}}
                 </div>
+                @endif
             @endforeach
         @endif
 
@@ -398,86 +399,91 @@
 </div>
 
 </div>
-@if ($product?->description)
-    <div class="p-5 direction-rtl product-description" dir="rtl">
 
-        {!! Str::markdown($product?->description) !!}
+
+
+
+
+
+@if(isset($product['translations'][0]))
+
+
+    @if(isset($product['translations'][0]['image_landing']))
+        <img src="{{asset('storage/'. $product['translations'][0]['image_landing'])}}" class="landing-page-image" alt="">
+    @endif
+
+    @if(isset($product['translations'][0]['landing_image_link']))
+        <img src="{{ $product['translations'][0]['landing_image_link'] }}" class="landing-page-image" alt="">
+    @endif
+
+
+    @if(isset($product['translations'][0]['description_arabic']))
+
+    <div class="p-5 mt-12 mb-12 product-description"  dir="rtl">
+
+        {!! Str::markdown($product['translations'][0]['description_arabic']) !!}
     </div>
+
+    @endif
+
+
+
 @endif
 
 
-<div class="container">
-    <a href="#form" onclick="scrollToSection(event)" class="fixed bottom-0 z-10 w-full p-8 m-auto lg:w-48 animated animate__animated animate__shakeX animate__infinite">
+@if ($product?->description)
+<div class="p-5 product-description" >
 
-        <button type="submit"
-        class="w-full p-2 text-xl text-center text-white border-0 rounded animated animate__animated animate__bounce animate__infinite outline font-cairo bg-slate-900 focus:ring-0">
-        تأكيد الطلب <span class="totalPrice">{{ $product?->price }}</span> دج
-    </button>
-    </a>
+    {!! Str::markdown($product?->description) !!}
 </div>
+@endif
+
+
 
 
 @include('shop.footer')
 
+
+
+
+
+
 <script>
+    document.addEventListener('livewire:init', () => {
+        // Runs after Livewire is loaded but before it's initialized
+        // on the page...
+    })
+
+    document.addEventListener('livewire:initialized', () => {
+
     window.onload = function() {
 
-        var swiper = new Swiper(".productSwiper", {
-            loop: true,
-            spaceBetween: 10,
-            slidesPerView: 3,
-            freeMode: true,
-            watchSlidesProgress: true,
-        });
+var swiper = new Swiper(".productSwiper", {
+    loop: true,
+    spaceBetween: 10,
+    slidesPerView: 3,
+    freeMode: true,
+    watchSlidesProgress: true,
+});
 
 
-        var swiper2 = new Swiper(".productSwiper2", {
-            loop: true,
-            spaceBetween: 10,
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
-            thumbs: {
-                swiper: swiper,
-            },
-        });
+var swiper2 = new Swiper(".productSwiper2", {
+    loop: true,
+    spaceBetween: 10,
+    navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+    },
+    thumbs: {
+        swiper: swiper,
+    },
+});
 
 
 
-        function scrollToSection(event) {
-  if (supportsSmoothScrolling()) {
-    return;
-  }
-  event.preventDefault();
-  const scrollToElem = document.getElementById("form");
-  SmoothVerticalScrolling(scrollToElem, 300, "top");
 }
-
-function supportsSmoothScrolling() {
-  const body = document.body;
-  const scrollSave = body.style.scrollBehavior;
-  body.style.scrollBehavior = 'smooth';
-  const hasSmooth = getComputedStyle(body).scrollBehavior === 'smooth';
-  body.style.scrollBehavior = scrollSave;
-  return hasSmooth;
-};
-
-function SmoothVerticalScrolling(element, time, position) {
-  var eTop = element.getBoundingClientRect().top;
-  var eAmt = eTop / 100;
-  var curTime = 0;
-  while (curTime <= time) {
-    window.setTimeout(SVS_B, curTime, eAmt, position);
-    curTime += time / 100;
-  }
-}
-
-function SVS_B(eAmt, position) {
-  if (position == "center" || position == "")
-  window.scrollBy(0, eAmt / 2);
-  if (position == "top")
-  window.scrollBy(0, eAmt);
-}
-    }
+    })
 </script>
+
+
+

@@ -1,3 +1,6 @@
+
+
+
 <footer class="py-8 mx-auto mt-5 text-white bg-gray-900 border-t border-gray-400 font-cairo"
     @if (isset($settings?->style[0])) style="{{ 'background-color:' . $settings?->style[0]['footer_bgcolor'] }}"> @endif
     <div class="container flex px-3 py-8 ">
@@ -105,8 +108,18 @@
     </div>
 </footer>
 
+
+
+
 @livewireScripts
 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<x-livewire-alert::scripts />
+
 @stack('scripts')
+
+
+@livewire('wire-elements-modal')
 
 </body>

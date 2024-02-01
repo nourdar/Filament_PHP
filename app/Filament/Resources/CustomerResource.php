@@ -51,22 +51,25 @@ class CustomerResource extends Resource
                     ->schema([
                         Section::make([
                             TextInput::make('name')
-                            ->label('Nom')
-                            ->required()
-                            ->maxLength(255),
-                        TextInput::make('email')
-                            ->label('Adresse email')
+                                ->label('Nom')
+                                ->required()
+                                ->maxLength(255),
+                            TextInput::make('email')
+                                ->label('Adresse email')
+                                ->unique(ignoreRecord: true)
+                                ->maxLength(255),
 
 
-                            ->unique(ignoreRecord:true)
-                            ->maxLength(255),
-                        TextInput::make('phone')
-                            ->label('Numéro de Téléphone')
-                            ->tel()
+                            TextInput::make('phone')
+                                ->label('Numéro de Téléphone')
+                                ->tel()
+                                ->maxLength(255),
 
-                            ->maxLength(255),
-                        // DatePicker::make('date_of_birth')
-                        //     ->label('Date de Naissance'),
+                            TextInput::make('phone2')
+                                ->label('Numéro de Téléphone 02')
+                                ->tel()
+                                ->maxLength(255),
+
                         ])
                     ]),
 
@@ -74,21 +77,21 @@ class CustomerResource extends Resource
                     ->schema([
                         Section::make([
                             TextInput::make('address')
-                            ->label('Wilaya')
-                            ->default(function ($record){
-                                if(!empty($record)){
+                                ->label('Wilaya')
+                                ->default(function ($record) {
+                                    if (!empty($record)) {
 
-                                    return  (new AlgeriaCities())->get_all_wilayas()[$record?->address];
-                                }
+                                        return (new AlgeriaCities())->get_all_wilayas()[$record?->address];
+                                    }
 
-                                return $record;
-                            })
-                            ->maxLength(255),
+                                    return $record;
+                                })
+                                ->maxLength(255),
 
 
-                        TextInput::make('city')
-                        ->label('Commune')
-                        ->maxLength(255),
+                            TextInput::make('city')
+                                ->label('Commune')
+                                ->maxLength(255),
 
 
 

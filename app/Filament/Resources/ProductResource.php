@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Product;
+use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
 use App\Enums\ProductType;
@@ -12,6 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use App\Models\ProductMesure;
 use Filament\Resources\Resource;
+use function Laravel\Prompts\text;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -27,9 +29,11 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use App\Http\Controllers\HelperController;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Forms\Components\CheckboxList;
@@ -37,10 +41,9 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\MarkdownEditor;
 use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Http\Controllers\HelperController;
-use Filament\Forms\Components\RichEditor;
 
 class ProductResource extends Resource
 {
@@ -134,10 +137,37 @@ class ProductResource extends Resource
                                 ->default(1),
 
                             Hidden::make('type')->default('deliverable'),
+                            Hidden::make('description'),
+
 
                             RichEditor::make('description')
                                 ->label('Description')
+
+                                ->columnSpan('full'),
+
+                            Repeater::make('translations')->schema([
+
+
+                                RichEditor::make('description_arabic')
+                                    ->label('الوصف باللغة العربية')
+
+                                    ->columnSpan('full'),
+
+                                TextInput::make('landing_image_link')->label('Landing page Image Link'),
+
+                                FileUpload::make('image_landing')
+                                    ->label('Landing page Image')
+                                    ->directory('form-attachments')
+                                    ->image(),
+
+                            ])
                                 ->columnSpan('full')
+                                ->defaultItems(1)
+                                ->maxItems(1)
+                                ->reorderableWithButtons()
+                                // ->addable(false)
+                                ->deletable(false)
+
                         ])->columns(3),
 
                     // Step::make('Prix et Quantités')
@@ -165,7 +195,7 @@ class ProductResource extends Resource
 
 
                             Repeater::make('mesures')->schema(function () {
-                                return HelperController::get_product_mesures_options();
+                                return HelperController::get_product_mesures_options(true);
                             })
                                 ->defaultItems(1)
                                 ->deletable(false)
@@ -196,17 +226,8 @@ class ProductResource extends Resource
                             //                 });
                             //                 array_push($columns, $column);
                             //             }
-
-
-
-
-
-
                             //     }
-
                             //     // dd($columns);
-
-
                             //     return $columns;
                             // })->columns(3),
 

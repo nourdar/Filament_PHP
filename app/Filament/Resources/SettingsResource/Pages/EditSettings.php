@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SettingsResource\Pages;
 
 use App\Filament\Resources\SettingsResource;
+use App\Http\Controllers\FacebookController;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 

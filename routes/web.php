@@ -7,6 +7,8 @@ use App\Http\Controllers\AlgeriaCities;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\NoestController;
+use App\Http\Controllers\YalidineController;
 use App\Http\Controllers\ZrExpressController;
 
 /*
@@ -28,11 +30,13 @@ Route::get('/all-categories', [ShopController::class, 'get_all_categories'])->na
 Route::get('/all-brands', [ShopController::class, 'get_all_brands'])->name('brands.show');
 Route::get('/all-products', [ShopController::class, 'get_all_products'])->name('products.show');
 Route::get('/wilayas', [AlgeriaCities::class, 'get_all_wilayas']);
-Route::get('/communs/{wilayaCode}', [AlgeriaCities::class, 'get_all_communs']);
+Route::get('/communs/{wilayaCode}', [AlgeriaCities::class, 'get_all_communes']);
 Route::get('/yalidine-delivery-fees/{wilaya}', [DeliveryController::class, 'get_yalididne_delivery_fees']);
+Route::get('/yalidine-delivery/all', [YalidineController::class, 'getAllDeliveryFees']);
 Route::get('/calculate-delivery-fees/{wilaya}', [DeliveryController::class, 'calculate_delivery_fees']);
 Route::get('/yalidine/webhook', [DeliveryController::class, 'yalidine_webhook']);
 Route::get('/delivery-seeder', [DeliveryController::class, 'seeder']);
+Route::get('/noest', [NoestController::class, 'test']);
 
 Route::post('/place-order', [ShopController::class, 'place_order']);
 

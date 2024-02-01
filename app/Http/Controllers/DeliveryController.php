@@ -16,91 +16,6 @@ class DeliveryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function seeder()
-    {
-        $yalidine = new YalidineController();
-        $zr = new ZrExpressController();
-
-        // $yalidineWilayas = $yalidine->get_all_wilayas()['data'];
-
-        $yalidineCommunes = $yalidine->get_all_communes()['data'];
-        $yalidineCentres = $yalidine->get_all_centers()['data'];
-
-        $deliveryFees = $yalidine->getAllDeliveryFees();
-
-        $zrPricing = $zr->get_tarifs();
-
-        // foreach($yalidineWilayas as $wilaya){
-
-        //     Delivery::create([
-        //         'company_name' => 'yalidine',
-        //         'wilaya_id' => $wilaya['id'],
-        //         'wilaya_name' => $wilaya['name'],
-        //          'is_wilaya' => true,
-        //         'zone' => $wilaya['zone'],
-        //         'is_deliverable' => $wilaya['is_deliverable'],
-
-        //     ]);
-        // }
-
-        foreach ($deliveryFees['data'] as $delivery) {
-            if (is_array($delivery)) {
-
-                Delivery::where('company_name', 'yalidine')->where('is_wilaya', true)->where('wilaya_id', $delivery['wilaya_id'])->update([
-                    'home' => $delivery['home_fee'],
-                    'desk' => $delivery['desk_fee'],
-                    'retour' => '350',
-                ]);
-            }
-        }
-
-
-        foreach ($yalidineCommunes as $commune) {
-
-            Delivery::create([
-                'company_name' => 'yalidine',
-                'wilaya_id' => $commune['wilaya_id'],
-                'wilaya_name' => $commune['wilaya_name'],
-                'commune_id' => $commune['id'],
-                'commune_name' => $commune['name'],
-                'has_stop_desk' => $commune['has_stop_desk'],
-                'is_deliverable' => $commune['is_deliverable'],
-                'is_commune' => true,
-
-            ]);
-        }
-
-        foreach ($yalidineCentres as $centre) {
-            // dd($centre);
-            Delivery::create([
-                'company_name' => 'yalidine',
-                'wilaya_id' => $centre['wilaya_id'],
-                'wilaya_name' => $centre['wilaya_name'],
-                'commune_id' => $centre['commune_id'],
-                'commune_name' => $centre['commune_name'],
-                'centre_id' => $centre['center_id'],
-                'centre_name' => $centre['name'],
-                'center_address' => $centre['address'],
-                'center_gps' => $centre['gps'],
-                'is_center' => true,
-            ]);
-        }
-
-        foreach ($zrPricing as $zr) {
-            // dd($zr);
-            Delivery::create([
-                'company_name' => 'zrexpress',
-                'wilaya_id' => $zr['IDWilaya'],
-                'wilaya_name' => $zr['Wilaya'],
-                'home' => $zr['Domicile'],
-                'desk' => $zr['Stopdesk'],
-                'retour' => $zr['Annuler'],
-                'is_wilaya' => true,
-            ]);
-        }
-
-        dd('done');
-    }
 
     public function get_yalididne_delivery_fees($wilaya)
     {
@@ -346,7 +261,7 @@ class DeliveryController extends Controller
                     "Confrimee" => true, // 1 pour les colis Confirmer directement en pret a expedier
                     "Client" => $record->customer->name,
                     "MobileA" => $this->phone_cell($record->customer->phone),
-                    // "MobileB" => "0880808080",
+                    "MobileB" => $this->phone_cell($record->customer->phone2),
                     "Adresse" => $record->customer->city,
                     "IDWilaya" => $wilaya_arrive,
                     "Commune" => $to_commune_name,
@@ -392,6 +307,122 @@ class DeliveryController extends Controller
     }
 
 
+    public function add_order_to_noest($record)
+    {
+
+        if (!$this->validation($record)['status']) {
+            return Notification::make()
+                ->title('لم يتم تسجيل الطلبية')
+                ->body($this->validation($record)['message'])
+                ->danger()
+                ->send();
+        }
+
+        $settings =  Settings::first();
+
+        $noest = new NoestController();
+
+        $product = HelperController::get_product_name_from_form_record($record);
+
+        $product = strip_tags($product);
+
+
+
+        // set the delivery type
+
+        $is_stopdesk = ($record->shipping_type == 'desk') ? 1 : 0;
+
+        // Set wilaya depart
+        if (!$settings->wilaya_depart) {
+
+            return Notification::make()
+                ->title('الرجاء الذهاب الى الاعدادات وتحديد ولاية الانطلاق')
+                ->danger()
+                ->send();
+        } else {
+            $wilaya_depart = (new AlgeriaCities())->get_wilaya_name($settings->wilaya_depart);
+            $wilaya_arrive = (new AlgeriaCities())->get_wilaya_code($record->customer->address);
+        }
+
+
+        $delivery = Delivery::where('company_name', 'nord_et_west')->where('wilaya_name',  $wilaya_arrive)->get();
+
+
+        if (empty($record->shipping_price)) {
+            $deliveryPrice = $delivery[0][$record->shipping_type];
+        } else {
+            $deliveryPrice = $record->shipping_price;
+        }
+
+        if ($record->is_free_shipping) {
+            $deliveryPrice = 0;
+        }
+
+
+        $totalPrice = ($record->items[0]['unit_price'] * $record->items[0]['quantity']) + $deliveryPrice;
+
+
+
+        $to_commune_name = (new AlgeriaCities())->get_wilaya_name($record->customer->address);
+
+
+        $tracking = 'N-' . rand(22, 999999);
+
+
+        $coli = [
+            "tracking" => $tracking,
+            "client" =>  $record->customer->name,
+            "phone" => $this->phone_cell($record->customer->phone),
+            "phone_2" => $this->phone_cell($record->customer->phone2),
+            "adresse" => $record->customer->city,
+            "wilaya_id" => $wilaya_arrive,
+            "commune" =>  strtolower($to_commune_name),
+            "montant" => $totalPrice,
+            "remarque" => $record->notes,
+            "produit" =>  $product,
+            "stop_desk" =>  $is_stopdesk, // 1 stop desk, 0 domicile
+            "type_id" => 1, // 1 Livraison , 2 echange, 3 pick up
+            "poids" => 1,
+            "stock" => 0,
+            "quantite" => 1,
+        ];
+
+
+
+
+
+
+        $addColi = $noest->create($coli);
+
+
+
+
+        if (isset($addColi['success']) && isset($addColi['tracking'])) {
+
+
+
+            $order = Order::find($record->id);
+            $order->tracking = $addColi['tracking'];
+            $order->shipping_price = $deliveryPrice;
+
+            $order->transport_provider = 'nord_et_west';
+            $order->save();
+
+            $body = ($record->shipping_type == 'desk') ? 'الرجاء التاكد من صحة المكتب  والبلدية من موقعهم' : '';
+            return Notification::make()
+                ->title('تمت الاضافة بنجاح')
+                ->body($body)
+                ->success()
+                ->send();
+        } else {
+            return Notification::make()
+                ->title('لم تتم الاضافة')
+                ->body('Erreur 1212')
+                ->danger()
+                ->send();
+        }
+    }
+
     public function validation($record)
     {
         $result = [
@@ -411,6 +442,7 @@ class DeliveryController extends Controller
     public function phone_cell($phone)
     {
         $phone =  str_replace('+213', '0', $phone);
+
         return $phone;
     }
 
@@ -443,5 +475,158 @@ class DeliveryController extends Controller
             }
         }
         return false;
+    }
+
+
+    public function seeder()
+    {
+
+        $this->yalidine_seeder();
+        // $this->zrexpress_seeder();
+        // $this->noest_seeder();
+
+
+        dd('done');
+    }
+
+
+
+    public function yalidine_seeder()
+    {
+
+        $yalidine = new YalidineController();
+
+        $yalidine::$api_id =  '24819200986753884357';
+        $yalidine::$api_token =  'GfOvjYrK4gMWxs3iyahgbTDNCaEtEBLS5PkB20qAc7bUQ4fdQ2eXVepAUdDcJnX6';
+
+        $yalidineWilayas = $yalidine->get_all_wilayas()['data'];
+
+
+        $yalidineCommunesRequest = $yalidine->get_all_communes();
+        $yalidineCommunes = $yalidineCommunesRequest['data'];
+
+        $i = 2;
+
+        while ($yalidineCommunesRequest['has_more']) {
+            $yalidineCommunesRequest = $yalidine->get_all_communes($i);
+            array_push($yalidineCommunes, ...$yalidineCommunesRequest['data']);
+            $i++;
+        }
+
+        $i = 2;
+
+
+
+        $yalidineCentresRequest = $yalidine->get_all_centers();
+        $yalidineCentres = $yalidineCentresRequest['data'];
+
+        while ($yalidineCentresRequest['has_more']) {
+            $yalidineCentresRequest = $yalidine->get_all_centers($i);
+            array_push($yalidineCentres, ...$yalidineCentresRequest['data']);
+            $i++;
+        }
+
+        $i = 2;
+
+        $deliveryFees = $yalidine->getAllDeliveryFees();
+
+
+
+        foreach ($yalidineWilayas as $wilaya) {
+
+            Delivery::updateOrCreate([
+                'company_name' => 'yalidine',
+                'wilaya_id' => $wilaya['id'],
+                'wilaya_name' => $wilaya['name'],
+                'is_wilaya' => true,
+                'zone' => $wilaya['zone'],
+                'is_deliverable' => $wilaya['is_deliverable'],
+
+            ]);
+        }
+
+        foreach ($deliveryFees['data'] as $delivery) {
+            if (is_array($delivery)) {
+
+                Delivery::where('company_name', 'yalidine')->where('is_wilaya', true)->where('wilaya_id', $delivery['wilaya_id'])->update([
+                    'home' => $delivery['home_fee'],
+                    'desk' => $delivery['desk_fee'],
+                    'retour' => '350',
+                ]);
+            }
+        }
+
+
+
+        foreach ($yalidineCommunes as $commune) {
+
+            Delivery::updateOrCreate([
+                'company_name' => 'yalidine',
+                'wilaya_id' => $commune['wilaya_id'],
+                'wilaya_name' => $commune['wilaya_name'],
+                'commune_id' => $commune['id'],
+                'commune_name' => $commune['name'],
+                'has_stop_desk' => $commune['has_stop_desk'],
+                'is_deliverable' => $commune['is_deliverable'],
+                'is_commune' => true,
+
+            ]);
+        }
+
+        foreach ($yalidineCentres as $centre) {
+            // dd($centre);
+            Delivery::updateOrCreate([
+                'company_name' => 'yalidine',
+                'wilaya_id' => $centre['wilaya_id'],
+                'wilaya_name' => $centre['wilaya_name'],
+                'commune_id' => $centre['commune_id'],
+                'commune_name' => $centre['commune_name'],
+                'center_id' => $centre['center_id'],
+                'center_name' => $centre['name'],
+                'center_address' => $centre['address'],
+                'center_gps' => $centre['gps'],
+                'is_center' => true,
+            ]);
+        }
+    }
+
+    public function zrexpress_seeder()
+    {
+
+        $zr = new ZrExpressController();
+        $zrPricing = $zr->get_tarifs();
+
+        foreach ($zrPricing as $zr) {
+            // dd($zr);
+            Delivery::updateOrCreate([
+                'company_name' => 'zrexpress',
+                'wilaya_id' => $zr['IDWilaya'],
+                'wilaya_name' => $zr['Wilaya'],
+                'home' => $zr['Domicile'],
+                'desk' => $zr['Stopdesk'],
+                'retour' => $zr['Annuler'],
+                'is_wilaya' => true,
+            ]);
+        }
+    }
+
+    public function noest_seeder()
+    {
+
+        $zr = new ZrExpressController();
+        $zrPricing = $zr->get_tarifs();
+
+        foreach ($zrPricing as $zr) {
+            // dd($zr);
+            Delivery::updateOrCreate([
+                'company_name' => 'nord_et_west',
+                'wilaya_id' => $zr['IDWilaya'],
+                'wilaya_name' => $zr['Wilaya'],
+                'home' => '800',
+                'desk' => '350',
+                'retour' => '300',
+                'is_wilaya' => true,
+            ]);
+        }
     }
 }

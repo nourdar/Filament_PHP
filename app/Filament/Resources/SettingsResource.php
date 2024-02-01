@@ -22,6 +22,7 @@ use App\Http\Controllers\AlgeriaCities;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 
@@ -94,8 +95,12 @@ class SettingsResource extends Resource
                         Select::make('provider')->label('Transporteur')->options([
                             'Yalidine' => 'Yalidine',
                             'zrexpress' => 'ZR Express',
+                            'nord_et_west' => 'Nord et west',
+                            'ecotrack' => 'Ecotrack',
 
-                        ])->searchable(),
+                        ])
+
+                            ->searchable(),
                         TextInput::make('api_key')->label('Transport API Key'),
                         TextInput::make('api_token')->label('Transport API Token'),
                         Checkbox::make('is_active')->label('Actif')->default(true),
@@ -116,6 +121,29 @@ class SettingsResource extends Resource
 
 
                 ]),
+
+
+
+                Section::make('Integration Réseaux Sociaux')->schema([
+
+                    Repeater::make('social_media')->schema([
+                        Section::make('Facebook')->schema([
+                            Toggle::make('facebook_pixel_enabled'),
+                            TextInput::make('facebook_pixel_id'),
+                            TextInput::make('facebook_pixel_session_key'),
+                            TextInput::make('facebook_pixel_token'),
+                            TextInput::make('facebook_pixel_test_event_code'),
+                        ])->columns(2),
+                    ])
+
+                        ->maxItems(1),
+
+
+
+
+                ]),
+
+
                 Section::make('')->schema([
                     Repeater::make('slides')->schema([
                         FileUpload::make('slide')

@@ -20,16 +20,19 @@
     @endif
 
     <link rel="icon" type="image/png" href="{{ asset('storage/' . $settings?->logo) }}" />
-    <link href="https://fonts.googleapis.com/css?family=Work+Sans:200,400&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Diphylleia&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Diphylleia&display=swap" rel="stylesheet">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200&family=Diphylleia&family=Work+Sans:wght@200&display=swap" rel="stylesheet">
 
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 
     @stack('styles')
+
+    @include('facebookpixel::head')
+
+
     {!! $settings?->head_code !!}
 </head>
 
@@ -40,28 +43,42 @@
   scroll-behavior: smooth !important;
 }
 
-        .bg-btn-primary {
-            background-color: {{ $settings->style[0]['bg-btn-primary'] ?? '' }}
+        .font-diph {
+            font-family: 'Diphylleia'  !important;
         }
 
-        .bg-btn-primary-hover {
-            background-color: {{ $settings->style[0]['bg-btn-primary-hover'] ?? '' }}
+        .font-cairo {
+            font-family: 'cairo'  !important;
+        }
+
+        .font-work-sans {
+            font-family: 'work sans'  !important;
+        }
+
+        .bg-btn-primary {
+            background-color: {{ $settings->style[0]['bg-btn-primary'] .' !important' ?? '' }}
+        }
+
+        .bg-btn-primary:hover {
+            background-color: {{ $settings->style[0]['bg-btn-primary-hover'] .' !important'?? '' }}
         }
 
         .btn-primary-text-color {
-            color: {{ $settings->style[0]['btn-primary-text-color'] ?? 'white' }}
+            color: {{ $settings->style[0]['btn-primary-text-color'] .' !important'?? 'white' }}
         }
 
-        .btn-primary-text-color-hover {
-            color: {{ $settings->style[0]['btn-primary-text-color-hover'] ?? 'white' }}
+        .btn-primary-text-color:hover {
+            color: {{ $settings->style[0]['btn-primary-text-color-hover'].' !important'?? 'white' }}
         }
     </style>
 @endif
 
 
 
-<body class="text-base leading-normal tracking-normal text-gray-600 bg-white work-sans">
+<body class="text-base leading-normal tracking-normal text-gray-600 bg-white font-cairo ">
 
+
+    @include('facebookpixel::body')
 
 
 

@@ -10,8 +10,8 @@ class YalidineController extends Controller
 {
 
     private static $url = "https://api.yalidine.com/v1/";
-    private static $api_id = null;
-    private static $api_token = null;
+    public static $api_id = null;
+    public static $api_token = null;
 
 
     public function __construct()
@@ -204,6 +204,7 @@ class YalidineController extends Controller
             $response_json = curl_exec($curl);
             curl_close($curl);
             $response_array = json_decode($response_json, true);
+
             return $response_array;
         } catch (\Throwable $th) {
             throw $th;
@@ -300,7 +301,7 @@ class YalidineController extends Controller
         }
     }
 
-    public static function get_all_communes()
+    public static function get_all_communes($page = 1)
     {
 
         try {
@@ -308,7 +309,7 @@ class YalidineController extends Controller
 
             $curl = curl_init();
 
-            $url = self::$url  . 'communes';
+            $url = self::$url  . 'communes?page=' . $page;
             curl_setopt_array($curl, array(
                 CURLOPT_URL => $url,
                 CURLOPT_RETURNTRANSFER => true,
@@ -332,7 +333,7 @@ class YalidineController extends Controller
         }
     }
 
-    public static function get_all_centers()
+    public static function get_all_centers($page = 1)
     {
 
         try {
@@ -340,7 +341,7 @@ class YalidineController extends Controller
 
             $curl = curl_init();
 
-            $url = self::$url  . 'centers';
+            $url = self::$url  . 'centers?page=' . $page;
             curl_setopt_array($curl, array(
                 CURLOPT_URL => $url,
                 CURLOPT_RETURNTRANSFER => true,

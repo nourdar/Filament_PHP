@@ -20,7 +20,7 @@ const summary = document.querySelector(".summary");
 // };
 
 submit.onclick = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
 };
 
 summary.onclick = () => {

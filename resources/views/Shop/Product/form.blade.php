@@ -1,4 +1,14 @@
 <div dir="rtl">
+
+
+    <a href="#form"  class="fixed z-10 m-auto bottom-3 " >
+
+        <button type="submit"
+        class="p-4 text-xl text-center text-white bg-green-700 border-0 rounded animated animate__animated animate__shakeX animate__infinite outline font-cairo focus:ring-0">
+        تأكيد الطلب <span class="totalPrice" dir="ltr">{{   number_format($totalPrice, '0', ',', ' ') }}</span> دج
+    </button>
+    </a>
+
 <style type="text/css">
 
     .animate__shakeX , .animate__shakeY{
@@ -10,11 +20,9 @@
         animation-delay: 1s;
     }
 </style>
-@if (Session::has('message'))
-    {{-- <p class="alert text-center text-xl text-bold {{ Session::get('alert-class', 'alert-info') }}">
-        {{ Session::get('message') }}
-    </p> --}}
-    @if (Session::get('alert-class') == 'alert-success')
+
+
+    @if ($sucessMessage)
         <div class="flex items-center justify-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
             role="alert">
             <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -24,42 +32,43 @@
             </svg>
             <span class="sr-only">Info</span>
             <div>
-                <span class="font-medium"> {{ Session::get('message') }}
+                <span class="font-medium"> تم تسجيل الطلب بنجاح
             </div>
         </div>
-    @else
+        @endif
+    @if($errorMessage)
         <div class="p-4 mb-4 text-sm text-center text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
             role="alert">
-            <span class="font-medium">{{ Session::get('message') }} </span>
+            <span class="font-medium">لم تتم العملية بنجاح الرجاء التاكد من المعلومات</span>
         </div>
     @endif
-@endif
-
 
 
 
 
 
 <div
+id="form"
       class="flex flex-col items-center justify-center w-full p-4 checkout-form"
     >
       <!-- Form - Start -->
       <div class="flex flex-col items-center justify-center full-form">
         <form
         wire:submit="save"
-          action=""
+
           class="flex flex-col items-center justify-center w-full gap-1 bg-white form"
         >
           <!-- Name and Phone - Start -->
 
           <div class="flex gap-1 name-number">
 
-            <div class="w-1/2 full_name fields">
+                <div class="w-1/2 full_name fields">
               <label for="name" class="label">الاسم الكامل</label>
               <input type="text" id="name_input" name="name" class="mt-0.5" dir="rtl"  wire:model="name"   />
-            </div>
+              @error('name') <span class="text-red-500 error">{{ $message }}</span> @enderror
+                </div>
 
-            <div class="w-1/2 phone_number fields">
+                <div class="w-1/2 phone_number fields">
                 <label class="label" for="phone">رقم الهاتف</label>
                 <input
                   type="text"
@@ -72,6 +81,7 @@
                   oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                   dir="rtl"
                 />
+                @error('phone') <span class="text-red-500 error">{{ $message }}</span> @enderror
               </div>
 
           </div>
@@ -121,7 +131,47 @@
 
           </div>
 
+
+
+
+
+
+          @if($mesuresList)
+          <div class="flex gap-1 selectors">
+              @foreach ($mesuresList as $mesure => $options )
+
+            <div class="w-1/3 fields ">
+              {{-- <label  class="label">{{$mesure}}</label> --}}
+
+              <select name="{{$mesure}}" id="select_wilaya" wire:model="mesures.{{ $mesure }}" wire:ignore  class="mt-0.5 p-3" dir="rtl" >
+                @foreach ($options as $option )
+                <option value="{{$option}}"> {{$option}} </option>
+                @endforeach
+                <option    value="" disabled>{{ $mesure }}</option>
+            </select>
+            </div>
+            @endforeach
+          </div>
+
+          @endif
           <!-- Selectors - End -->
+
+
+
+
+
+          <div class="flex gap-1 name-number">
+
+
+
+            <div class="w-full fields">
+            <label class="label" for="notes">ملاحظة</label>
+
+            <textarea name="notes" id="notes" wire:model='notes' cols="10"  class="w-full"></textarea>
+          </div>
+
+      </div>
+
 
           <!-- Livraison tarifs - Start -->
 
@@ -135,7 +185,7 @@
               <p>التوصيل للمكتب</p>
             </div>
             <div class="flex items-center w-1/3 gap-1 liv-bureau livraison">
-              <input type="checkbox" id="liv_bureau_checkbox" wire:model="home" wire:change='homeChecked'   />
+              <input type="checkbox" id="liv_bureau_checkbox" wire:model='home' wire:change='homeChecked'  />
               <p>التوصيل للمنزل</p>
             </div>
           </div>
@@ -146,6 +196,8 @@
 
           <div class="flex w-full gap-2 quantity-submit">
             <input
+
+            {{-- wire:click='save' --}}
               type="submit"
               id="submit"
               value="أنقر هنا لتأكيد الطلب"
@@ -169,7 +221,7 @@
           </div>
           <!-- Quantity - End -->
         </form>
-        <div class="order-summary">
+        <div class="order-summary font-cairo">
           <div class="flex items-center justify-between rounded summary">
             <div class="px-4 text-lg arrow">
               <i class="fa-solid fa-chevron-down"></i>
@@ -190,13 +242,15 @@
               "
               class="flex flex-col"
             >
-              <div class="px-4 details-row" dir="rtl">
-                <h3 class="product-title">{{ $product->name }}</h3>
-                <h3>
-                    <span dir="ltr" class="total_price">{{ $price }}
+              <div class="px-4 details-row"  dir="rtl">
+                <div class="text-sm product-title text-wrap">سعر المنتج</div>
+                <div>
+                    <span class="p-1 ml-3 mr-3 text-white bg-green-700 rounded text-bold" > X <span class="quantity_number" >  {{ $quantity }}</span>
+                </span>
+
+                    <span dir="ltr" class="total_price ">{{ number_format($price, '0', ',', ' ') }}
                         دج</span>
-                    <span class="pl-2 pr-2 mr-2 text-white bg-green-700 rounded text-bold"> X <span class="quantity_number" >  {{ $quantity }}</span></span>
-                </h3>
+                </div>
 
               </div>
             </div>
@@ -209,161 +263,28 @@
               class="flex flex-col"
             >
               <div class="px-4 details-row" dir="rtl">
-                <h3>سعر التوصيل</h3>
-                <h3 dir="ltr">{{ $deliveryPrice }} دج</h3>
+                <div>سعر التوصيل</div>
+                <div dir="ltr">{{ $deliveryPrice }} دج</div>
               </div>
             </div>
             <div style="width: 100%; height: 50px" class="flex flex-col">
               <div class="px-4 details-row" dir="rtl">
-                <h3>السعر الكلي</h3>
-                <h3 dir="ltr">{{ $totalPrice }} دج</h3>
+                <div>السعر الكلي</div>
+                <div dir="ltr">{{ number_format($totalPrice, '0', ',', ' ') }} دج</div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <!-- Form - End -->
+
+
     </div>
+
+
 
 
 </div>
 
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<script type="text/javascript">
-    var productPrice = {{ $product->price }}
-    var homeDelivery = 0
-    var deskDelivery = 0
-    var deliveryType = 'desk'
 
-    var quantity = $('#quantity').val();
-    var quantityIncrement = $('#quantityIncrement');
-    var quantityDecrement = $('#quantityDecrement');
-
-
-
-    $(document).on('change', '#wilaya', function() {
-
-        var WilayaID = $(this).val();
-        if (WilayaID) {
-            $.ajax({
-                url: "{{ url('/communs/') }}/" + WilayaID,
-                type: "GET",
-                dataType: "json",
-                success: function(data) {
-                    $('select[name="commune"]').html('');
-                    var d = $('select[name="commune"]').empty();
-                    $.each(data, function(key, value) {
-                        $('select[name="commune"]').append(
-                            '<option value="' + value + '">' + value +
-                            '</option>');
-                    });
-
-
-                    calculateDeliveryFees()
-                },
-            });
-        } else {
-            alert('Problem whie loading communs');
-        }
-
-
-
-
-    });
-
-    function calculateDeliveryFees() {
-
-        var wilaya = $('#wilaya').val();
-
-        $.ajax({
-            url: "{{ url('/calculate-delivery-fees/') }}/" + wilaya,
-            type: "GET",
-            dataType: "json",
-            success: function(data) {
-
-                homeDelivery = data.home_fee
-                deskDelivery = data.desk_fee
-
-                $('#HomeDeliveryFees').text((homeDelivery).toLocaleString('fr'))
-
-                $('#DeskDeliveryFees').text((deskDelivery).toLocaleString('fr'))
-                $('#DeliveryProvider').text(data.provider)
-
-                calculateTotalPrice()
-
-            },
-        });
-
-    }
-
-
-    $('#homeDelivery').click(function() {
-
-        if ($('#deskDelivery').hasClass('delivery-selected')) {
-
-            $('#deskDelivery').removeClass('delivery-selected');
-            $('#deskCheck').hide();
-            $('#homeCheck').show();
-
-            $(this).addClass('delivery-selected')
-
-            deliveryType = 'home'
-
-            calculateTotalPrice()
-
-        }
-    })
-
-
-    $('#deskDelivery').click(function() {
-
-        if ($('#homeDelivery').hasClass('delivery-selected')) {
-
-            $('#homeDelivery').removeClass('delivery-selected')
-
-            $(this).addClass('delivery-selected')
-
-            $('#deskCheck').show();
-
-            $('#homeCheck').hide();
-
-            deliveryType = 'desk'
-
-            calculateTotalPrice()
-        }
-    })
-
-    quantityIncrement.on('click', function() {
-        quantity++
-        $('#quantity').val(quantity);
-        calculateTotalPrice()
-    })
-
-    quantityDecrement.on('click', function() {
-        if (quantity > 1) {
-            quantity--
-            $('#quantity').val(quantity);
-
-            calculateTotalPrice()
-        }
-    })
-
-    $('#quantity').on('change', function() {
-        quantity = $(this).val();
-        calculateTotalPrice()
-    })
-
-    function calculateTotalPrice() {
-        if (deliveryType == 'desk') {
-            $('input[name="delivery_fees"]').val(deskDelivery)
-            $('input[name="delivery_type"]').val('desk')
-            $('.totalPrice').text(((productPrice * quantity) + deskDelivery).toLocaleString('fr'))
-        } else {
-            $('input[name="delivery_fees"]').val(homeDelivery)
-            $('input[name="delivery_type"]').val('home')
-            $('.totalPrice').text(((productPrice * quantity) + homeDelivery).toLocaleString('fr'))
-        }
-    }
-</script>

@@ -19,6 +19,7 @@
         "alpinejs": "^3.13.3",
         "animate.css": "^4.1.1",
         "flowbite": "^2.2.1",
+        "sweetalert2": "^11.10.3",
         "swiper": "^11.0.5"
     }
 }

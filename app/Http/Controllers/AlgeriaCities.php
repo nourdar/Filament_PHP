@@ -14,7 +14,7 @@ class AlgeriaCities extends Controller
         return $plucked->all();
     }
 
-    public function get_all_communs_options()
+    public function get_all_communes_options()
     {
         $plucked = $this->all()->pluck('commune_name', 'commune_name');
         return $plucked->all();
@@ -57,7 +57,7 @@ class AlgeriaCities extends Controller
         return false;
     }
 
-    public function get_all_communs($wilayaCode)
+    public function get_all_communes($wilayaCode)
     {
 
         $communs = $this->all()->where('wilaya_code', $wilayaCode);
@@ -6956,7 +6956,7 @@ class AlgeriaCities extends Controller
                 "wilaya_name" => "Bordj Bou Arreridj",
             ],
             1166 => [
-                "commune_name" => "B. B. Arreridj",
+                "commune_name" => "Bordj Bou Arreridj",
                 "daira_name" => "Bordj Bou Arreridj",
                 "wilaya_code" => "34",
                 "wilaya_name" => "Bordj Bou Arreridj",
