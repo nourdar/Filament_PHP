@@ -50,7 +50,7 @@ class ShopController extends Controller
         $settings = $this->settings;
 
         $products = Product::where('is_visible', true)->orderBy('updated_at', 'desc')->paginate(12, ['*'], 'products');
-        $brands = Brand::where('is_visible', true)->has('products')->paginate(4, ['*'], 'brands');
+        $brands = Brand::where('is_visible', true)->has('products')->paginate(5, ['*'], 'brands');
 
         $categories = Category::where('is_visible', true)->has('products')->limit(4)->get();
 
@@ -222,63 +222,61 @@ class ShopController extends Controller
         // dd($options);
         DB::transaction(function () use ($data, $options) {
 
-            // Create a new customer
-            // $customer =  new Customer();
-            // $customer->name = $data->name;
-            // $customer->surname = $data->name;
-            // $customer->phone = $data->phone;
-            // $customer->address = (new AlgeriaCities())->get_all_wilayas()[$data->wilaya];
-            // $customer->city = $data->commune;
-            // $customer->save();
+            // customer a new customer
+            $customer =  new Customer();
+            $customer->name = $data->name;
+            $customer->surname = $data->name;
+            $customer->phone = $data->phone;
+            $customer->address = (new AlgeriaCities())->get_all_wilayas()[$data->wilaya];
+            $customer->city = $data->commune;
+            $customer->save();
 
 
-            // $order = new Order();
-            // $order->order_number = random_int(10000, 999999999);
-            // $order->customer_id = $customer->id;
-            // $order->status = 'placed';
-            // $order->notes = $data->notes;
-            // $order->shipping_type = $data->deliveryType;
-            // $order->shipping_price = $data->deliveryPrice;
-            // $order->total_price = $data->price;
-            // $order->save();
+            $order = new Order();
+            $order->order_number = random_int(10000, 999999999);
+            $order->customer_id = $customer->id;
+            $order->status = 'placed';
+            $order->notes = $data->notes;
+            $order->shipping_type = $data->deliveryType;
+            $order->shipping_price = $data->deliveryPrice;
+            $order->total_price = $data->price;
+            $order->save();
 
 
-            // $orderItem = new OrderItem();
-            // $orderItem->order_id = $order->id;
-            // $orderItem->product_id = $data->productId;
-            // $orderItem->quantity = $data->quantity;
-            // $orderItem->unit_price = $data->price;
-            // $orderItem->options = $options;
-            // $orderItem->save();
+            $orderItem = new OrderItem();
+            $orderItem->order_id = $order->id;
+            $orderItem->product_id = $data->productId;
+            $orderItem->quantity = $data->quantity;
+            $orderItem->unit_price = $data->price;
+            $orderItem->options = $options;
+            $orderItem->save();
 
             // Send email Notification
             if ($this->settings->email) {
                 // Mail::to('gachtoun@gmail.com')
 
-                // Mail::to($this->settings->email)
-                //     ->send(new OrderPlaced($order));
+                Mail::to($this->settings->email)
+                    ->send(new OrderPlaced($order));
             }
         });
 
+        // dd($this->settings['social_media'][0]);
+        if (isset($this->settings['social_media'][0])) {
 
-        // if (isset($settings['social_media'][0])) {
+            $facebook = new FacebookController();
+            $facebook->set_content($data->productId, $data->quantity, $data->deliveryType);
+            $facebook->set_custom_data($data->price);
+            $facebook->set_user_data($data->phone, '');
 
-        $facebook = new FacebookController();
-        $facebook->set_content($data->productId, $data->quantity, $data->deliveryType);
-        $facebook->set_custom_data($data->price);
-        $facebook->set_user_data($data->phone, '');
+            // $facebook->eventId = uniqid('prefix_');
+            // $facebook->send('ViewContent');
+            $facebook->eventId = uniqid('prefix_');
+            // dd($facebook->send('AddPaymentInfo'));
+            $facebook->send('AddPaymentInfo');
 
-        $facebook->eventId = uniqid('prefix_');
-        $facebook->send('ViewContent');
-
-
-
-        $facebook->eventId = uniqid('prefix_');
-        $facebook->send('AddPaymentInfo');
-
-        $facebook->eventId = uniqid('prefix_');
-        $facebook->send('Purchase');
-        // }
+            $facebook->eventId = uniqid('prefix_');
+            $facebook->send('Purchase');
+        }
 
 
 

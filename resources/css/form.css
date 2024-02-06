@@ -39,8 +39,9 @@ textarea,
     appearance: textfield;
     border-radius: 2px;
     outline: 0;
-    border: 1px solid rgb(21 128 61);
+    border: 1px solid;
     padding: 10px;
+    background: white;
     font-size: 16px;
 }
 

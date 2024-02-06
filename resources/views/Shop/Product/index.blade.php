@@ -56,7 +56,7 @@
                                         DA</span>
                                     @if ($product->old_price)
                                         <span
-                                            class="text-sm line-through text-slate-900">{{ number_format($product->old_price, 0) }}
+                                            class="text-sm text-red-700 line-through">{{ number_format($product->old_price, 0) }}
                                             DA</span>
                                     @endif
                                 </p>
@@ -122,7 +122,7 @@
         <a aria-label="show more products" href="all-products" class="flex justify-center">
 
             <button aria-label="show all brands button"
-                class="px-4 py-2 font-semibold bg-transparent border rounded  font-cairo bg-btn-primary hover:bg-btn-primary-hover btn-primary-text-color hover:btn-primary-text-color-hover hover:border-transparent">
+                class="px-4 py-2 font-semibold bg-transparent border rounded font-cairo bg-btn-primary hover:bg-btn-primary-hover btn-primary-text-color hover:btn-primary-text-color-hover hover:border-transparent">
                 اظهار الكل
             </button>
         </a>

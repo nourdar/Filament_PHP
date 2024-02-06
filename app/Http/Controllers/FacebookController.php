@@ -45,7 +45,7 @@ class FacebookController extends Controller
     public function set_user_data($phone, $email)
     {
         $this->userData =  $this->fbPixel->userData()
-            ->setEmail($email ?? null)
+            // ->setEmail($email ?? null)
             ->setPhone($phone ?? null);
         return $this;
     }

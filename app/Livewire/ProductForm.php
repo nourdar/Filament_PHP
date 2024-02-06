@@ -13,13 +13,14 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\HelperController;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Combindma\FacebookPixel\Facades\FacebookPixel;
-
-
+use Exception;
 
 class ProductForm extends Component
 {
     use LivewireAlert;
 
+    public $settings;
+    public $loader = false;
     public $product;
     public $productId;
     public int  $quantity = 1;
@@ -60,7 +61,7 @@ class ProductForm extends Component
     public function render()
     {
         $settings = Settings::first();
-
+        $this->settings = $settings;
         if (isset(collect($settings->transport)->where('is_principal')[0])) {
             if (isset(collect($settings->transport)->where('is_principal')[0]['provider'])) {
                 $this->deliveryCompany = collect($settings->transport)->where('is_principal')[0]['provider'];
@@ -114,10 +115,14 @@ class ProductForm extends Component
     public function save()
     {
 
+        $this->loader = true;
 
+        if (empty($this->name) || empty($this->phone)) {
+            $this->loader = false;
+            $this->validate();
+        }
 
-        $this->validate();
-
+        // $save = true;
         $save = (new ShopController())->livewire_place_order($this);
 
         if ($save) {
@@ -129,7 +134,7 @@ class ProductForm extends Component
 
             $this->sucessMessage = true;
             $this->errorMessage = false;
-            $this->alert('success', 'تم تسجيل الطلب بنجاح');
+            // $this->alert('success', 'تم تسجيل الطلب بنجاح');
         } else {
 
             $this->dispatch('openModal', component: 'order-placed-modal', arguments: [
@@ -138,8 +143,12 @@ class ProductForm extends Component
 
             $this->errorMessage = true;
             $this->sucessMessage = false;
-            $this->alert('alert', 'تم تسجيل الطلب بنجاح');
+            // $this->alert('alert', 'تم تسجيل الطلب بنجاح');
         }
+
+
+        $this->loader = false;
+
 
         return true;
     }

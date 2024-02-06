@@ -1,10 +1,15 @@
 <div dir="rtl">
 
 
-    <a href="#form"  class="fixed z-10 m-auto bottom-3 " >
+    <a href="#form"  class="fixed z-10 m-auto bottom-3 left-2 " >
 
         <button type="submit"
-        class="p-4 text-xl text-center text-white bg-green-700 border-0 rounded animated animate__animated animate__shakeX animate__infinite outline font-cairo focus:ring-0">
+        wire:click='save'
+        @if ($loader)
+              {{ 'disabled'}}
+
+              @endif
+        class="p-4 text-xl text-center text-white bg-green-700 border-0 rounded bg-btn-primary animated animate__animated animate__shakeX animate__infinite outline font-cairo focus:ring-0">
         تأكيد الطلب <span class="totalPrice" dir="ltr">{{   number_format($totalPrice, '0', ',', ' ') }}</span> دج
     </button>
     </a>
@@ -19,6 +24,10 @@
     .animated {
         animation-delay: 1s;
     }
+
+
+
+
 </style>
 
 
@@ -50,7 +59,8 @@
 <div
 id="form"
       class="flex flex-col items-center justify-center w-full p-4 checkout-form"
-    >
+>
+
       <!-- Form - Start -->
       <div class="flex flex-col items-center justify-center full-form">
         <form
@@ -140,16 +150,18 @@ id="form"
           <div class="flex gap-1 selectors">
               @foreach ($mesuresList as $mesure => $options )
 
+              @if(isset($options[0]))
             <div class="w-1/3 fields ">
               {{-- <label  class="label">{{$mesure}}</label> --}}
-
               <select name="{{$mesure}}" id="select_wilaya" wire:model="mesures.{{ $mesure }}" wire:ignore  class="mt-0.5 p-3" dir="rtl" >
                 @foreach ($options as $option )
                 <option value="{{$option}}"> {{$option}} </option>
                 @endforeach
                 <option    value="" disabled>{{ $mesure }}</option>
             </select>
-            </div>
+
+        </div>
+        @endif
             @endforeach
           </div>
 
@@ -199,22 +211,35 @@ id="form"
 
             {{-- wire:click='save' --}}
               type="submit"
+              wire:loading.remove
               id="submit"
+              @if ($loader)
+              {{ 'disabled'}}
+
+              @endif
               value="أنقر هنا لتأكيد الطلب"
-              class="font-semibold text-white bg-green-700 hover:bg-green-600"
+              class="font-semibold text-white bg-green-700 hover:bg-green-600 bg-btn-primary"
             />
+
+            <input wire:loading.block
+            class="font-semibold text-white bg-green-700 hover:bg-green-600 bg-btn-primary"
+            value="                جاري تسجيل الطلب
+            "
+            />
+
+
             <div
               class="flex items-center justify-between w-full h-full text-white quantity"
             >
               <button class="h-full text-black sub_quantity" wire:click="decrementQuantity" type="button">
-                <span><svg xmlns="http://www.w3.org/2000/svg" fill="#388E3C" viewBox="0 0 20 20"><path d="M10 20a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm5-11H5v2h10V9z"/></svg></span>
+                <span><svg xmlns="http://www.w3.org/2000/svg" fill=" {{ $settings->style[0]['bg-btn-primary'] .' !important' ?? ' #388E3C' }} " viewBox="0 0 20 20"><path d="M10 20a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm5-11H5v2h10V9z"/></svg></span>
               </button>
               <div class="text-xl text-black quantity_number text-semibold">
                 {{ $quantity }}
               </div>
               <button class="h-full text-black add_quantity" wire:click="incrementQuantity"  type="button">
                 <span id="add" class="w-full h-full ">
-                    <svg xmlns="http://www.w3.org/2000/svg"  fill="#388E3C" class="bi bi-plus-circle-fill" viewBox="0 0 16 16"> <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/> </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg"  fill="{{ $settings->style[0]['bg-btn-primary'] .' !important' ?? ' #388E3C' }}" class="bi bi-plus-circle-fill" viewBox="0 0 16 16"> <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/> </svg>
                 </span>
               </button>
             </div>
@@ -245,7 +270,7 @@ id="form"
               <div class="px-4 details-row"  dir="rtl">
                 <div class="text-sm product-title text-wrap">سعر المنتج</div>
                 <div>
-                    <span class="p-1 ml-3 mr-3 text-white bg-green-700 rounded text-bold" > X <span class="quantity_number" >  {{ $quantity }}</span>
+                    <span class="p-1 ml-3 mr-3 text-white bg-green-700 rounded bg-btn-primary text-bold" > X <span class="quantity_number" >  {{ $quantity }}</span>
                 </span>
 
                     <span dir="ltr" class="total_price ">{{ number_format($price, '0', ',', ' ') }}
@@ -284,7 +309,11 @@ id="form"
 
 
 
+
+
+
 </div>
+
 
 
 

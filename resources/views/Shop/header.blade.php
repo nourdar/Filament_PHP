@@ -59,6 +59,10 @@
             background-color: {{ $settings->style[0]['bg-btn-primary'] .' !important' ?? '' }}
         }
 
+        select, input, form, textarea, .checkout-form{
+            border-color : {{ $settings->style[0]['bg-btn-primary'] .' !important' ?? '' }}
+        }
+
         .bg-btn-primary:hover {
             background-color: {{ $settings->style[0]['bg-btn-primary-hover'] .' !important'?? '' }}
         }

@@ -167,8 +167,8 @@ class SettingsResource extends Resource
                             ColorPicker::make('footer_bgcolor')->label('Footer Background Color'),
                         ])->columns(2),
                         Section::make('Buttons')->schema([
-                            ColorPicker::make('bg-btn-primary')->label('Couleur principale des buttons'),
-                            ColorPicker::make('bg-btn-primary-hover')->label('Couleur principale des buttons on hover'),
+                            ColorPicker::make('bg-btn-primary')->label('Couleur principale '),
+                            ColorPicker::make('bg-btn-primary-hover')->label('Couleur principale  on hover'),
                             ColorPicker::make('btn-primary-text-color')->label('Couleur de text des buttons'),
                             ColorPicker::make('btn-primary-text-color-hover')->label('Couleur de text des buttons on hover '),
                         ])->columns(4),
