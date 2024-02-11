@@ -19,10 +19,12 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Kenepa\TranslationManager\TranslationManagerPlugin;
 use Filament\Http\Middleware\DisableBladeIconComponents;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Spatie\LaravelImageOptimizer\Middlewares\OptimizeImages;
+use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -82,6 +84,8 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 OptimizeImages::class,
+                // InitializeTenancyByDomain::class,
+                // PreventAccessFromCentralDomains::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

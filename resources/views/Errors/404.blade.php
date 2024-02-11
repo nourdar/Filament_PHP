@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tailwind CSS 404 Page</title>
+        <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
+    </head>
 
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <body>
+        <div class="flex items-center justify-center w-screen h-screen bg-gradient-to-r from-indigo-600 to-blue-400">
+            <div class="px-40 py-20 bg-white rounded-md shadow-xl">
+                <div class="flex flex-col items-center">
+                    <h1 class="font-bold text-blue-600 text-9xl">404</h1>
 
-    <title>Error 404 - Page Not Found</title>
+                    <h6 class="mb-2 text-2xl font-bold text-center text-gray-800 md:text-3xl">
+                        <span class="text-red-500">Oops!</span> Page not found
+                        <br>
+                        <span class="text-red-500 rtl">نعتذر</span> هذه الصفحة غير موجودة
+                    </h6>
 
-    <!-- Google font -->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:700,900" rel="stylesheet">
+                    <p class="mb-8 text-center text-gray-500 md:text-lg">
+                        The page you’re looking for doesn’t exist.
+                    </p>
 
-    <!-- Custom stlylesheet -->
-    <link type="text/css" rel="stylesheet" href="{{asset('assets/css/404.css')}}" />
-
-</head>
-
-<body>
-
-    <div id="notfound">
-        <div class="notfound">
-            <div class="notfound-404">
-                <h1>404</h1>
-                <h2>Page not found</h2>
+                    <a href="{{route('welcome')}}" class="px-6 py-2 mb-2 text-sm font-semibold text-blue-800 bg-blue-100">الذهاب الى الصفحة الرئيسية</a>
+                    <a href="{{route('welcome')}}" class="px-6 py-2 text-sm font-semibold text-blue-800 bg-blue-100">Go home</a>
+                </div>
             </div>
-            <a href="{{route('welcome')}}">Homepage</a>
         </div>
-    </div>
-
-</body>
+    </body>
 
 </html>

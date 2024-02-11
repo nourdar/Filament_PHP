@@ -27,6 +27,7 @@
         "spatie/laravel-activitylog": "^4.7",
         "spatie/laravel-image-optimizer": "^1.7",
         "spatie/laravel-searchable": "^1.11",
+        "stancl/tenancy": "^3.7",
         "stechstudio/filament-impersonate": "^3.5",
         "syamsoul/laravel-set-env": "^1.0",
         "usernotnull/tall-toasts": "^2.0",
