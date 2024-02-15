@@ -8,37 +8,33 @@ use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Navigation\MenuItem;
 use Filament\Support\Colors\Color;
-use Filament\Navigation\NavigationItem;
 use Filament\Http\Middleware\Authenticate;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
-use pxlrbt\FilamentSpotlight\SpotlightPlugin;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Kenepa\TranslationManager\TranslationManagerPlugin;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Spatie\LaravelImageOptimizer\Middlewares\OptimizeImages;
-use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
-class AdminPanelProvider extends PanelProvider
+class TenantFreePanelPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default()
-            ->id('first')
-            ->path('admin')
+
+            ->id('second')
+            ->path('dashboard')
             ->login()
             ->colors([
                 'primary' => Color::Blue,
             ])
-            ->domain(env('APP_URL'))
+            // ->domain()
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->sidebarCollapsibleOnDesktop()
             ->profile()
@@ -50,10 +46,10 @@ class AdminPanelProvider extends PanelProvider
                 'logout' => MenuItem::make()->label('Déconnexion'),
                 // 'profile' => MenuItem::make()->label('Edit profile')
             ])
-            ->breadcrumbs(false)
+            ->breadcrumbs(true)
             ->font('Outfit')
             ->plugins([
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                // \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
 
                 BreezyCore::make()->myProfile(
                     shouldRegisterUserMenu: true, // Sets the 'account' link in the panel User Menu (default = true)
@@ -84,8 +80,8 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 OptimizeImages::class,
-                // InitializeTenancyByDomain::class,
-                // 'universal'
+                InitializeTenancyByDomain::class,
+                'universal'
             ])
             ->authMiddleware([
                 Authenticate::class,

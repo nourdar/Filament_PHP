@@ -30,6 +30,7 @@ use App\Http\Controllers\ZrExpressController;
 
 Route::middleware([
     'web',
+    // 'universal',
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {

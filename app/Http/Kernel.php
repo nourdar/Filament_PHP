@@ -23,6 +23,8 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \Combindma\FacebookPixel\FacebookPixelMiddleware::class,
+        // \App\Http\Middleware\TenantMiddleware::class,
+
     ];
 
     /**
@@ -45,6 +47,10 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
+
+        'universal' => [],
+
+
     ];
 
     /**

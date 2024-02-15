@@ -40,12 +40,12 @@ class Brand extends Model  implements Searchable
 
     public function getSearchResult(): SearchResult
     {
-       $url = 'brand/'. $this->id;
+        $url = 'brand/' . $this->id;
 
         return new \Spatie\Searchable\SearchResult(
-           $this,
-           $this->name,
-           $url,
+            $this,
+            $this->name,
+            $url,
         );
     }
 }
